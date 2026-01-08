@@ -1,6 +1,182 @@
-/******* Change Box Model ***************/
-*,
-*:before,
-*:after {
+/* ******************************************
+ * CSE Motors - Mobile-First CSS
+ *******************************************/
+
+/* -------- Global Styles -------- */
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #f8f9fa;
+  color: #222222;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* -------- Header -------- */
+header {
+  background-color: #1f3a5f; /* dark blue */
+  color: #ffffff;
+  text-align: center;
+  padding: 1rem;
+}
+
+header h2 {
+  font-size: 1.8rem;
+}
+
+/* -------- Navigation -------- */
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background-color: #ffffff;
+}
+
+nav li {
+  border-bottom: 1px solid #ddd;
+}
+
+nav a {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #1f3a5f;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+nav a:hover {
+  background-color: #e6e6e6;
+}
+
+/* -------- Hero Section -------- */
+.hero {
+  position: relative;
+  text-align: center;
+}
+
+.hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  background-color: rgba(0,0,0,0.4);
+  padding: 1rem 2rem;
+  border-radius: 5px;
+}
+
+.hero-text h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-text p {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-text .cta {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #c0392b; /* red */
+  color: #ffffff;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+/* -------- Info Section -------- */
+.info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.info h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #1f3a5f;
+}
+
+.info ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  display: inline-block;
+  text-align: left;
+}
+
+.info li {
+  margin-bottom: 0.5rem;
+}
+
+/* -------- Footer -------- */
+footer {
+  background-color: #1f3a5f;
+  color: #ffffff;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+/* -------- Media Query: Larger Screens -------- */
+@media screen and (min-width: 768px) {
+  
+  nav ul {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  nav li {
+    border-bottom: none;
+  }
+
+  nav a {
+    padding: 1rem 2rem;
+  }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    text-align: left;
+  }
+
+  .hero img {
+    width: 100%;
+    height: auto;
+  }
+
+  .hero-text {
+    position: static;
+    transform: none;
+    background-color: transparent;
+    color: #222222;
+    padding: 2rem;
+  }
+
+  .hero-text h1 {
+    font-size: 3rem;
+  }
+
+  .hero-text p {
+    font-size: 1.2rem;
+  }
+
+  .info ul {
+    text-align: left;
+  }
 }
