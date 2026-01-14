@@ -1,0 +1,28 @@
+<section class="hero">
+  <img src="<%= heroImage %>" alt="Showroom Image">
+  <div class="hero-text">
+    <h1><%= title %></h1>
+    <p>Your dream car is waiting.</p>
+    <a href="/inventory" class="cta">View Inventory</a>
+  </div>
+</section>
+
+<section class="home-grid">
+  <div class="upgrades">
+    <h2>Upgrades</h2>
+    <ul>
+      <% upgrades.forEach(upgrade => { %>
+        <li><%= upgrade %></li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <div class="reviews">
+    <h2>Reviews</h2>
+    <ul>
+      <% reviews.forEach(review => { %>
+        <li><%= review %></li>
+      <% }) %>
+    </ul>
+  </div>
+</section>
