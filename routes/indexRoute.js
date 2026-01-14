@@ -1,10 +1,14 @@
-const express = require("express")
-const router = new express.Router()
+// routes/indexRoute.js
 
-router.get("/", async (req, res) => {
+const express = require("express");
+const router = express.Router();
+
+// Home page route
+router.get("/", (req, res) => {
   res.render("index", {
-    title: "CSE Motors | Home"
-  })
-})
+    title: "CSE Motors | Home" // optional, used in head partial
+  });
+});
 
-module.exports = router
+module.exports = router;
+
