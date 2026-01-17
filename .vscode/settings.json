@@ -1,0 +1,26 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": false,
+                    "requestCert": false
+                },
+                "statement_timeout": 0,
+                "query_timeout": 0,
+                "connectionTimeoutMillis": 0,
+                "idleTimeoutMillis": 10000,
+                "max": 10
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "dpg-d5lg64p4tr6s73bua8ig-a.virginia-postgres.render.com",
+            "driver": "PostgreSQL",
+            "name": "Render W02_DB",
+            "database": "W02_DB",
+            "username": "w02_db_user",
+            "password": "D5SnjwCaFdTgQVGFgyNjCRnqDBhmTTl1",
+            "connectString": "postgresql://w02_db_user:D5SnjwCaFdTgQVGFgyNjCRnqDBhmTTl1@dpg-d5lhbcumcj7s73bcj800-a.virginia-postgres.render.com/w02_db"
+        }
+    ]
+}
