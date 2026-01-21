@@ -45,3 +45,9 @@ a { text-decoration:none; color:inherit; }
   .upgrades, .reviews { flex:1; }
   main#content { max-width:1200px; margin:2rem auto; padding:1rem; background:#fff; border:8px solid #1f3a5f; border-radius:5px; }
 }
+
+#inv-display { list-style: none; padding: 0; display: flex; gap: 20px; }
+#inv-display li { border: 1px solid #ccc; padding: 10px; width: 200px; }
+#inv-display img { width: 100%; }
+.namePrice { text-align: center; }
+
