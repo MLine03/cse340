@@ -1,30 +1,56 @@
-// server.js
 const express = require("express")
-const path = require("path")
-const expressLayouts = require("express-ejs-layouts")
-require("dotenv").config()
-
 const app = express()
+const utilities = require("./utilities")
 
-// Routes
-const indexRoute = require("./routes/indexRoute")
-const inventoryRoute = require("./routes/inventoryRoute")
+/* *************** Middleware **************** */
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.static("public"))
 
-// Set view engine
+/* *************** View Engine **************** */
 app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
-app.use(expressLayouts)
-app.set("layout", "layouts/layout")
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "public")))
+/* *************** Routes **************** */
+const inventoryRoute = require("./routes/inventoryRoute")
+const errorRoute = require("./routes/errorRoute")
 
-// Routes
-app.use("/", indexRoute)
 app.use("/inv", inventoryRoute)
+app.use("/", errorRoute)
 
-// Start server
-const port = process.env.PORT || 3000
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`)
+/* *************** Test nav route **************** */
+app.get("/test-nav", async (req, res) => {
+  try {
+    const nav = await utilities.getNav()
+    res.send(nav)
+  } catch (err) {
+    console.error(err)
+    res.status(500).send("Error building nav")
+  }
+})
+
+/* *************** 404 Handler **************** */
+app.use(async (req, res) => {
+  const nav = await utilities.getNav()
+  res.status(404).render("errors/error", {
+    title: "Page Not Found",
+    nav,
+    message: "Sorry, the page you requested does not exist.",
+  })
+})
+
+/* *************** 500 Error Handler **************** */
+app.use(async (err, req, res, next) => {
+  const nav = await utilities.getNav()
+  console.error(err.message)
+  res.status(500).render("errors/error", {
+    title: "Server Error",
+    nav,
+    message: err.message,
+  })
+})
+
+/* *************** Server **************** */
+const PORT = process.env.PORT || 5500
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`)
 })

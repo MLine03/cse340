@@ -1,34 +1,57 @@
+const invModel = require("../models/inventory-model")
+
 const Util = {}
 
-Util.getNav = async function() {
-  const classifications = await require("../models/inventory-model").getClassifications()
-  let nav = "<ul>"
+/* **************************************
+ * Build navigation bar
+ * ************************************** */
+Util.getNav = async function () {
+  let nav = "<ul><li><a href='/'>Home</a></li>"
+
+  const classifications = await invModel.getClassifications()
+
   classifications.forEach(c => {
-    nav += `<li><a href="/inv/type/${c.classification_id}" title="View ${c.classification_name} vehicles">${c.classification_name}</a></li>`
+    nav += `<li>
+      <a href="/inv/type/${c.classification_id}">${c.classification_name}</a>
+    </li>`
   })
+
   nav += "</ul>"
   return nav
 }
 
-Util.buildClassificationGrid = async function(data) {
-  let grid = '<ul id="inv-display">'
-  data.forEach(vehicle => {
-    grid += `<li>
-      <a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
-        <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
-      </a>
-      <div class="namePrice">
-        <h2>
-          <a href="/inv/detail/${vehicle.inv_id}" title="View ${vehicle.inv_make} ${vehicle.inv_model} details">
-            ${vehicle.inv_make} ${vehicle.inv_model}
-          </a>
-        </h2>
-        <span>$${new Intl.NumberFormat('en-US').format(vehicle.inv_price)}</span>
-      </div>
-    </li>`
-  })
-  grid += "</ul>"
-  return grid
+/* **************************************
+ * Error handling middleware
+ * ************************************** */
+Util.handleErrors = fn => (req, res, next) =>
+  Promise.resolve(fn(req, res, next)).catch(next)
+
+/* **************************************
+ * Build vehicle detail HTML
+ * ************************************** */
+Util.buildVehicleDetail = function (vehicle) {
+  const price = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(vehicle.inv_price)
+
+  const mileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles)
+
+  return `
+  <section class="vehicle-detail">
+    <div class="vehicle-image">
+      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+    </div>
+
+    <div class="vehicle-info">
+      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+      <p><strong>Price:</strong> ${price}</p>
+      <p><strong>Mileage:</strong> ${mileage} miles</p>
+      <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+    </div>
+  </section>
+  `
 }
 
 module.exports = Util
