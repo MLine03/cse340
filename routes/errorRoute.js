@@ -1,12 +1,11 @@
 const express = require("express")
 const router = express.Router()
 
-router.get("/trigger-error", (req, res, next) => {
-  try {
-    throw new Error("Intentional 500 error for testing")
-  } catch (err) {
-    next(err)
-  }
+router.get("/", (req, res) => {
+  res.send(`
+    <h1>Home Page</h1>
+    <p>Visit /inv/detail/1 or /inv/detail/2</p>
+  `)
 })
 
 module.exports = router

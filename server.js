@@ -17,20 +17,9 @@ const errorRoute = require("./routes/errorRoute")
 app.use("/inv", inventoryRoute)
 app.use("/", errorRoute)
 
-/* *************** Test nav route **************** */
-app.get("/test-nav", async (req, res) => {
-  try {
-    const nav = await utilities.getNav()
-    res.send(nav)
-  } catch (err) {
-    console.error(err)
-    res.status(500).send("Error building nav")
-  }
-})
-
 /* *************** 404 Handler **************** */
 app.use(async (req, res) => {
-  const nav = await utilities.getNav()
+  const nav = "" // optional nav
   res.status(404).render("errors/error", {
     title: "Page Not Found",
     nav,
@@ -40,7 +29,7 @@ app.use(async (req, res) => {
 
 /* *************** 500 Error Handler **************** */
 app.use(async (err, req, res, next) => {
-  const nav = await utilities.getNav()
+  const nav = "" // optional nav
   console.error(err.message)
   res.status(500).render("errors/error", {
     title: "Server Error",

@@ -1,29 +1,31 @@
-const invModel = require("../models/inventory-model")
 const utilities = require("../utilities")
+const inventoryModel = require("../models/inventory-model")
 
-async function buildVehicleDetailView(req, res, next) {
-  const inv_id = req.params.inv_id
-  const vehicle = await invModel.getVehicleById(inv_id)
+/* Vehicle detail controller */
+async function buildVehicleDetail(req, res, next) {
+  try {
+    const vehicleId = parseInt(req.params.id)
+    const vehicle = inventoryModel.getVehicleById(vehicleId)
 
-  if (!vehicle) {
-    const nav = await utilities.getNav()
-    return res.status(404).render("errors/error", {
-      title: "Vehicle Not Found",
-      nav,
-      message: "Sorry, that vehicle does not exist.",
+    if (!vehicle) {
+      res.status(404).render("errors/error", {
+        title: "Vehicle Not Found",
+        nav: "",
+        message: "Vehicle not found."
+      })
+      return
+    }
+
+    const vehicleDetailHTML = utilities.buildVehicleDetail(vehicle)
+    res.render("inventory/detail", {
+      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+      nav: "",
+      vehicleDetailHTML
     })
+  } catch (err) {
+    next(err)
   }
-
-  const nav = await utilities.getNav()
-  const vehicleHTML = utilities.buildVehicleDetail(vehicle)
-
-  res.render("inventory/detail", {
-    title: `${vehicle.inv_make} ${vehicle.inv_model}`,
-    nav,
-    vehicleHTML,
-  })
 }
 
-module.exports = {
-  buildVehicleDetailView,
-}
+module.exports = { buildVehicleDetail }
+
