@@ -1,24 +1,23 @@
-const Util = {}
+const Util = {};
 
-/* Error handler */
+/* Error handling middleware */
 Util.handleErrors = fn => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next)
+  Promise.resolve(fn(req, res, next)).catch(next);
 
 /* Build vehicle detail HTML */
 Util.buildVehicleDetail = function (vehicle) {
   const price = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(vehicle.inv_price)
+  }).format(vehicle.inv_price);
 
-  const mileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles)
+  const mileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles);
 
   return `
   <section class="vehicle-detail">
     <div class="vehicle-image">
-      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}" style="max-width:100%">
     </div>
-
     <div class="vehicle-info">
       <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
       <p><strong>Price:</strong> ${price}</p>
@@ -26,8 +25,7 @@ Util.buildVehicleDetail = function (vehicle) {
       <p><strong>Description:</strong> ${vehicle.inv_description}</p>
       <p><strong>Color:</strong> ${vehicle.inv_color}</p>
     </div>
-  </section>
-  `
-}
+  </section>`;
+};
 
-module.exports = Util
+module.exports = Util;

@@ -1,31 +1,24 @@
-const utilities = require("../utilities")
-const inventoryModel = require("../models/inventory-model")
+const inventoryModel = require("../models/inventory-model");
+const utilities = require("../utilities");
 
-/* Vehicle detail controller */
-async function buildVehicleDetail(req, res, next) {
+const buildVehicleDetail = async (req, res, next) => {
+  const vehicleId = parseInt(req.params.id);
   try {
-    const vehicleId = parseInt(req.params.id)
-    const vehicle = inventoryModel.getVehicleById(vehicleId)
-
+    const vehicle = await inventoryModel.getVehicleById(vehicleId);
     if (!vehicle) {
-      res.status(404).render("errors/error", {
+      return res.status(404).render("errors/error", {
         title: "Vehicle Not Found",
-        nav: "",
-        message: "Vehicle not found."
-      })
-      return
+        message: "Vehicle not found.",
+      });
     }
-
-    const vehicleDetailHTML = utilities.buildVehicleDetail(vehicle)
+    const vehicleDetailHTML = utilities.buildVehicleDetail(vehicle);
     res.render("inventory/detail", {
       title: `${vehicle.inv_make} ${vehicle.inv_model}`,
-      nav: "",
-      vehicleDetailHTML
-    })
-  } catch (err) {
-    next(err)
+      vehicleDetailHTML,
+    });
+  } catch (error) {
+    next(error);
   }
-}
+};
 
-module.exports = { buildVehicleDetail }
-
+module.exports = { buildVehicleDetail };
