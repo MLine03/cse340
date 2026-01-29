@@ -1,15 +1,31 @@
-ul.notice {
-  background-color: #d9edf7;
-  color: #31708f;
-  padding: 10px;
-  border-radius: 4px;
-  list-style-type: none;
+.register-form {
+  max-width: 400px;
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-ul.error {
-  background-color: #f2dede;
-  color: #a94442;
-  padding: 10px;
-  border-radius: 4px;
-  list-style-type: none;
+.register-form label {
+  font-weight: bold;
 }
+
+.register-form input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.register-form button {
+  margin-top: 1rem;
+  padding: 0.7rem;
+  background-color: #003366;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.password-rules {
+  font-size: 0.9rem;
+  color: #555;
+}
+

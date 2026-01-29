@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Home</title>
-  <link rel="stylesheet" href="/style.css">
+  <title><%= title %></title>
 </head>
 <body>
+  <%- nav %>
   <h1>Home</h1>
-  <%- messages() %>
+
+  <% if (messages.notice) { %>
+    <div style="color: green;"><%= messages.notice %></div>
+  <% } %>
 </body>
 </html>

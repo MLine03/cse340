@@ -26,4 +26,3 @@ const pool = new Pool({
     await pool.end(); // close the connection pool
   }
 })();
-

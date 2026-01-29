@@ -1,40 +1,46 @@
-require('dotenv').config()
-const express = require("express")
-const session = require("express-session")
-const pool = require("./database")
-const app = express()
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const flash = require("connect-flash");
+
+const accountRoute = require("./routes/accountRoute");
+const utilities = require("./utilities");
+
+const app = express();
 
 // Middleware
-app.use(session({
-  store: new (require("connect-pg-simple")(session))({
-    createTableIfMissing: true,
-    pool,
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
-  name: "sessionId",
-}))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(flash());
 
-app.use(require("connect-flash")())
-app.use(function(req, res, next){
-  res.locals.messages = require("express-messages")(req, res)
-  next()
-})
+// Make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.messages = req.flash();
+  next();
+});
 
-// View Engine
-app.set("view engine", "ejs")
-app.set("views", __dirname + "/views")
-
-// Static Files (optional)
-app.use(express.static("public"))
+// View engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Routes
-const baseController = require("./controllers/baseController")
-app.get("/", baseController.buildHome)
+app.use("/account", accountRoute);
 
-// Server
-const PORT = process.env.PORT || 5500
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// Home route
+app.get("/", async (req, res) => {
+  const nav = await utilities.getNav();
+  res.render("index", { title: "Home", nav });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Something went wrong!");
+});
+
+// Start server
+const PORT = 5500;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

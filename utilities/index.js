@@ -1,31 +1,15 @@
-const Util = {};
+function handleErrors(fn) {
+  return async (req, res, next) => {
+    try {
+      await fn(req, res, next);
+    } catch (err) {
+      next(err);
+    }
+  };
+}
 
-/* Error handling middleware */
-Util.handleErrors = fn => (req, res, next) =>
-  Promise.resolve(fn(req, res, next)).catch(next);
+async function getNav() {
+  return `<nav><a href="/">Home</a> | <a href="/account/register">Register</a> | <a href="/account/login">Login</a></nav>`;
+}
 
-/* Build vehicle detail HTML */
-Util.buildVehicleDetail = function (vehicle) {
-  const price = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(vehicle.inv_price);
-
-  const mileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles);
-
-  return `
-  <section class="vehicle-detail">
-    <div class="vehicle-image">
-      <img src="${vehicle.inv_image}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}" style="max-width:100%">
-    </div>
-    <div class="vehicle-info">
-      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-      <p><strong>Price:</strong> ${price}</p>
-      <p><strong>Mileage:</strong> ${mileage} miles</p>
-      <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-    </div>
-  </section>`;
-};
-
-module.exports = Util;
+module.exports = { handleErrors, getNav };
