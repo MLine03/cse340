@@ -1,20 +1,15 @@
-.vehicle-detail {
-  display: flex;
-  gap: 2rem;
-  margin-top: 1.5rem;
+ul.notice {
+  background-color: #d9edf7;
+  color: #31708f;
+  padding: 10px;
+  border-radius: 4px;
+  list-style-type: none;
 }
 
-.vehicle-image img {
-  max-width: 100%;
-  height: auto;
-}
-
-.vehicle-info {
-  max-width: 500px;
-}
-
-@media screen and (max-width: 768px) {
-  .vehicle-detail {
-    flex-direction: column;
-  }
+ul.error {
+  background-color: #f2dede;
+  color: #a94442;
+  padding: 10px;
+  border-radius: 4px;
+  list-style-type: none;
 }

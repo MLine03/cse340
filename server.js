@@ -1,55 +1,40 @@
-const express = require("express");
-const app = express();
-const utilities = require("./utilities");
+require('dotenv').config()
+const express = require("express")
+const session = require("express-session")
+const pool = require("./database")
+const app = express()
 
-/* *************** Middleware **************** */
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static("public"));
+// Middleware
+app.use(session({
+  store: new (require("connect-pg-simple")(session))({
+    createTableIfMissing: true,
+    pool,
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true,
+  name: "sessionId",
+}))
 
-/* *************** View Engine **************** */
-app.set("view engine", "ejs");
+app.use(require("connect-flash")())
+app.use(function(req, res, next){
+  res.locals.messages = require("express-messages")(req, res)
+  next()
+})
 
-/* *************** Routes **************** */
-const inventoryRoute = require("./routes/inventoryRoute");
-const errorRoute = require("./routes/errorRoute");
+// View Engine
+app.set("view engine", "ejs")
+app.set("views", __dirname + "/views")
 
-app.use("/inv", inventoryRoute);
-app.use("/", errorRoute);
+// Static Files (optional)
+app.use(express.static("public"))
 
-/* *************** Home Route **************** */
-const inventoryModel = require("./models/inventory-model");
-app.get("/", async (req, res) => {
-  try {
-    const vehicles = await inventoryModel.getAllVehicles();
-    res.render("home", { vehicles });
-  } catch (error) {
-    res.status(500).render("errors/error", {
-      title: "Server Error",
-      message: error.message,
-    });
-  }
-});
+// Routes
+const baseController = require("./controllers/baseController")
+app.get("/", baseController.buildHome)
 
-/* *************** 404 Handler **************** */
-app.use((req, res) => {
-  res.status(404).render("errors/error", {
-    title: "Page Not Found",
-    message: "Sorry, the page you requested does not exist.",
-  });
-});
-
-/* *************** 500 Error Handler **************** */
-app.use((err, req, res, next) => {
-  console.error(err.message);
-  res.status(500).render("errors/error", {
-    title: "Server Error",
-    message: err.message,
-  });
-});
-
-/* *************** Server **************** */
-const PORT = process.env.PORT || 5500;
+// Server
+const PORT = process.env.PORT || 5500
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})

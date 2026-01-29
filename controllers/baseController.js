@@ -1,9 +1,6 @@
-const utilities = require("../utilities/")
-const baseController = {}
+exports.buildHome = (req, res) => {
+  // Example flash message
+  // req.flash("notice", "This is a flash message.") // Remove after testing
 
-baseController.buildHome = async function (req, res) {
-  const nav = await utilities.getNav()
-  res.render("index", { title: "Home", nav })
+  res.render("index")
 }
-
-module.exports = baseController
