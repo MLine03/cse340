@@ -13,7 +13,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
+app.use(session({
+  secret: "secret-key",
+  resave: false,
+  saveUninitialized: true
+}));
 app.use(flash());
 
 // View engine
@@ -29,16 +33,16 @@ app.get("/", async (req, res, next) => {
     const nav = await utilities.getNav();
     res.render("index", { title: "Home", nav });
   } catch (err) {
-    next(err); // pass to error handler
+    next(err);
   }
 });
 
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send(`<pre>${err.stack}</pre>`); // show real error
+  res.status(500).send(`<pre>${err.stack}</pre>`);
 });
 
 // Start server
 const PORT = 5500;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

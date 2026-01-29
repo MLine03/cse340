@@ -1,60 +1,35 @@
-// controllers/accountController.js
-
-const accountModel = require("../models/account-model");
 const { validationResult } = require("express-validator");
-const bcrypt = require("bcryptjs");
-const utilities = require("../utilities");
+const accountModel = require("../models/account-model");
 
-exports.registerAccount = async (req, res, next) => {
-  try {
-    const errors = validationResult(req);
-
-    // Sticky form values
-    const { account_firstname, account_lastname, account_email, account_password } = req.body;
-
-    const nav = await utilities.getNav();
-
-    if (!errors.isEmpty()) {
-      // Validation errors exist
-      return res.render("account/register", {
-        title: "Register",
-        nav,
-        errors: errors.array(),
-        account_firstname,
-        account_lastname,
-        account_email,
-        messages: { success: [], error: errors.array().map(err => err.msg) }, // send errors to messages
-      });
-    }
-
-    // Hash the password
-    const hashedPassword = bcrypt.hashSync(account_password, 10);
-
-    // Register account in DB
-    const regResult = await accountModel.registerAccount({
+exports.registerAccount = async (req, res) => {
+  const nav = await require("../utilities").getNav();
+  const { account_firstname, account_lastname, account_email, account_password } = req.body;
+  
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render("account/register", {
+      title: "Register",
+      nav,
+      errors: errors.array(),
       account_firstname,
       account_lastname,
       account_email,
-      account_password: hashedPassword,
+      messages: { success: [], error: [] }
     });
+  }
 
-    if (regResult) {
-      // Success message
-      req.flash("success", "Registration successful! Please log in.");
-      return res.redirect("/account/login");
+  try {
+    const result = await accountModel.registerAccount(account_firstname, account_lastname, account_email, account_password);
+    if (result) {
+      req.flash("success", "You have successfully registered!");
+      return res.redirect("/account/register");
     } else {
-      // Generic failure
-      return res.render("account/register", {
-        title: "Register",
-        nav,
-        errors: [],
-        account_firstname,
-        account_lastname,
-        account_email,
-        messages: { success: [], error: ["Registration failed. Please try again."] },
-      });
+      req.flash("error", "Registration failed. Please try again.");
+      return res.redirect("/account/register");
     }
   } catch (err) {
-    next(err);
+    console.error(err);
+    req.flash("error", "An unexpected error occurred. Please try again.");
+    return res.redirect("/account/register");
   }
 };

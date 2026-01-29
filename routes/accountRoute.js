@@ -1,10 +1,8 @@
-// routes/accountRoute.js
-
 const express = require("express");
 const router = express.Router();
+const { body, validationResult } = require("express-validator");
 const accountController = require("../controllers/accountController");
 const utilities = require("../utilities");
-const { body } = require("express-validator");
 const accountModel = require("../models/account-model");
 
 // GET registration page
@@ -20,8 +18,8 @@ router.get("/register", async (req, res, next) => {
       account_email: "",
       messages: {
         success: req.flash("success"),
-        error: req.flash("error"),
-      },
+        error: req.flash("error")
+      }
     });
   } catch (err) {
     next(err);

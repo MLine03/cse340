@@ -1,34 +1,26 @@
-const pool = require("../database/connection"); // Make sure this file exists
+const pool = require("../database"); // your PostgreSQL connection
 
-// Register a new account
-async function registerAccount({
-  account_firstname,
-  account_lastname,
-  account_email,
-  account_password,
-  account_type = "client",
-}) {
-  const sql = `INSERT INTO account 
-               (account_firstname, account_lastname, account_email, account_password, account_type)
-               VALUES ($1, $2, $3, $4, $5)`;
-  return pool.query(sql, [
-    account_firstname,
-    account_lastname,
-    account_email,
-    account_password,
-    account_type,
-  ]);
-}
-
-// Check for existing email
-async function checkExistingEmail(account_email) {
+// Check if email already exists
+exports.checkExistingEmail = async (email) => {
   try {
-    const sql = "SELECT * FROM account WHERE account_email = $1";
-    const email = await pool.query(sql, [account_email]);
-    return email.rowCount;
+    const sql = "SELECT account_email FROM accounts WHERE account_email = $1";
+    const result = await pool.query(sql, [email]);
+    return result.rows.length > 0;
   } catch (error) {
-    return error.message;
+    console.error(error);
+    throw error;
   }
-}
+};
 
-module.exports = { registerAccount, checkExistingEmail };
+// Register new account
+exports.registerAccount = async (firstname, lastname, email, password) => {
+  try {
+    const sql = `INSERT INTO accounts (account_firstname, account_lastname, account_email, account_password)
+                 VALUES ($1, $2, $3, $4) RETURNING account_id`;
+    const result = await pool.query(sql, [firstname, lastname, email, password]);
+    return result.rows[0];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
