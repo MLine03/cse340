@@ -1,33 +1,28 @@
-const invModel = require("../models/inventory-model");
+const inventoryModel = require("../models/inventory-model");
+
+module.exports.getNav = async function () {
+  // Example navigation HTML
+  return `
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/inv/">Inventory Management</a></li>
+    </ul>
+  `;
+};
 
 // Build classification select list
-async function buildClassificationList(selectedId = null) {
-  let data = await invModel.getClassifications();
-  let list = '<select name="classification_id" id="classificationList" required>';
-  list += "<option value=''>Choose a Classification</option>";
+module.exports.buildClassificationList = async function (classification_id = null) {
+  const data = await inventoryModel.getClassifications();
+  let classificationList =
+    '<select name="classification_id" id="classificationList" required>';
+  classificationList += "<option value=''>Choose a Classification</option>";
   data.rows.forEach((row) => {
-    list += `<option value="${row.classification_id}"`;
-    if (selectedId && row.classification_id == selectedId) {
-      list += " selected";
+    classificationList += `<option value="${row.classification_id}"`;
+    if (classification_id != null && row.classification_id == classification_id) {
+      classificationList += " selected";
     }
-    list += `>${row.classification_name}</option>`;
+    classificationList += `>${row.classification_name}</option>`;
   });
-  list += "</select>";
-  return list;
-}
-
-// Build navigation bar for classifications
-async function getNav() {
-  let data = await invModel.getClassifications();
-  let nav = "<ul>";
-  data.rows.forEach((row) => {
-    nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`;
-  });
-  nav += "</ul>";
-  return nav;
-}
-
-module.exports = {
-  buildClassificationList,
-  getNav,
+  classificationList += "</select>";
+  return classificationList;
 };

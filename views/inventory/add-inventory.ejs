@@ -1,43 +1,50 @@
-<h1>Add Inventory</h1>
+<!DOCTYPE html>
+<html>
+<head><title><%= title %></title></head>
+<body>
+  <%= nav %>
+  <h1>Add Vehicle</h1>
 
-<% if (errors && errors.length > 0) { %>
-  <ul style="color:red;">
-    <% errors.forEach(err => { %>
-      <li><%= err.msg %></li>
-    <% }) %>
-  </ul>
-<% } %>
+  <% if (errors && errors.length > 0) { %>
+    <ul style="color:red">
+      <% errors.forEach(err => { %>
+        <li><%= err.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
 
-<form action="/inv/add-inventory" method="POST">
-  <label for="classification_id">Classification:</label>
-  <%- classificationList %>
+  <form method="POST" action="/inv/add-inventory">
+    <label>Classification:</label>
+    <%= classificationList %><br>
 
-  <label for="inv_make">Make:</label>
-  <input type="text" name="inv_make" id="inv_make" value="<%= data.inv_make || '' %>">
+    <label>Make:</label>
+    <input type="text" name="inv_make" value="<%= sticky.inv_make || '' %>" required><br>
 
-  <label for="inv_model">Model:</label>
-  <input type="text" name="inv_model" id="inv_model" value="<%= data.inv_model || '' %>">
+    <label>Model:</label>
+    <input type="text" name="inv_model" value="<%= sticky.inv_model || '' %>" required><br>
 
-  <label for="inv_year">Year:</label>
-  <input type="number" name="inv_year" id="inv_year" value="<%= data.inv_year || '' %>">
+    <label>Year:</label>
+    <input type="number" name="inv_year" value="<%= sticky.inv_year || '' %>" required><br>
 
-  <label for="inv_description">Description:</label>
-  <textarea name="inv_description" id="inv_description"><%= data.inv_description || '' %></textarea>
+    <label>Price:</label>
+    <input type="number" step="0.01" name="inv_price" value="<%= sticky.inv_price || '' %>" required><br>
 
-  <label for="inv_image">Image Path:</label>
-  <input type="text" name="inv_image" id="inv_image" value="<%= data.inv_image || '/images/no-image.png' %>">
+    <label>Miles:</label>
+    <input type="number" step="0.1" name="inv_miles" value="<%= sticky.inv_miles || '' %>" required><br>
 
-  <label for="inv_thumbnail">Thumbnail Path:</label>
-  <input type="text" name="inv_thumbnail" id="inv_thumbnail" value="<%= data.inv_thumbnail || '/images/no-image.png' %>">
+    <label>Color:</label>
+    <input type="text" name="inv_color" value="<%= sticky.inv_color || '' %>" required><br>
 
-  <label for="inv_price">Price:</label>
-  <input type="number" step="0.01" name="inv_price" id="inv_price" value="<%= data.inv_price || '' %>">
+    <label>Description:</label>
+    <textarea name="inv_description" required><%= sticky.inv_description || '' %></textarea><br>
 
-  <label for="inv_miles">Miles:</label>
-  <input type="number" step="0.01" name="inv_miles" id="inv_miles" value="<%= data.inv_miles || '' %>">
+    <label>Image Path:</label>
+    <input type="text" name="inv_image" value="<%= sticky.inv_image || '/images/no-image.png' %>"><br>
 
-  <label for="inv_color">Color:</label>
-  <input type="text" name="inv_color" id="inv_color" value="<%= data.inv_color || '' %>">
+    <label>Thumbnail Path:</label>
+    <input type="text" name="inv_thumbnail" value="<%= sticky.inv_thumbnail || '/images/no-image.png' %>"><br>
 
-  <button type="submit">Add Inventory</button>
-</form>
+    <button type="submit">Add Vehicle</button>
+  </form>
+</body>
+</html>

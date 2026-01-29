@@ -1,32 +1,60 @@
+// controllers/accountController.js
+
 const accountModel = require("../models/account-model");
 const { validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const utilities = require("../utilities");
 
-// Handle account registration
-async function registerAccount(req, res, next) {
+exports.registerAccount = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
-    // Sticky values
-    const { account_firstname, account_lastname, account_email } = req.body;
+    // Sticky form values
+    const { account_firstname, account_lastname, account_email, account_password } = req.body;
+
+    const nav = await utilities.getNav();
 
     if (!errors.isEmpty()) {
+      // Validation errors exist
       return res.render("account/register", {
         title: "Register",
-        nav: await require("../utilities").getNav(),
+        nav,
         errors: errors.array(),
         account_firstname,
         account_lastname,
         account_email,
+        messages: { success: [], error: errors.array().map(err => err.msg) }, // send errors to messages
       });
     }
 
-    // Save account
-    await accountModel.registerAccount(req.body);
+    // Hash the password
+    const hashedPassword = bcrypt.hashSync(account_password, 10);
 
-    res.send("Account successfully registered!");
+    // Register account in DB
+    const regResult = await accountModel.registerAccount({
+      account_firstname,
+      account_lastname,
+      account_email,
+      account_password: hashedPassword,
+    });
+
+    if (regResult) {
+      // Success message
+      req.flash("success", "Registration successful! Please log in.");
+      return res.redirect("/account/login");
+    } else {
+      // Generic failure
+      return res.render("account/register", {
+        title: "Register",
+        nav,
+        errors: [],
+        account_firstname,
+        account_lastname,
+        account_email,
+        messages: { success: [], error: ["Registration failed. Please try again."] },
+      });
+    }
   } catch (err) {
     next(err);
   }
-}
-
-module.exports = { registerAccount };
+};
