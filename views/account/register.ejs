@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Register</title>
+  <title><%= title %></title>
 </head>
 <body>
   <h1>Register</h1>
+
+  <% if (errors && errors.length > 0) { %>
+    <ul style="color:red">
+      <% errors.forEach(err => { %>
+        <li><%= err.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
   <form action="/account/register" method="post">
     <label for="accountFirstname">First Name:</label>
-    <input type="text" name="account_firstname" id="accountFirstname" required value="<%= locals.account_firstname || '' %>">
+    <input type="text" name="account_firstname" id="accountFirstname" required value="<%= account_firstname || '' %>"><br>
 
     <label for="accountLastname">Last Name:</label>
-    <input type="text" name="account_lastname" id="accountLastname" required value="<%= locals.account_lastname || '' %>">
+    <input type="text" name="account_lastname" id="accountLastname" required value="<%= account_lastname || '' %>"><br>
 
     <label for="accountEmail">Email:</label>
-    <input type="email" name="account_email" id="accountEmail" required value="<%= locals.account_email || '' %>">
+    <input type="email" name="account_email" id="accountEmail" required value="<%= account_email || '' %>"><br>
 
     <label for="accountPassword">Password:</label>
-    <input type="password" name="account_password" id="accountPassword" required>
+    <input type="password" name="account_password" id="accountPassword" required><br>
 
     <button type="submit">Register</button>
   </form>

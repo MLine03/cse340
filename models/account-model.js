@@ -1,36 +1,25 @@
-const Pool = require("pg").Pool;
-const pool = new Pool({
-  user: "mac",
-  host: "localhost",
-  database: "cse340",
-  password: "",
-  port: 5432,
-});
+const pool = require("../database/connection");
 
-// Register new account
-async function registerAccount(firstname, lastname, email, password) {
-  try {
-    const sql = `INSERT INTO account (account_firstname, account_lastname, account_email, account_password, account_type)
-                 VALUES ($1, $2, $3, $4, 'client') RETURNING *`;
-    const result = await pool.query(sql, [firstname, lastname, email, password]);
-    return result.rows[0];
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+// Register a new account
+async function registerAccount({ account_firstname, account_lastname, account_email, account_password, account_type = "client" }) {
+  const sql = `INSERT INTO account 
+               (account_firstname, account_lastname, account_email, account_password, account_type)
+               VALUES ($1,$2,$3,$4,$5)`;
+  return pool.query(sql, [account_firstname, account_lastname, account_email, account_password, account_type]);
 }
 
-/* **********************
- *   Check for existing email
- * ********************* */
+// Check if email already exists
 async function checkExistingEmail(account_email) {
   try {
     const sql = "SELECT * FROM account WHERE account_email = $1";
-    const email = await pool.query(sql, [account_email]);
-    return email.rowCount; // 0 = not found, >0 = exists
+    const result = await pool.query(sql, [account_email]);
+    return result.rowCount;
   } catch (error) {
-    return error.message;
+    throw new Error(error.message);
   }
 }
 
-module.exports = { registerAccount, checkExistingEmail };
+module.exports = {
+  registerAccount,
+  checkExistingEmail,
+};

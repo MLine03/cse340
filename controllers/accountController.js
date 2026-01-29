@@ -1,28 +1,31 @@
 const accountModel = require("../models/account-model");
-const utilities = require("../utilities");
+const { validationResult } = require("express-validator");
 
-async function registerAccount(req, res) {
-  let nav = await utilities.getNav();
-  const { account_firstname, account_lastname, account_email, account_password } = req.body;
+// Handle account registration
+async function registerAccount(req, res, next) {
+  try {
+    const errors = validationResult(req);
 
-  // Sticky form
-  res.locals.account_firstname = account_firstname;
-  res.locals.account_lastname = account_lastname;
-  res.locals.account_email = account_email;
+    // Sticky values
+    const { account_firstname, account_lastname, account_email } = req.body;
 
-  const regResult = await accountModel.registerAccount(
-    account_firstname,
-    account_lastname,
-    account_email,
-    account_password
-  );
+    if (!errors.isEmpty()) {
+      return res.render("account/register", {
+        title: "Register",
+        nav: await require("../utilities").getNav(),
+        errors: errors.array(),
+        account_firstname,
+        account_lastname,
+        account_email,
+      });
+    }
 
-  if (regResult) {
-    req.flash("notice", `Congratulations, you're registered ${account_firstname}. Please log in.`);
-    res.status(201).render("account/login", { title: "Login", nav });
-  } else {
-    req.flash("notice", "Sorry, the registration failed.");
-    res.status(501).render("account/register", { title: "Register", nav });
+    // Save account
+    await accountModel.registerAccount(req.body);
+
+    res.send("Account successfully registered!");
+  } catch (err) {
+    next(err);
   }
 }
 

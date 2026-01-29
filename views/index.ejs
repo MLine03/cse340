@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title><%= title %></title>
 </head>
 <body>
-  <%- nav %>
   <h1>Home</h1>
-
-  <% if (messages.notice) { %>
-    <div style="color: green;"><%= messages.notice %></div>
-  <% } %>
+  <nav>
+    <ul>
+      <% nav.forEach(item => { %>
+        <li><a href="<%= item.link %>"><%= item.name %></a></li>
+      <% }) %>
+    </ul>
+  </nav>
 </body>
 </html>

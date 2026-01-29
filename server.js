@@ -16,12 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: "secret", resave: false, saveUninitialized: true }));
 app.use(flash());
 
-// Make flash messages available in all views
-app.use((req, res, next) => {
-  res.locals.messages = req.flash();
-  next();
-});
-
 // View engine
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -30,15 +24,19 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/account", accountRoute);
 
 // Home route
-app.get("/", async (req, res) => {
-  const nav = await utilities.getNav();
-  res.render("index", { title: "Home", nav });
+app.get("/", async (req, res, next) => {
+  try {
+    const nav = await utilities.getNav();
+    res.render("index", { title: "Home", nav });
+  } catch (err) {
+    next(err); // pass to error handler
+  }
 });
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send("Something went wrong!");
+  console.error(err.stack);
+  res.status(500).send(`<pre>${err.stack}</pre>`); // show real error
 });
 
 // Start server
