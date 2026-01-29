@@ -12,10 +12,10 @@ router.get("/register", async (req, res, next) => {
     res.render("account/register", {
       title: "Register",
       nav,
+      errors: [],
       account_firstname: "",
       account_lastname: "",
       account_email: "",
-      errors: [],
     });
   } catch (err) {
     next(err);
@@ -26,8 +26,14 @@ router.get("/register", async (req, res, next) => {
 router.post(
   "/register",
   [
-    body("account_firstname").trim().isLength({ min: 1 }).withMessage("First name is required"),
-    body("account_lastname").trim().isLength({ min: 1 }).withMessage("Last name is required"),
+    body("account_firstname")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("First name is required"),
+    body("account_lastname")
+      .trim()
+      .isLength({ min: 1 })
+      .withMessage("Last name is required"),
     body("account_email")
       .trim()
       .isEmail()
@@ -36,17 +42,23 @@ router.post(
       .custom(async (email) => {
         const exists = await accountModel.checkExistingEmail(email);
         if (exists) {
-          throw new Error("Email exists. Please log in or use a different email");
+          throw new Error(
+            "Email exists. Please log in or use a different email"
+          );
         }
       }),
-    body("account_password").trim().isLength({ min: 6 }).withMessage("Password must be at least 6 characters"),
+    body("account_password")
+      .trim()
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters"),
   ],
   accountController.registerAccount
 );
 
 // Temporary login route
-router.post("/login", (req, res) => {
-  res.status(200).send("login process");
+router.get("/login", async (req, res) => {
+  const nav = await utilities.getNav();
+  res.render("account/login", { title: "Login", nav, errors: [] });
 });
 
 module.exports = router;

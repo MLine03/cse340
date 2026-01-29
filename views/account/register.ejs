@@ -14,6 +14,10 @@
     </ul>
   <% } %>
 
+  <% if (messages.success) { %>
+    <p style="color:green"><%= messages.success %></p>
+  <% } %>
+
   <form action="/account/register" method="post">
     <label for="accountFirstname">First Name:</label>
     <input type="text" name="account_firstname" id="accountFirstname" required value="<%= account_firstname || '' %>"><br>

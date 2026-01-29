@@ -1,35 +1,27 @@
-// Simulated inventory database
-const vehicles = [
-  {
-    inv_id: 1,
-    inv_make: "Toyota",
-    inv_model: "Camry",
-    inv_year: 2021,
-    inv_price: 25000,
-    inv_miles: 12000,
-    inv_color: "Red",
-    inv_description: "Reliable midsize sedan",
-    inv_image: "/images/camry.jpg",
-  },
-  {
-    inv_id: 2,
-    inv_make: "Honda",
-    inv_model: "Civic",
-    inv_year: 2020,
-    inv_price: 22000,
-    inv_miles: 15000,
-    inv_color: "Blue",
-    inv_description: "Compact car with excellent fuel economy",
-    inv_image: "/images/civic.jpg",
-  },
-];
+const pool = require("../database/connection");
 
-const getAllVehicles = async () => {
-  return vehicles;
+// Get all classifications
+async function getClassifications() {
+  const sql = "SELECT * FROM classification ORDER BY classification_name";
+  return pool.query(sql);
+}
+
+// Add a new classification
+async function addClassification(classification_name) {
+  const sql = "INSERT INTO classification (classification_name) VALUES ($1)";
+  return pool.query(sql, [classification_name]);
+}
+
+// Add a new inventory item
+async function addInventory({ classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color }) {
+  const sql = `INSERT INTO inventory
+               (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`;
+  return pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]);
+}
+
+module.exports = {
+  getClassifications,
+  addClassification,
+  addInventory,
 };
-
-const getVehicleById = async (id) => {
-  return vehicles.find((v) => v.inv_id === id);
-};
-
-module.exports = { getAllVehicles, getVehicleById };

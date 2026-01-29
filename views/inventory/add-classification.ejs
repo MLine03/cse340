@@ -1,0 +1,15 @@
+<h1>Add Classification</h1>
+
+<% if (errors && errors.length > 0) { %>
+  <ul style="color:red;">
+    <% errors.forEach(err => { %>
+      <li><%= err.msg %></li>
+    <% }) %>
+  </ul>
+<% } %>
+
+<form action="/inv/add-classification" method="POST">
+  <label for="classification_name">Classification Name:</label>
+  <input type="text" id="classification_name" name="classification_name" required>
+  <button type="submit">Add</button>
+</form>
