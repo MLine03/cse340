@@ -1,45 +1,17 @@
-const pool = require("../database/connection");
+const pool = require('../database/connection');
 
-// Get classifications
-async function getClassifications() {
-  const sql = "SELECT * FROM classification ORDER BY classification_name";
-  return pool.query(sql);
+// Get vehicles by classification
+async function getVehiclesByClassification(classificationId) {
+    const sql = 'SELECT * FROM inventory WHERE classification_id = $1';
+    const result = await pool.query(sql, [classificationId]);
+    return result.rows;
 }
 
-// Add classification
-async function addClassification(classification_name) {
-  const sql = "INSERT INTO classification (classification_name) VALUES ($1)";
-  return pool.query(sql, [classification_name]);
+// Get single vehicle by inv_id
+async function getVehicleById(invId) {
+    const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
+    const result = await pool.query(sql, [invId]);
+    return result.rows[0];
 }
 
-// Add inventory
-async function addInventory({
-  classification_id,
-  inv_make,
-  inv_model,
-  inv_year,
-  inv_description,
-  inv_price,
-  inv_miles,
-  inv_color,
-  inv_image,
-  inv_thumbnail,
-}) {
-  const sql = `INSERT INTO inventory 
-    (classification_id, inv_make, inv_model, inv_year, inv_description, inv_price, inv_miles, inv_color, inv_image, inv_thumbnail)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`;
-  return pool.query(sql, [
-    classification_id,
-    inv_make,
-    inv_model,
-    inv_year,
-    inv_description,
-    inv_price,
-    inv_miles,
-    inv_color,
-    inv_image,
-    inv_thumbnail,
-  ]);
-}
-
-module.exports = { getClassifications, addClassification, addInventory };
+module.exports = { getVehiclesByClassification, getVehicleById };

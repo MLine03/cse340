@@ -1,31 +1,26 @@
-.register-form {
-  max-width: 400px;
-  margin: 1rem auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
 }
 
-.register-form label {
-  font-weight: bold;
+.vehicle-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.register-form input {
-  padding: 0.5rem;
-  font-size: 1rem;
+.vehicle-img {
+    max-width: 400px;
+    width: 100%;
+    height: auto;
 }
 
-.register-form button {
-  margin-top: 1rem;
-  padding: 0.7rem;
-  background-color: #003366;
-  color: white;
-  border: none;
-  cursor: pointer;
+.vehicle-info {
+    flex: 1;
 }
 
-.password-rules {
-  font-size: 0.9rem;
-  color: #555;
+@media (max-width: 768px) {
+    .vehicle-detail {
+        flex-direction: column;
+    }
 }
-
