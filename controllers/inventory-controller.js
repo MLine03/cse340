@@ -1,30 +1,34 @@
+// controllers/inventory-controller.js
 const inventoryModel = require('../models/inventory-model');
-const { buildVehicleHTML } = require('../utilities/index');
+const utilities = require('../utilities/index');
 
-// Show vehicles by classification
+// Classification page
 async function classificationPage(req, res, next) {
     const classificationId = req.params.id;
     try {
         const vehicles = await inventoryModel.getVehiclesByClassification(classificationId);
-        res.render('inventory/classification', { title: 'Vehicles', vehicles });
+        res.render('inventory/classification', { title: 'Vehicles by Classification', vehicles });
     } catch (err) {
-        next(err);
+        next(err); // send to 500 error handler
     }
 }
 
-// Show vehicle detail
+// Vehicle detail page
 async function vehicleDetail(req, res, next) {
-    const invId = req.params.id;
+    const vehicleId = req.params.id;
     try {
-        const vehicle = await inventoryModel.getVehicleById(invId);
+        const vehicle = await inventoryModel.getVehicleById(vehicleId);
         if (!vehicle) {
-            return res.status(404).render('error', { title: '404', message: 'Vehicle not found' });
+            return res.status(404).render('error', { title: '404', message: 'Vehicle Not Found' });
         }
-        const vehicleHTML = buildVehicleHTML(vehicle);
-        res.render('inventory/detail', { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
+        const vehicleHtml = utilities.buildVehicleDetailHtml(vehicle);
+        res.render('inventory/vehicle-detail', { title: `${vehicle.make} ${vehicle.model}`, vehicleHtml });
     } catch (err) {
-        next(err);
+        next(err); // send to 500 error handler
     }
 }
 
-module.exports = { classificationPage, vehicleDetail };
+module.exports = {
+    classificationPage,
+    vehicleDetail,
+};

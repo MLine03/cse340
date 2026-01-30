@@ -6,15 +6,16 @@
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Vehicles</h1>
+    <h1><%= title %></h1>
     <ul>
         <% vehicles.forEach(vehicle => { %>
             <li>
                 <a href="/inventory/vehicle/<%= vehicle.inv_id %>">
-                    <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %> - $<%= Number(vehicle.price).toLocaleString() %>
+                    <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %> - $<%= vehicle.price.toLocaleString() %>
                 </a>
             </li>
         <% }) %>
     </ul>
+    <a href="/inventory">Back to Inventory</a>
 </body>
 </html>
