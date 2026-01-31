@@ -1,25 +1,19 @@
-.vehicle-detail {
-  display: flex;
-  gap: 2rem;
-  margin: 2rem 0;
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
 }
 
-.vehicle-detail img {
-  max-width: 50%;
-  height: auto;
+nav ul {
+  list-style: none;
+  padding: 0;
 }
 
-.vehicle-info {
-  max-width: 50%;
+nav li {
+  display: inline-block;
+  margin-right: 15px;
 }
 
-@media screen and (max-width: 768px) {
-  .vehicle-detail {
-    flex-direction: column;
-  }
-
-  .vehicle-detail img,
-  .vehicle-info {
-    max-width: 100%;
-  }
+nav a {
+  text-decoration: none;
+  color: #333;
 }

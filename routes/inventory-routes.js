@@ -1,16 +1,13 @@
 const express = require("express")
-const router = new express.Router()
-const inventoryController = require("../controllers/inventoryController")
+const router = express.Router()
 const utilities = require("../utilities")
 
 router.get(
-  "/type/:classificationId",
-  utilities.handleErrors(inventoryController.buildByClassification)
-)
-
-router.get(
-  "/detail/:invId",
-  utilities.handleErrors(inventoryController.buildDetail)
+  "/",
+  utilities.handleErrors(async (req, res) => {
+    const nav = await utilities.getNav()
+    res.render("index", { title: "Inventory Page", nav })
+  })
 )
 
 module.exports = router

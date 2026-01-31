@@ -1,11 +1,16 @@
 const express = require("express")
-const router = new express.Router()
+const router = express.Router()
 const utilities = require("../utilities")
 
 router.get(
-  "/trigger-error",
+  "*",
   utilities.handleErrors(async (req, res) => {
-    throw new Error("Intentional Server Error")
+    const nav = await utilities.getNav()
+    res.status(404).render("errors/error", {
+      title: "404 Not Found",
+      nav,
+      message: "Sorry, the page you requested does not exist.",
+    })
   })
 )
 

@@ -1,6 +1,10 @@
-/* *****************************
- *  Build vehicle detail HTML
- * ***************************** */
+// utilities/index.js
+const handleErrors = require("./handleErrors")
+
+function buildVehicleDetailHtml(vehicle) {
+  // ... your existing buildVehicleDetailHtml code
+}
+
 function buildVehicleDetail(vehicle) {
   const price = vehicle.inv_price.toLocaleString("en-US", {
     style: "currency",
@@ -23,4 +27,8 @@ function buildVehicleDetail(vehicle) {
   `
 }
 
-module.exports.buildVehicleDetail = buildVehicleDetail
+module.exports = {
+  buildVehicleDetailHtml,
+  buildVehicleDetail,
+  handleErrors, // ✅ important!
+}
