@@ -1,8 +1,12 @@
 const express = require("express")
-const router = express.Router()
+const router = new express.Router()
+const utilities = require("../utilities")
 
-router.get("/", (req, res) => {
-  res.render("index", { title: "Home Page" })
-})
+router.get(
+  "/trigger-error",
+  utilities.handleErrors(async (req, res) => {
+    throw new Error("Intentional Server Error")
+  })
+)
 
 module.exports = router

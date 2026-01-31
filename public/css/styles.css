@@ -1,26 +1,25 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-}
-
 .vehicle-detail {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
 }
 
-.vehicle-img {
-    max-width: 400px;
-    width: 100%;
-    height: auto;
+.vehicle-detail img {
+  max-width: 50%;
+  height: auto;
 }
 
 .vehicle-info {
-    flex: 1;
+  max-width: 50%;
 }
 
-@media (max-width: 768px) {
-    .vehicle-detail {
-        flex-direction: column;
-    }
+@media screen and (max-width: 768px) {
+  .vehicle-detail {
+    flex-direction: column;
+  }
+
+  .vehicle-detail img,
+  .vehicle-info {
+    max-width: 100%;
+  }
 }

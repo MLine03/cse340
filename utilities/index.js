@@ -1,26 +1,26 @@
-// utilities/index.js
-function buildVehicleDetailHtml(vehicle) {
-    // Format price and mileage
-    const price = vehicle.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    const mileage = vehicle.miles.toLocaleString();
+/* *****************************
+ *  Build vehicle detail HTML
+ * ***************************** */
+function buildVehicleDetail(vehicle) {
+  const price = vehicle.inv_price.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  })
 
-    return `
-        <div class="vehicle-detail-container">
-            <div class="vehicle-image">
-                <img src="${vehicle.image}" alt="${vehicle.make} ${vehicle.model}">
-            </div>
-            <div class="vehicle-info">
-                <h2>${vehicle.year} ${vehicle.make} ${vehicle.model}</h2>
-                <p><strong>Price:</strong> ${price}</p>
-                <p><strong>Mileage:</strong> ${mileage} miles</p>
-                <p><strong>Description:</strong> ${vehicle.description}</p>
-                <p><strong>Color:</strong> ${vehicle.color}</p>
-                <p><strong>Stock Number:</strong> ${vehicle.inv_id}</p>
-            </div>
-        </div>
-    `;
+  const mileage = vehicle.inv_miles.toLocaleString("en-US")
+
+  return `
+  <section class="vehicle-detail">
+    <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
+    <div class="vehicle-info">
+      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+      <p><strong>Price:</strong> ${price}</p>
+      <p><strong>Mileage:</strong> ${mileage} miles</p>
+      <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+    </div>
+  </section>
+  `
 }
 
-module.exports = {
-    buildVehicleDetailHtml,
-};
+module.exports.buildVehicleDetail = buildVehicleDetail

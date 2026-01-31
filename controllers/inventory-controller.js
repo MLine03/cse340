@@ -1,34 +1,39 @@
-// controllers/inventory-controller.js
-const inventoryModel = require('../models/inventory-model');
-const utilities = require('../utilities/index');
+const invModel = require("../models/inventory-model")
+const utilities = require("../utilities")
 
-// Classification page
-async function classificationPage(req, res, next) {
-    const classificationId = req.params.id;
-    try {
-        const vehicles = await inventoryModel.getVehiclesByClassification(classificationId);
-        res.render('inventory/classification', { title: 'Vehicles by Classification', vehicles });
-    } catch (err) {
-        next(err); // send to 500 error handler
-    }
+/* *****************************
+ *  Build inventory by classification view
+ * ***************************** */
+async function buildByClassification(req, res, next) {
+  const classification_id = req.params.classificationId
+  const data = await invModel.getInventoryByClassificationId(classification_id)
+  const grid = await utilities.buildClassificationGrid(data)
+  const nav = await utilities.getNav()
+
+  res.render("inventory/classification", {
+    title: data[0].classification_name,
+    nav,
+    grid,
+  })
 }
 
-// Vehicle detail page
-async function vehicleDetail(req, res, next) {
-    const vehicleId = req.params.id;
-    try {
-        const vehicle = await inventoryModel.getVehicleById(vehicleId);
-        if (!vehicle) {
-            return res.status(404).render('error', { title: '404', message: 'Vehicle Not Found' });
-        }
-        const vehicleHtml = utilities.buildVehicleDetailHtml(vehicle);
-        res.render('inventory/vehicle-detail', { title: `${vehicle.make} ${vehicle.model}`, vehicleHtml });
-    } catch (err) {
-        next(err); // send to 500 error handler
-    }
+/* *****************************
+ *  Build inventory detail view
+ * ***************************** */
+async function buildDetail(req, res, next) {
+  const inv_id = req.params.invId
+  const vehicle = await invModel.getInventoryById(inv_id)
+  const nav = await utilities.getNav()
+  const detailHTML = await utilities.buildVehicleDetail(vehicle)
+
+  res.render("inventory/detail", {
+    title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+    nav,
+    detailHTML,
+  })
 }
 
 module.exports = {
-    classificationPage,
-    vehicleDetail,
-};
+  buildByClassification,
+  buildDetail,
+}

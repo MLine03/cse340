@@ -1,29 +1,38 @@
-// models/inventory-model.js
-const pool = require('../database/connection'); // your DB connection
+const pool = require("../database/")
 
-// Get all vehicles for a classification
-async function getVehiclesByClassification(classificationId) {
-    try {
-        const sql = 'SELECT * FROM inventory WHERE classification_id = $1';
-        const result = await pool.query(sql, [classificationId]);
-        return result.rows;
-    } catch (err) {
-        throw new Error(err.message);
-    }
+/* *****************************
+ *  Get inventory by classification id
+ * ***************************** */
+async function getInventoryByClassificationId(classification_id) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM inventory
+       WHERE classification_id = $1`,
+      [classification_id]
+    )
+    return data.rows
+  } catch (error) {
+    throw error
+  }
 }
 
-// Get a single vehicle by ID
-async function getVehicleById(vehicleId) {
-    try {
-        const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
-        const result = await pool.query(sql, [vehicleId]);
-        return result.rows[0]; // only one vehicle
-    } catch (err) {
-        throw new Error(err.message);
-    }
+/* *****************************
+ *  Get inventory item by inventory id
+ * ***************************** */
+async function getInventoryById(inv_id) {
+  try {
+    const data = await pool.query(
+      `SELECT * FROM inventory
+       WHERE inv_id = $1`,
+      [inv_id]
+    )
+    return data.rows[0]
+  } catch (error) {
+    throw error
+  }
 }
 
 module.exports = {
-    getVehiclesByClassification,
-    getVehicleById,
-};
+  getInventoryByClassificationId,
+  getInventoryById
+}
