@@ -1,34 +1,39 @@
-// utilities/index.js
-const handleErrors = require("./handleErrors")
+function handleErrors(fn) {
+  return (req, res, next) =>
+    Promise.resolve(fn(req, res, next)).catch(next)
+}
 
-function buildVehicleDetailHtml(vehicle) {
-  // ... your existing buildVehicleDetailHtml code
+function buildClassificationGrid(data) {
+  let grid = '<ul class="inv-grid">'
+  data.forEach(vehicle => {
+    grid += `
+      <li>
+        <a href="/inventory/detail/${vehicle.inv_id}">
+          <img src="${vehicle.inv_thumbnail}" alt="${vehicle.inv_make}">
+          <h3>${vehicle.inv_make} ${vehicle.inv_model}</h3>
+        </a>
+      </li>`
+  })
+  grid += "</ul>"
+  return grid
 }
 
 function buildVehicleDetail(vehicle) {
-  const price = vehicle.inv_price.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  })
-
-  const mileage = vehicle.inv_miles.toLocaleString("en-US")
-
   return `
-  <section class="vehicle-detail">
-    <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
-    <div class="vehicle-info">
-      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-      <p><strong>Price:</strong> ${price}</p>
-      <p><strong>Mileage:</strong> ${mileage} miles</p>
-      <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-    </div>
-  </section>
+    <section class="vehicle-detail">
+      <img src="${vehicle.inv_image}" alt="${vehicle.inv_make}">
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p><strong>Price:</strong> $${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</p>
+        <p><strong>Mileage:</strong> ${new Intl.NumberFormat("en-US").format(vehicle.inv_miles)} miles</p>
+        <p>${vehicle.inv_description}</p>
+      </div>
+    </section>
   `
 }
 
 module.exports = {
-  buildVehicleDetailHtml,
+  handleErrors,
+  buildClassificationGrid,
   buildVehicleDetail,
-  handleErrors, // ✅ important!
 }

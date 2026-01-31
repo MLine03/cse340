@@ -5,8 +5,17 @@ const utilities = require("../utilities")
 router.get(
   "/",
   utilities.handleErrors(async (req, res) => {
-    const nav = await utilities.getNav()
-    res.render("index", { title: "Account Page", nav })
+    res.render("index", {
+      title: "Account Page",
+    })
+  })
+)
+
+router.post(
+  "/login",
+  utilities.handleErrors(async (req, res) => {
+    req.flash("success", "Logged in successfully!")
+    res.redirect("/")
   })
 )
 

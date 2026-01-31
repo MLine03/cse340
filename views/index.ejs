@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <nav>
-    <%= nav %>
-  </nav>
+
+  <%- include("partials/nav") %>
+
+  <% if (success.length) { %>
+    <div class="flash success"><%= success %></div>
+  <% } %>
+
+  <% if (error.length) { %>
+    <div class="flash error"><%= error %></div>
+  <% } %>
+
   <h1><%= title %></h1>
+  <p>Welcome to the site.</p>
+
 </body>
 </html>
