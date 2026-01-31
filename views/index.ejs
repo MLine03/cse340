@@ -1,23 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
+<html lang="en">
+  <head>
+    <%- include("partials/head") %>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include("partials/navigation") %>
 
-  <%- include("partials/nav") %>
+    <% if (success && success.length) { %>
+      <div class="flash success"><%= success %></div>
+    <% } %>
 
-  <% if (success.length) { %>
-    <div class="flash success"><%= success %></div>
-  <% } %>
-
-  <% if (error.length) { %>
-    <div class="flash error"><%= error %></div>
-  <% } %>
-
-  <h1><%= title %></h1>
-  <p>Welcome to the site.</p>
-
-</body>
+    <h1>Welcome to Vehicle Inventory</h1>
+  </body>
+  <%- include("partials/footer") %>
 </html>

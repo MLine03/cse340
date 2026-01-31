@@ -9,81 +9,61 @@ const utilities = require("./utilities")
 // Routes
 const accountRoute = require("./routes/accountRoute")
 const inventoryRoute = require("./routes/inventory-routes")
+const errorRoute = require("./routes/errorRoute")
 
 const app = express()
 
-/* ─────────────────────────────
- * Middleware
- * ───────────────────────────── */
+/* Middleware */
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, "public")))
 
-/* ─────────────────────────────
- * Session & Flash
- * ───────────────────────────── */
 app.use(
   session({
     secret: "secret-key",
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
   })
 )
-
 app.use(flash())
 
-/* Make nav + flash available globally */
-app.use(async (req, res, next) => {
-  res.locals.nav = await utilities.getNav()
-  res.locals.success = req.flash("success")
-  res.locals.error = req.flash("error")
-  next()
-})
-
-/* ─────────────────────────────
- * View Engine
- * ───────────────────────────── */
+/* View Engine */
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
-/* ─────────────────────────────
- * Routes
- * ───────────────────────────── */
+/* Routes */
+app.use("/account", accountRoute)
+app.use("/inventory", inventoryRoute)
+app.use("/", errorRoute)
+
+/* Home Route */
 app.get(
   "/",
   utilities.handleErrors(async (req, res) => {
-    res.render("index", { title: "Home" })
+    const nav = await utilities.getNav()
+    const success = req.flash("success")
+    res.render("index", { title: "Home", nav, success })
   })
 )
 
-app.use("/account", accountRoute)
-app.use("/inventory", inventoryRoute)
-
-/* ─────────────────────────────
- * 404 Handler
- * ───────────────────────────── */
+/* 404 handler */
 app.use((req, res) => {
-  res.status(404).render("errors/404", {
-    title: "Page Not Found",
-  })
+  res.status(404).render("errors/404", { title: "Page Not Found" })
 })
 
-/* ─────────────────────────────
- * Global Error Handler
- * ───────────────────────────── */
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(err.status || 500).render("errors/error", {
-    title: err.status || "Server Error",
-    message: err.message || "Something went wrong",
+/* Global Error Handler */
+app.use(
+  utilities.handleErrors(async (err, req, res, next) => {
+    console.error(err.stack)
+    const nav = await utilities.getNav()
+    res.status(err.status || 500).render("errors/error", {
+      title: err.status || "Server Error",
+      nav,
+      message: err.message,
+    })
   })
-})
+)
 
-/* ─────────────────────────────
- * Start Server
- * ───────────────────────────── */
+/* Start Server */
 const PORT = process.env.PORT || 5500
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
-en(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

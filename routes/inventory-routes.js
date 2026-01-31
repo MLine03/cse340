@@ -1,16 +1,23 @@
 const express = require("express")
 const router = express.Router()
+const inventoryController = require("../controllers/inventory-controller")
 const utilities = require("../utilities")
-const invController = require("../controllers/inventoryController")
 
+// Classification page
 router.get(
-  "/type/:classificationId",
-  utilities.handleErrors(invController.buildByClassification)
+  "/type/:typeId",
+  utilities.handleErrors(inventoryController.buildByClassification)
 )
 
+// Vehicle detail page
 router.get(
   "/detail/:invId",
-  utilities.handleErrors(invController.buildVehicleDetail)
+  utilities.handleErrors(inventoryController.buildVehicleDetail)
 )
+
+// Test error
+router.get("/error-test", (req, res) => {
+  throw new Error("This is a test error")
+})
 
 module.exports = router
