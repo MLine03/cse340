@@ -27,6 +27,12 @@ app.use(
 )
 app.use(flash())
 
+// Make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success")
+  next()
+})
+
 /* View Engine */
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
@@ -41,8 +47,7 @@ app.get(
   "/",
   utilities.handleErrors(async (req, res) => {
     const nav = await utilities.getNav()
-    const success = req.flash("success")
-    res.render("index", { title: "Home", nav, success })
+    res.render("index", { title: "Home", nav })
   })
 )
 

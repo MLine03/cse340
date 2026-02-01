@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include("partials/head") %>
-    <title><%= title %></title>
-  </head>
-  <body>
-    <%- include("partials/navigation") %>
+<head>
+  <%- include("partials/head") %>
+  <title><%= title %></title>
+</head>
+<body>
+  <%- include("partials/navigation") %>
 
-    <% if (success && success.length) { %>
-      <div class="flash success"><%= success %></div>
-    <% } %>
+  <h1>Welcome to CSE340 Vehicle Management</h1>
 
-    <h1>Welcome to Vehicle Inventory</h1>
-  </body>
-  <%- include("partials/footer") %>
+  <% if (success.length > 0) { %>
+    <p class="flash-message"><%= success[0] %></p>
+  <% } %>
+</body>
 </html>

@@ -1,19 +1,33 @@
-// Error handler wrapper
+const inventoryModel = require("./models/inventory-model")
+
 function handleErrors(fn) {
-  return function (req, res, next) {
-    return Promise.resolve(fn(req, res, next)).catch(next)
+  return async (req, res, next) => {
+    try {
+      await fn(req, res, next)
+    } catch (err) {
+      next(err)
+    }
   }
 }
 
-// Navigation builder
+// Build navigation dynamically
 async function getNav() {
+  const classifications = await inventoryModel.getClassifications()
+  return classifications
+    .map(
+      (c) => `<li><a href="/inventory/type/${c.classification_id}">${c.classification_name}</a></li>`
+    )
+    .join("")
+}
+
+// Build vehicle detail HTML
+function buildVehicleDetail(vehicle) {
   return `
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/account">Account</a></li>
-      <li><a href="/inventory">Inventory</a></li>
-    </ul>
+    <p>Make: ${vehicle.inv_make}</p>
+    <p>Model: ${vehicle.inv_model}</p>
+    <p>Year: ${vehicle.inv_year}</p>
+    <p>Price: $${vehicle.inv_price}</p>
   `
 }
 
-module.exports = { handleErrors, getNav }
+module.exports = { handleErrors, getNav, buildVehicleDetail }

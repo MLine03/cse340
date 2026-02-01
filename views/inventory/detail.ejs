@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-</head>
-<body>
+<html lang="en">
+  <head>
+    <%- include("../partials/head") %>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <%- include("../partials/navigation") %>
 
-  <%- include("/partials/nav") %>
+    <h1><%= title %></h1>
+    <%- detailHTML %>
 
-  <%- detailHTML %>
-
-</body>
+    <%- include("../partials/footer") %>
+  </body>
 </html>

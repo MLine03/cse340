@@ -1,8 +1,8 @@
-const pool = require("../database")
+const pool = require("../database/index")
 
-async function getVehiclesByClassification(typeId) {
+async function getVehiclesByClassification(classificationId) {
   const sql = "SELECT * FROM inventory WHERE classification_id = $1"
-  const values = [typeId]
+  const values = [classificationId]
   const result = await pool.query(sql, values)
   return result.rows
 }
@@ -14,4 +14,10 @@ async function getVehicleById(invId) {
   return result.rows[0]
 }
 
-module.exports = { getVehiclesByClassification, getVehicleById }
+async function getClassifications() {
+  const sql = "SELECT * FROM car_classifications ORDER BY classification_name"
+  const result = await pool.query(sql)
+  return result.rows
+}
+
+module.exports = { getVehiclesByClassification, getVehicleById, getClassifications }
