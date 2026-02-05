@@ -1,12 +1,23 @@
 const express = require("express");
 const router = express.Router();
+const inventoryController = require("../controllers/inventoryController");
 const utilities = require("../utilities");
-const invController = require("../controllers/inventoryController");
 
-// Example route using handleErrors
-router.get("/delete/:inv_id", utilities.handleErrors(invController.buildDeleteConfirm));
+// Management view
+router.get("/", inventoryController.buildManagement);
 
-// Another example
-router.post("/update/:inv_id", utilities.handleErrors(invController.updateInventory));
+// Add Classification
+router.get("/add-classification", inventoryController.buildAddClassification);
+router.post(
+  "/add-classification",
+  utilities.handleErrors(inventoryController.addClassification)
+);
+
+// Add Vehicle
+router.get("/add-vehicle", inventoryController.buildAddVehicle);
+router.post(
+  "/add-vehicle",
+  utilities.handleErrors(inventoryController.addVehicle)
+);
 
 module.exports = router;

@@ -6,10 +6,8 @@
   <body>
     <%- include("partials/navigation") %>
 
-    <main>
-      <h1>Welcome to CSE340 Vehicle Management</h1>
-      <p>This is the home page.</p>
-    </main>
+    <h1><%= title %></h1>
+    <p><%= message || "An unexpected error occurred." %></p>
 
     <%- include("partials/footer") %>
   </body>

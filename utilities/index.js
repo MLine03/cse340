@@ -1,30 +1,34 @@
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+const invModel = require("../models/inventory-model");
 
-const Util = {}
-
-/* ****************************************
- * Middleware to check token validity
- **************************************** */
-Util.checkJWTToken = (req, res, next) => {
-  if (req.cookies && req.cookies.jwt) {
-    jwt.verify(
-      req.cookies.jwt,
-      process.env.ACCESS_TOKEN_SECRET,
-      function (err, accountData) {
-        if (err) {
-          req.flash("notice", "Please log in.")
-          res.clearCookie("jwt")
-          return res.redirect("/account/login")
-        }
-        res.locals.accountData = accountData
-        res.locals.loggedin = 1
-        next()
-      }
-    )
-  } else {
-    next()
-  }
+async function buildClassificationList(selectedId = null) {
+  const data = await invModel.getClassifications();
+  let list = '<select name="classification_id" id="classificationList" required>';
+  list += '<option value="">Choose a Classification</option>';
+  data.forEach(row => {
+    list += `<option value="${row.classification_id}"${row.classification_id == selectedId ? " selected" : ""}>${row.classification_name}</option>`;
+  });
+  list += '</select>';
+  return list;
 }
 
-module.exports = Util
+async function getNav() {
+  const data = await invModel.getClassifications();
+  let nav = '<ul>';
+  data.forEach(row => {
+    nav += `<li><a href="/inv/type/${row.classification_id}">${row.classification_name}</a></li>`;
+  });
+  nav += '</ul>';
+  return nav;
+}
+
+function handleErrors(fn) {
+  return (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
+
+module.exports = {
+  buildClassificationList,
+  getNav,
+  handleErrors,
+};

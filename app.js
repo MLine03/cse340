@@ -3,13 +3,13 @@ const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
 const cookieParser = require("cookie-parser");
-const utilities = require("./utilities/getNav"); // simplified nav helper
+const utilities = require("./utilities/getNav");
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static("public"));
+app.use(express.static("public")); // <-- important!
 
 // View engine
 app.set("view engine", "ejs");
@@ -22,7 +22,7 @@ app.use("/account", accountRouter);
 app.get("/", (req, res) => {
   res.render("index", { 
     title: "Home", 
-    nav: utilities.getNav(), 
+    nav: utilities.getNav(),
     success: [],
     error: []
   });
@@ -34,7 +34,8 @@ app.use((req, res) => {
     title: "404 - Page Not Found", 
     nav: utilities.getNav(),
     success: [],
-    error: []
+    error: [],
+    message: "Sorry, the page you requested could not be found."
   });
 });
 

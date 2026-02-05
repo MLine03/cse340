@@ -1,8 +1,5 @@
 <nav>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/inventory/type/1">Cars</a></li>
-    <li><a href="/inventory/type/2">Trucks</a></li>
-    <li><a href="/account">Account</a></li>
-  </ul>
+  <% nav.forEach(item => { %>
+    <a href="<%= item.link %>"><%= item.name %></a>
+  <% }) %>
 </nav>
