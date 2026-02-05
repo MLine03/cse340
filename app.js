@@ -1,74 +1,43 @@
-const express = require("express")
-const path = require("path")
-const bodyParser = require("body-parser")
-const session = require("express-session")
-const flash = require("connect-flash")
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+dotenv.config();
+const cookieParser = require("cookie-parser");
+const utilities = require("./utilities/getNav"); // simplified nav helper
 
-const utilities = require("./utilities")
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static("public"));
+
+// View engine
+app.set("view engine", "ejs");
 
 // Routes
-const accountRoute = require("./routes/accountRoute")
-const inventoryRoute = require("./routes/inventory-routes")
-const errorRoute = require("./routes/errorRoute")
+const accountRouter = require("./routes/accountRoute");
+app.use("/account", accountRouter);
 
-const app = express()
+// Home route
+app.get("/", (req, res) => {
+  res.render("index", { 
+    title: "Home", 
+    nav: utilities.getNav(), 
+    success: [],
+    error: []
+  });
+});
 
-/* Middleware */
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, "public")))
-
-app.use(
-  session({
-    secret: "secret-key",
-    resave: false,
-    saveUninitialized: true,
-  })
-)
-app.use(flash())
-
-// Make flash messages available in all views
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success")
-  next()
-})
-
-/* View Engine */
-app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
-
-/* Routes */
-app.use("/account", accountRoute)
-app.use("/inventory", inventoryRoute)
-app.use("/", errorRoute)
-
-/* Home Route */
-app.get(
-  "/",
-  utilities.handleErrors(async (req, res) => {
-    const nav = await utilities.getNav()
-    res.render("index", { title: "Home", nav })
-  })
-)
-
-/* 404 handler */
+// 404 route
 app.use((req, res) => {
-  res.status(404).render("errors/404", { title: "Page Not Found" })
-})
+  res.status(404).render("error", { 
+    title: "404 - Page Not Found", 
+    nav: utilities.getNav(),
+    success: [],
+    error: []
+  });
+});
 
-/* Global Error Handler */
-app.use(
-  utilities.handleErrors(async (err, req, res, next) => {
-    console.error(err.stack)
-    const nav = await utilities.getNav()
-    res.status(err.status || 500).render("errors/error", {
-      title: err.status || "Server Error",
-      nav,
-      message: err.message,
-    })
-  })
-)
-
-/* Start Server */
-const PORT = process.env.PORT || 5500
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

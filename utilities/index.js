@@ -1,31 +1,30 @@
-async function getNav() {
-  return `
-    <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/inventory/type/1">Cars</a></li>
-      <li><a href="/inventory/type/2">Trucks</a></li>
-      <li><a href="/account">Account</a></li>
-    </ul>
-  `
-}
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
-function handleErrors(handler) {
-  return async (req, res, next) => {
-    try {
-      await handler(req, res, next)
-    } catch (err) {
-      next(err)
-    }
+const Util = {}
+
+/* ****************************************
+ * Middleware to check token validity
+ **************************************** */
+Util.checkJWTToken = (req, res, next) => {
+  if (req.cookies && req.cookies.jwt) {
+    jwt.verify(
+      req.cookies.jwt,
+      process.env.ACCESS_TOKEN_SECRET,
+      function (err, accountData) {
+        if (err) {
+          req.flash("notice", "Please log in.")
+          res.clearCookie("jwt")
+          return res.redirect("/account/login")
+        }
+        res.locals.accountData = accountData
+        res.locals.loggedin = 1
+        next()
+      }
+    )
+  } else {
+    next()
   }
 }
 
-function buildVehicleDetail(vehicle) {
-  return `
-    <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
-    <p>Price: $${Number(vehicle.inv_price).toLocaleString()}</p>
-    <p>Mileage: ${Number(vehicle.inv_miles).toLocaleString()}</p>
-    <p>Description: ${vehicle.inv_description}</p>
-  `
-}
-
-module.exports = { getNav, handleErrors, buildVehicleDetail }
+module.exports = Util

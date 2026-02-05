@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- nav %>
+  <h1>Confirm Deletion</h1>
+  <p>Confirm deletion of the following item. This action cannot be undone.</p>
+
+  <form action="/inv/delete" method="POST">
+    <label>Make:</label>
+    <input type="text" name="make" value="<%= item.make %>" readonly><br>
+
+    <label>Model:</label>
+    <input type="text" name="model" value="<%= item.model %>" readonly><br>
+
+    <label>Year:</label>
+    <input type="text" name="year" value="<%= item.year %>" readonly><br>
+
+    <label>Price:</label>
+    <input type="text" name="price" value="<%= item.price %>" readonly><br>
+
+    <input type="hidden" name="inv_id" value="<%= item.inv_id %>">
+    <input type="submit" value="Delete">
+  </form>
+</body>
+</html>

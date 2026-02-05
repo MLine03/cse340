@@ -2,24 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <%- nav %>
-  <h1>Login</h1>
+  <header>
+    <% nav.forEach(item => { %>
+      <a href="<%= item.link %>"><%= item.name %></a>
+    <% }) %>
+  </header>
 
-  <% if (messages.notice) { %>
-    <div style="color: red;"><%= messages.notice %></div>
-  <% } %>
+  <main>
+    <h1>Login</h1>
 
-  <form id="loginForm" action="/account/login" method="post">
-    <label for="accountEmail">Email</label>
-    <input type="email" name="account_email" id="accountEmail" required>
+    <% if (error.length) { %>
+      <ul style="color:red;">
+        <% error.forEach(msg => { %>
+          <li><%= msg %></li>
+        <% }) %>
+      </ul>
+    <% } %>
 
-    <label for="accountPassword">Password</label>
-    <input type="password" name="account_password" id="accountPassword" required>
+    <form action="/account/login" method="POST">
+      <label>Email: <input type="email" name="account_email" required></label><br>
+      <label>Password: <input type="password" name="account_password" required></label><br>
+      <button type="submit">Login</button>
+    </form>
+  </main>
 
-    <button type="submit">Login</button>
-  </form>
+  <footer>
+    <p>&copy; 2026 CSE Motors</p>
+  </footer>
 </body>
 </html>
