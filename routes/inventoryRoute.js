@@ -1,16 +1,17 @@
 const express = require("express")
 const router = express.Router()
-const invController = require("../controllers/inventoryController")
+const invCont = require("../controllers/inventoryController")
+const utilities = require("../utilities")
 
-// MANAGEMENT VIEW
-router.get("/", invController.buildManagement)
+// Management
+router.get("/", utilities.handleErrors(invCont.buildManagement))
 
-// ADD CLASSIFICATION
-router.get("/add-classification", invController.buildAddClassification)
-router.post("/add-classification", invController.addClassification)
+// Add Classification
+router.get("/add-classification", utilities.handleErrors(invCont.buildAddClassification))
+router.post("/add-classification", invCont.addClassification)
 
-// ADD INVENTORY
-router.get("/add-inventory", invController.buildAddInventory)
-router.post("/add-inventory", invController.addInventory)
+// Add Inventory
+router.get("/add-inventory", utilities.handleErrors(invCont.buildAddInventory))
+router.post("/add-inventory", invCont.addInventory)
 
 module.exports = router

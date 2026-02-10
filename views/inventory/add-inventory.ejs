@@ -1,56 +1,50 @@
-<h1>Add Vehicle</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Add Vehicle</h1>
+  <% if (errors) { %>
+    <ul style="color:red">
+      <% errors.forEach(error => { %>
+        <li><%= error.msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+  <form action="/inv/add-inventory" method="POST">
+    <label>Classification:</label>
+    <%= classificationList %><br>
 
-<% if (messages.notice) { %>
-  <div class="alert alert-warning"><%= messages.notice %></div>
-<% } %>
+    <label>Make:</label>
+    <input type="text" name="inv_make" value="<%= inv_make %>" required><br>
 
-<% if (messages.success) { %>
-  <div class="alert alert-success"><%= messages.success %></div>
-<% } %>
+    <label>Model:</label>
+    <input type="text" name="inv_model" value="<%= inv_model %>" required><br>
 
-<% if (errors) { %>
-  <ul style="color:red;">
-    <% errors.forEach(error => { %>
-      <li><%= error %></li>
-    <% }) %>
-  </ul>
-<% } %>
+    <label>Year:</label>
+    <input type="number" name="inv_year" value="<%= inv_year %>" required><br>
 
-<form action="/inv/add-inventory" method="POST">
-  <label for="classificationList">Classification</label>
-  <%= classificationList %>
+    <label>Price:</label>
+    <input type="number" step="0.01" name="inv_price" value="<%= inv_price %>" required><br>
 
-  <label for="inv_make">Make</label>
-  <input type="text" name="inv_make" id="inv_make" required
-    value="<%= sticky.inv_make ? sticky.inv_make : '' %>">
+    <label>Miles:</label>
+    <input type="number" name="inv_miles" value="<%= inv_miles %>" required><br>
 
-  <label for="inv_model">Model</label>
-  <input type="text" name="inv_model" id="inv_model" required
-    value="<%= sticky.inv_model ? sticky.inv_model : '' %>">
+    <label>Color:</label>
+    <input type="text" name="inv_color" value="<%= inv_color %>" required><br>
 
-  <label for="inv_year">Year</label>
-  <input type="number" name="inv_year" id="inv_year" required
-    value="<%= sticky.inv_year ? sticky.inv_year : '' %>">
+    <label>Description:</label>
+    <textarea name="inv_description"><%= inv_description %></textarea><br>
 
-  <label for="inv_price">Price</label>
-  <input type="number" name="inv_price" id="inv_price" step="0.01" required
-    value="<%= sticky.inv_price ? sticky.inv_price : '' %>">
+    <label>Image Path:</label>
+    <input type="text" name="inv_image" value="<%= inv_image %>"><br>
 
-  <label for="inv_miles">Miles</label>
-  <input type="number" name="inv_miles" id="inv_miles" required
-    value="<%= sticky.inv_miles ? sticky.inv_miles : '' %>">
+    <label>Thumbnail Path:</label>
+    <input type="text" name="inv_thumbnail" value="<%= inv_thumbnail %>"><br>
 
-  <label for="inv_color">Color</label>
-  <input type="text" name="inv_color" id="inv_color" required
-    value="<%= sticky.inv_color ? sticky.inv_color : '' %>">
-
-  <label for="inv_image">Image Path</label>
-  <input type="text" name="inv_image" id="inv_image"
-    value="<%= sticky.inv_image ? sticky.inv_image : '/images/no-image.png' %>">
-
-  <label for="inv_thumbnail">Thumbnail Path</label>
-  <input type="text" name="inv_thumbnail" id="inv_thumbnail"
-    value="<%= sticky.inv_thumbnail ? sticky.inv_thumbnail : '/images/no-image-tn.png' %>">
-
-  <button type="submit">Add Vehicle</button>
-</form>
+    <button type="submit">Add Vehicle</button>
+  </form>
+</body>
+</html>

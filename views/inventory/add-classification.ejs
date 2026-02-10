@@ -1,31 +1,10 @@
 <h1>Add Classification</h1>
 
-<% if (messages.notice) { %>
-  <div class="alert alert-warning"><%= messages.notice %></div>
-<% } %>
-
-<% if (messages.success) { %>
-  <div class="alert alert-success"><%= messages.success %></div>
-<% } %>
-
-<% if (errors) { %>
-  <ul style="color:red;">
-    <% errors.forEach(error => { %>
-      <li><%= error %></li>
-    <% }) %>
-  </ul>
-<% } %>
-
-<form action="/inv/add-classification" method="POST">
-  <label for="classification_name">Classification Name</label>
-  <input
-    type="text"
-    name="classification_name"
-    id="classification_name"
-    value="<%= sticky.classification_name ? sticky.classification_name : '' %>"
-    required
-    pattern="[A-Za-z0-9]+"
-    title="No spaces or special characters"
-  >
-  <button type="submit">Add Classification</button>
+<form method="post">
+  <input name="classification_name" required pattern="[A-Za-z0-9]+">
+  <button>Add</button>
 </form>
+
+<% if (errors) { errors.forEach(e => { %>
+  <p><%= e.msg %></p>
+<% }) } %>

@@ -5,20 +5,13 @@
   <title><%= title %></title>
 </head>
 <body>
-  <nav>
-    <%= nav %>
-  </nav>
-
   <h1>Inventory Management</h1>
-
-  <!-- Flash Messages -->
   <% if (messages.success) { %>
-    <div style="color: green;"><%= messages.success %></div>
+    <p style="color:green"><%= messages.success %></p>
   <% } %>
-  <% if (messages.notice) { %>
-    <div style="color: red;"><%= messages.notice %></div>
+  <% if (messages.error) { %>
+    <p style="color:red"><%= messages.error %></p>
   <% } %>
-
   <ul>
     <li><a href="/inv/add-classification">Add Classification</a></li>
     <li><a href="/inv/add-inventory">Add Vehicle</a></li>
