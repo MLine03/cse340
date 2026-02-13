@@ -20,10 +20,11 @@ app.use(
 )
 app.use(flash())
 
+// Mock login for testing; replace with real login logic
 app.use((req, res, next) => {
   res.locals.notice = req.flash("notice")
-  res.locals.loggedin = true // set to true for testing; replace with real login logic
-  res.locals.accountData = { account_id: 1, account_firstname: "Test", account_lastname: "User" } // mock login
+  res.locals.loggedin = true
+  res.locals.accountData = { account_id: 1, account_firstname: "Test", account_lastname: "User" }
   next()
 })
 
@@ -35,7 +36,7 @@ app.set("views", path.join(__dirname, "views"))
 const reviewRoute = require("./routes/reviewRoute")
 app.use("/reviews", reviewRoute)
 
-// Example vehicle detail route
+// Example vehicle detail page
 const reviewModel = require("./models/review-model")
 app.get("/inventory/detail/:inv_id", async (req, res) => {
   const inv_id = req.params.inv_id
@@ -59,3 +60,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
 })
+

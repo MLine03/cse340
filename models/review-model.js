@@ -6,7 +6,8 @@ async function addReview(review_text, review_rating, inv_id, account_id) {
     const sql = `
       INSERT INTO review (review_text, review_rating, inv_id, account_id)
       VALUES ($1, $2, $3, $4)
-      RETURNING *`
+      RETURNING *
+    `
     const result = await pool.query(sql, [review_text, review_rating, inv_id, account_id])
     return result.rows[0]
   } catch (error) {

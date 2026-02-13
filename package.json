@@ -1,7 +1,7 @@
 {
   "name": "cse340",
   "version": "1.0.0",
-  "description": "CSE 340 Web Backend Development Project",
+  "description": "CSE 340 Web Backend Project with Review Enhancement",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
