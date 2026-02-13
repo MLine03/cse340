@@ -1,0 +1,28 @@
+<h2>Reviews</h2>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>User</th>
+    <th>Item</th>
+    <th>Rating</th>
+    <th>Comment</th>
+  </tr>
+  <% reviews.forEach(r => { %>
+    <tr>
+      <td><%= r.review_id %></td>
+      <td><%= r.username %></td>
+      <td><%= r.item_name %></td>
+      <td><%= r.rating %></td>
+      <td><%= r.comment %></td>
+    </tr>
+  <% }) %>
+</table>
+
+<h3>Add a Review</h3>
+<form method="POST" action="/reviews/add">
+  <input type="number" name="account_id" placeholder="Account ID" required>
+  <input type="number" name="item_id" placeholder="Item ID" required>
+  <input type="number" name="rating" placeholder="Rating (1-5)" min="1" max="5" required>
+  <textarea name="comment" placeholder="Comment"></textarea>
+  <button type="submit">Submit</button>
+</form>

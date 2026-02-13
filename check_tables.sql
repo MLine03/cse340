@@ -1,0 +1,1 @@
+-- List all tables\dt-- Show all rows from accountSELECT * FROM account;-- Show all rows from inventorySELECT * FROM inventory;-- Show all rows from reviewSELECT * FROM review;

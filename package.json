@@ -1,21 +1,23 @@
 {
   "name": "cse340",
   "version": "1.0.0",
-  "description": "CSE340 Vehicle Management app",
+  "description": "CSE 340 Web Backend Development Project",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
     "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.4",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.22.1",
-    "express-session": "^1.19.0",
-    "express-validator": "^7.3.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.18.0"
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

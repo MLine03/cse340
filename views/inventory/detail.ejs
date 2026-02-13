@@ -1,15 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <%- include("../partials/head") %>
-    <title><%= title %></title>
-  </head>
-  <body>
-    <%- include("../partials/navigation") %>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+<h1><%= vehicle.inv_make %> <%= vehicle.inv_model %></h1>
 
-    <h1><%= title %></h1>
-    <%- detailHTML %>
+<% if (notice) { %>
+  <p style="color: red;"><%= notice %></p>
+<% } %>
 
-    <%- include("../partials/footer") %>
-  </body>
+<h2>Reviews</h2>
+
+<% if (reviews.length > 0) { %>
+  <% reviews.forEach(review => { %>
+    <div class="review-box">
+      <strong><%= review.account_firstname %> <%= review.account_lastname %></strong>
+      <p>Rating: ⭐ <%= review.review_rating %>/5</p>
+      <p><%= review.review_text %></p>
+      <hr>
+    </div>
+  <% }) %>
+<% } else { %>
+  <p>No reviews yet.</p>
+<% } %>
+
+<% if (loggedin) { %>
+  <h3>Add Review</h3>
+  <form action="/reviews/add" method="POST">
+    <input type="hidden" name="inv_id" value="<%= vehicle.inv_id %>">
+
+    <label>Rating (1–5)</label>
+    <input type="number" name="review_rating" min="1" max="5" required>
+
+    <label>Review</label>
+    <textarea name="review_text" minlength="10" required></textarea>
+
+    <button type="submit">Submit Review</button>
+  </form>
+<% } else { %>
+  <p>You must be logged in to leave a review.</p>
+<% } %>
+
+</body>
 </html>
