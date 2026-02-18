@@ -1,8 +1,10 @@
-let classifications = []
-let inventoryItems = []
-
 exports.showInventory = (req, res) => {
-  res.render("inventory", { title: "Inventory", message: "", classifications, inventoryItems })
+  res.render("inventory", { title: "Inventory", message: "" })
+}
+
+exports.getInventoryDetail = (req, res) => {
+  const id = req.params.id
+  res.send(`Details for inventory item ${id}`)
 }
 
 exports.showAddClassification = (req, res) => {
@@ -10,24 +12,5 @@ exports.showAddClassification = (req, res) => {
 }
 
 exports.showAddInventory = (req, res) => {
-  res.render("add-inventory", { title: "Add Inventory", classifications })
-}
-
-// POST handlers
-exports.addClassification = (req, res) => {
-  const { classification } = req.body
-  if (classification) {
-    classifications.push(classification)
-    req.flash("message", `Classification "${classification}" added!`)
-  }
-  res.redirect("/inv")
-}
-
-exports.addInventory = (req, res) => {
-  const { name, price, classification } = req.body
-  if (name && price && classification) {
-    inventoryItems.push({ name, price, classification })
-    req.flash("message", `Inventory item "${name}" added!`)
-  }
-  res.redirect("/inv")
+  res.render("add-inventory", { title: "Add Inventory Item" })
 }

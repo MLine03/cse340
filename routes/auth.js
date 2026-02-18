@@ -1,26 +1,9 @@
-// routes/auth.js
 const express = require("express")
 const router = express.Router()
+const authController = require("../controllers/authController")
 
-// Show login form
-router.get("/login", (req, res) => {
-  res.render("login", { title: "Login" })
-})
-
-// Handle login submission
-router.post("/login", (req, res) => {
-  // For demo purposes, login always succeeds
-  req.session.loggedIn = true
-  req.flash("message", "You are now logged in!")
-  res.redirect("/")
-})
-
-// Logout
-router.get("/logout", (req, res) => {
-  req.session.destroy(err => {
-    if (err) console.log(err)
-    res.redirect("/")
-  })
-})
+router.get("/login", authController.showLogin)
+router.post("/login", authController.login)
+router.get("/logout", authController.logout)
 
 module.exports = router
