@@ -1,66 +1,49 @@
-const express = require("express")
-const session = require("express-session")
-const flash = require("connect-flash")
-const path = require("path")
-require("dotenv").config()
+// app.js
+const express = require("express");
+const session = require("express-session");
+const flash = require("connect-flash");
+const expressLayouts = require("express-ejs-layouts");
+const path = require("path");
 
-const app = express()
-const PORT = process.env.PORT || 3000
+// Import routes
+const inventoryRoutes = require("./routes/inventoryRoute");
+
+const app = express();
 
 // Middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(express.static("public"))
-app.use(
-  session({
-    secret: "superSecret",
-    resave: false,
-    saveUninitialized: true,
-  })
-)
-app.use(flash())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Mock login for testing
+// Session & flash
+app.use(session({
+  secret: "someSecret",
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash());
+
+// Static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// EJS & Layouts
+app.use(expressLayouts);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.set("layout", "layouts/main"); // default layout file: views/layouts/main.ejs
+
+// Custom middleware to expose flash messages to views
 app.use((req, res, next) => {
-  res.locals.notice = req.flash("notice")
-  res.locals.message = req.flash("message")
-  res.locals.loggedin = true
-  res.locals.accountData = { account_id: 1, account_firstname: "Test", account_lastname: "User" }
-  next()
-})
-
-// View engine
-app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  next();
+});
 
 // Routes
-const reviewRoute = require("./routes/reviewRoute")
-app.use("/reviews", reviewRoute)
+app.use("/inventory", inventoryRoutes);
 
-const inventoryRouter = require("./routes/inventoryRoute")
-app.use("/inv", inventoryRouter)
-
-// Example vehicle detail page (mock)
-app.get("/inventory/detail/:inv_id", async (req, res) => {
-  const inv_id = req.params.inv_id
-  const vehicle = { inv_id, inv_make: "Toyota", inv_model: "Corolla" } // mock
-  const reviewModel = require("./models/review-model")
-  const reviews = await reviewModel.getReviewsByInvId(inv_id)
-  res.render("inventory/detail", { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicle, reviews })
-})
-
-// Home
+// Optional: root redirect
 app.get("/", (req, res) => {
-  res.send("CSE 340 Server Running")
-})
+  res.redirect("/inventory");
+});
 
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send("Something broke!")
-})
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`)
-})
+module.exports = app;

@@ -1,45 +1,9 @@
-const express = require("express")
-const session = require("express-session")
-const flash = require("connect-flash")
-const inventoryRoute = require("./routes/inventoryRoute")
+// server.js
+require("dotenv").config();
+const app = require("./app");
 
-const app = express()
+const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-app.use(session({
-  secret: "superSecretKey",
-  resave: false,
-  saveUninitialized: true
-}))
-app.use(flash())
-
-// Static files
-app.use(express.static("public"))
-
-// View engine
-app.set("view engine", "ejs")
-app.set("views", __dirname + "/views")
-
-// Routes
-app.use("/inv", inventoryRoute)
-
-// Default route
-app.get("/", (req, res) => {
-  res.send("Welcome to Jones Surf Shop Inventory Management")
-})
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).render("errors/404")
-})
-
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).render("errors/500", { error: err })
-})
-
-const port = process.env.PORT || 3000
-app.listen(port, () => console.log(`Server running on port ${port}`))
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
