@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Add Inventory</title>
-</head>
-<body>
-  <h1>Add Inventory Item</h1>
-  <% if (messages.error.length > 0) { %>
-    <p style="color:red"><%= messages.error %></p>
-  <% } %>
-  <form action="/inventory/add-inventory" method="POST">
-    <label>Name: <input type="text" name="name"></label><br>
-    <label>Price: <input type="text" name="price"></label><br>
-    <button type="submit">Add Item</button>
-  </form>
-</body>
-</html>
+<form action="/inv/add-inventory" method="POST">
+  <label>Vehicle Name: <input type="text" name="name"></label><br>
+  <label>Price: <input type="number" name="price"></label><br>
+  <label>Classification:
+    <select name="classification">
+      <% classifications.forEach(cls => { %>
+        <option value="<%= cls %>"><%= cls %></option>
+      <% }) %>
+    </select>
+  </label><br>
+  <button type="submit">Add</button>
+</form>

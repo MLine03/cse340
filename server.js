@@ -1,58 +1,66 @@
 // server.js
-const express = require("express");
-const session = require("express-session");
-const flash = require("connect-flash");
-const path = require("path");
-const inventoryRouter = require("./routes/inventoryRoute"); // inventory routes
+const express = require("express")
+const session = require("express-session")
+const flash = require("connect-flash")
+const path = require("path")
 
-require("dotenv").config();
+// Routers
+const authRouter = require("./routes/auth")
+const inventoryRouter = require("./routes/inventory")
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const app = express()
+const PORT = process.env.PORT || 10000
 
-// Set up EJS as the view engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+// Set view engine
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
+// Static files
+app.use(express.static(path.join(__dirname, "public")))
 
-// Sessions and flash messages
+// Middleware to parse POST data
+app.use(express.urlencoded({ extended: true }))
+
+// Session & flash
 app.use(
   session({
-    secret: "secret-key", // in production, use a strong secret from .env
+    secret: "supersecretkey", // change this to a secure key
     resave: false,
     saveUninitialized: true,
+    cookie: { maxAge: 60000 * 60 } // 1 hour
   })
-);
-app.use(flash());
+)
+app.use(flash())
 
-// Middleware to make flash messages and nav available in all views
+// Middleware to inject nav and flash messages into templates
 app.use((req, res, next) => {
-  res.locals.messages = req.flash();
   res.locals.nav = [
     { name: "Home", link: "/" },
-    { name: "Inventory", link: "/inventory" },
-    { name: "Add Vehicle", link: "/inventory/add-inventory" },
-    { name: "Add Classification", link: "/inventory/add-classification" },
-  ];
-  next();
-});
+    { name: "Inventory", link: "/inv" }
+  ]
+
+  if (req.session.loggedIn) {
+    res.locals.nav.push(
+      { name: "Add Classification", link: "/inv/add-classification" },
+      { name: "Add Inventory", link: "/inv/add-inventory" },
+      { name: "Logout", link: "/auth/logout" }
+    )
+  } else {
+    res.locals.nav.push({ name: "Login", link: "/auth/login" })
+  }
+
+  res.locals.message = req.flash("message") || ""
+  next()
+})
 
 // Routes
 app.get("/", (req, res) => {
-  res.render("index", { title: "CSE Motors | Home" });
-});
-
-app.use("/inventory", inventoryRouter);
-
-// Catch-all for 404
-app.use((req, res) => {
-  res.status(404).render("404", { title: "Page Not Found" });
-});
+  res.render("index", { title: "Home" })
+})
+app.use("/auth", authRouter)
+app.use("/inv", inventoryRouter)
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  console.log(`Server running on port ${PORT}`)
+})

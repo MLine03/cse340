@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <%- include("partials/head") %>
   <title>Add Classification</title>
 </head>
 <body>
-  <h1>Add Classification</h1>
-  <% if (messages.error.length > 0) { %>
-    <p style="color:red"><%= messages.error %></p>
-  <% } %>
-  <form action="/inventory/add-classification" method="POST">
-    <label>Classification Name: <input type="text" name="name"></label><br>
-    <button type="submit">Add Classification</button>
-  </form>
+  <%- include("partials/header") %>
+  <%- include("partials/navigation") %>
+
+  <main>
+    <h2>Add Classification</h2>
+    <form>
+      <label>Classification Name: <input type="text" name="classification"></label><br>
+      <button type="submit">Add</button>
+    </form>
+  </main>
 </body>
 </html>

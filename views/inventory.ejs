@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= title %></title>
-  <link rel="stylesheet" href="/css/style.css">
+  <%- include("partials/head") %>
+  <title>Inventory</title>
 </head>
 <body>
-  <nav>
-    <%- nav %>
-  </nav>
-  <h1>Inventory Page</h1>
+  <%- include("partials/header") %>
+  <%- include("partials/navigation") %>
+
+  <main>
+    <% if (message.length > 0) { %>
+      <p style="color:green"><%= message %></p>
+    <% } %>
+    <h1>Inventory Management</h1>
+    <ul>
+      <li><a href="/inv/add-classification">Add Classification</a></li>
+      <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
+    </ul>
+  </main>
 </body>
 </html>

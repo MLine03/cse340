@@ -2,64 +2,17 @@
 <html lang="en">
 <head>
   <%- include("partials/head") %>
-  <title>CSE Motors | Home</title>
+  <title>Home</title>
 </head>
 <body>
-
   <%- include("partials/header") %>
   <%- include("partials/navigation") %>
 
-  <main class="home-grid">
-
-    <section class="hero">
-      <h1>CSE Motors</h1>
-      <p class="tagline">Drive Your Dream Today</p>
-      <ul class="features">
-        <li>✔ Powerful Performance</li>
-        <li>✔ Modern Design</li>
-        <li>✔ Advanced Technology</li>
-      </ul>
-      <a href="#" class="cta-button">View Inventory</a>
-    </section>
-
-    <section class="hero-image">
-      <img src="/images/vehicles/delorean.jpg" alt="Featured Vehicle">
-    </section>
-
-    <section class="reviews">
-      <h2>DMC Delorean Reviews</h2>
-      <ul>
-        <li>⭐ “So fast it’s unreal.”</li>
-        <li>⭐ “Looks amazing on the road.”</li>
-        <li>⭐ “Worth every penny.”</li>
-      </ul>
-    </section>
-
-    <section class="upgrades">
-      <h2>Delorean Upgrades</h2>
-      <div class="upgrade-grid">
-        <figure>
-          <img src="/images/upgrades/flux-cap.png" alt="Flux Capacitor">
-          <figcaption>Flux Capacitor</figcaption>
-        </figure>
-        <figure>
-          <img src="/images/upgrades/flame.jpg" alt="Flame Decals">
-          <figcaption>Flame Decals</figcaption>
-        </figure>
-        <figure>
-          <img src="/images/upgrades/bumper.jpg" alt="Bumper">
-          <figcaption>Bumper Upgrade</figcaption>
-        </figure>
-        <figure>
-          <img src="/images/upgrades/hub-cap.jpg" alt="Hub Caps">
-          <figcaption>Hub Caps</figcaption>
-        </figure>
-      </div>
-    </section>
-
+  <main>
+    <% if (message.length > 0) { %>
+      <p style="color:green"><%= message %></p>
+    <% } %>
+    <h2>Welcome to CSE Motors!</h2>
   </main>
-
-  <%- include("partials/footer") %>
-
 </body>
 </html>

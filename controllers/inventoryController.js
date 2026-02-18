@@ -1,29 +1,33 @@
-// controllers/inventoryController.js
+let classifications = []
+let inventoryItems = []
 
-// Fake in-memory data for demo
-let inventory = [
-  { id: 1, name: "Delorean DMC-12", type: "Car", price: "$50,000" },
-  { id: 2, name: "Tesla Model S", type: "Car", price: "$80,000" },
-];
-
-exports.listInventory = (req, res) => {
-  res.render("inventory/management", { title: "Inventory Management", inventory });
-};
-
-exports.getInventoryDetail = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const vehicle = inventory.find((v) => v.id === id);
-  if (!vehicle) {
-    req.flash("error", "Vehicle not found");
-    return res.redirect("/inventory");
-  }
-  res.render("inventory/detail", { title: vehicle.name, vehicle });
-};
-
-exports.showAddInventory = (req, res) => {
-  res.render("inventory/add-inventory", { title: "Add Vehicle" });
-};
+exports.showInventory = (req, res) => {
+  res.render("inventory", { title: "Inventory", message: "", classifications, inventoryItems })
+}
 
 exports.showAddClassification = (req, res) => {
-  res.render("inventory/add-classification", { title: "Add Classification" });
-};
+  res.render("add-classification", { title: "Add Classification" })
+}
+
+exports.showAddInventory = (req, res) => {
+  res.render("add-inventory", { title: "Add Inventory", classifications })
+}
+
+// POST handlers
+exports.addClassification = (req, res) => {
+  const { classification } = req.body
+  if (classification) {
+    classifications.push(classification)
+    req.flash("message", `Classification "${classification}" added!`)
+  }
+  res.redirect("/inv")
+}
+
+exports.addInventory = (req, res) => {
+  const { name, price, classification } = req.body
+  if (name && price && classification) {
+    inventoryItems.push({ name, price, classification })
+    req.flash("message", `Inventory item "${name}" added!`)
+  }
+  res.redirect("/inv")
+}
