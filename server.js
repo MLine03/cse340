@@ -30,10 +30,15 @@ app.get("/", (req, res) => {
   res.send("Welcome to Jones Surf Shop Inventory Management")
 })
 
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render("errors/404")
+})
+
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack)
-  res.status(500).send("Something went wrong!")
+  res.status(500).render("errors/500", { error: err })
 })
 
 const port = process.env.PORT || 3000

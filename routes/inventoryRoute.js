@@ -2,15 +2,11 @@ const express = require("express")
 const router = express.Router()
 const inventoryController = require("../controllers/inventoryController")
 
-// Management view
-router.get("/", inventoryController.showManagement)
+// Example: Inventory detail view
+router.get("/details/:id", inventoryController.getInventoryDetail)
 
-// Classification
-router.get("/add-classification", inventoryController.addClassificationForm)
-router.post("/add-classification", inventoryController.addClassification)
-
-// Inventory
-router.get("/add-inventory", inventoryController.addInventoryForm)
-router.post("/add-inventory", inventoryController.addInventory)
+// Add other inventory routes here
+router.get("/add-classification", inventoryController.showAddClassification)
+router.get("/add-inventory", inventoryController.showAddInventory)
 
 module.exports = router
