@@ -1,27 +1,29 @@
-const inventoryModel = require("../models/inventory-model")
-const utilities = require("../utilities")
-
-// Display details for a single vehicle
-exports.getInventoryDetail = async (req, res, next) => {
-  try {
-    const inventoryId = req.params.id
-    const vehicle = await inventoryModel.getVehicleById(inventoryId)
-    if (!vehicle) {
-      return res.status(404).render("errors/404")
-    }
-    const html = utilities.buildVehicleDetailHTML(vehicle)
-    res.render("inventory/detail", { vehicleHTML: html, vehicle })
-  } catch (err) {
-    next(err)
-  }
+// Show inventory management page
+exports.showInventory = (req, res) => {
+  res.render("inventory/management", { title: "Inventory Management" })
 }
 
-// Show add classification page
+// Inventory detail view
+exports.getInventoryDetail = (req, res) => {
+  const inventoryId = req.params.id
+  // You can fetch from DB here. For now, send dummy data
+  res.render("inventory/details", {
+    title: "Inventory Detail",
+    inventory: { id: inventoryId, name: "Example Vehicle" }
+  })
+}
+
+// Show Add Classification page
 exports.showAddClassification = (req, res) => {
-  res.render("inventory/add-classification")
+  res.render("inventory/add-classification", { title: "Add Classification" })
 }
 
-// Show add inventory page
+// Show Add Inventory page
 exports.showAddInventory = (req, res) => {
-  res.render("inventory/add-inventory")
+  res.render("inventory/add-inventory", { title: "Add Inventory" })
+}
+
+// Show Add Vehicle page (optional)
+exports.showAddVehicle = (req, res) => {
+  res.render("inventory/add-vehicle", { title: "Add Vehicle" })
 }

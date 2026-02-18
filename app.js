@@ -1,49 +1,52 @@
 // app.js
-const express = require("express");
-const session = require("express-session");
-const flash = require("connect-flash");
-const expressLayouts = require("express-ejs-layouts");
-const path = require("path");
+const express = require("express")
+const session = require("express-session")
+const flash = require("connect-flash")
+const path = require("path")
+const expressLayouts = require("express-ejs-layouts")
 
-// Import routes
-const inventoryRoutes = require("./routes/inventoryRoute");
-
-const app = express();
+const app = express()
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(express.static(path.join(__dirname, "public")))
 
-// Session & flash
-app.use(session({
-  secret: "someSecret",
-  resave: false,
-  saveUninitialized: true
-}));
-app.use(flash());
+// View engine setup
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
+app.use(expressLayouts)
+app.set("layout", "layouts/main") // main.ejs in views/layouts/
 
-// Static files
-app.use(express.static(path.join(__dirname, "public")));
+// Session and flash
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "keyboard cat",
+    resave: false,
+    saveUninitialized: true,
+  })
+)
+app.use(flash())
 
-// EJS & Layouts
-app.use(expressLayouts);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.set("layout", "layouts/main"); // default layout file: views/layouts/main.ejs
-
-// Custom middleware to expose flash messages to views
+// Flash message middleware for templates
 app.use((req, res, next) => {
-  res.locals.success_msg = req.flash("success_msg");
-  res.locals.error_msg = req.flash("error_msg");
-  next();
-});
+  res.locals.success = req.flash("success")
+  res.locals.error = req.flash("error")
+  next()
+})
 
 // Routes
-app.use("/inventory", inventoryRoutes);
+const inventoryRoute = require("./routes/inventoryRoute")
+app.use("/inventory", inventoryRoute)
 
-// Optional: root redirect
+// Root route
 app.get("/", (req, res) => {
-  res.redirect("/inventory");
-});
+  res.render("index", { title: "Home" })
+})
 
-module.exports = app;
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render("404", { title: "Page Not Found" })
+})
+
+module.exports = app
