@@ -1,21 +1,16 @@
 exports.showLogin = (req, res) => {
-  res.render("login", { title: "Login" })
+  res.render("login", { title: "Login", message: "" })
 }
 
 exports.login = (req, res) => {
-  // Dummy login
-  const { username, password } = req.body
-  if (username === "admin" && password === "1234") {
-    req.session.loggedIn = true
-    req.flash("message", "Successfully logged in!")
-    res.redirect("/")
-  } else {
-    req.flash("message", "Invalid credentials")
-    res.redirect("/auth/login")
-  }
+  // simple example: always log in
+  req.session.loggedIn = true
+  req.flash("message", "You are logged in")
+  res.redirect("/")
 }
 
 exports.logout = (req, res) => {
-  req.session.destroy()
-  res.redirect("/")
+  req.session.destroy(() => {
+    res.redirect("/")
+  })
 }

@@ -3,21 +3,19 @@ const session = require("express-session")
 const flash = require("connect-flash")
 const path = require("path")
 
-// Routers
 const authRouter = require("./routes/auth")
 const inventoryRouter = require("./routes/inventory")
 
 const app = express()
 const PORT = process.env.PORT || 10000
 
-// View engine
 app.set("view engine", "ejs")
 app.set("views", path.join(__dirname, "views"))
 
 // Static files
 app.use(express.static(path.join(__dirname, "public")))
 
-// POST data parsing
+// Parse POST
 app.use(express.urlencoded({ extended: true }))
 
 // Session & flash
@@ -26,12 +24,12 @@ app.use(
     secret: "supersecretkey",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
+    cookie: { maxAge: 1000 * 60 * 60 }
   })
 )
 app.use(flash())
 
-// Middleware to inject nav and messages
+// Nav & flash middleware
 app.use((req, res, next) => {
   res.locals.nav = [
     { name: "Home", link: "/" },
@@ -46,7 +44,6 @@ app.use((req, res, next) => {
   } else {
     res.locals.nav.push({ name: "Login", link: "/auth/login" })
   }
-
   res.locals.message = req.flash("message") || ""
   next()
 })
@@ -61,5 +58,5 @@ app.use((req, res) => {
   res.status(404).send("Page Not Found")
 })
 
-// Start server
+// Start
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
