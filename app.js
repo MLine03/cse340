@@ -20,9 +20,10 @@ app.use(
 )
 app.use(flash())
 
-// Mock login for testing; replace with real login logic
+// Mock login for testing
 app.use((req, res, next) => {
   res.locals.notice = req.flash("notice")
+  res.locals.message = req.flash("message")
   res.locals.loggedin = true
   res.locals.accountData = { account_id: 1, account_firstname: "Test", account_lastname: "User" }
   next()
@@ -36,11 +37,14 @@ app.set("views", path.join(__dirname, "views"))
 const reviewRoute = require("./routes/reviewRoute")
 app.use("/reviews", reviewRoute)
 
-// Example vehicle detail page
-const reviewModel = require("./models/review-model")
+const inventoryRouter = require("./routes/inventoryRoute")
+app.use("/inv", inventoryRouter)
+
+// Example vehicle detail page (mock)
 app.get("/inventory/detail/:inv_id", async (req, res) => {
   const inv_id = req.params.inv_id
-  const vehicle = { inv_id, inv_make: "Toyota", inv_model: "Corolla" } // mock vehicle
+  const vehicle = { inv_id, inv_make: "Toyota", inv_model: "Corolla" } // mock
+  const reviewModel = require("./models/review-model")
   const reviews = await reviewModel.getReviewsByInvId(inv_id)
   res.render("inventory/detail", { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicle, reviews })
 })
@@ -60,4 +64,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`)
 })
-

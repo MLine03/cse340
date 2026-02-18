@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title><%= title %></title>
+  <title>Inventory Management</title>
 </head>
 <body>
   <h1>Inventory Management</h1>
-  <% if (messages.success) { %>
-    <p style="color:green"><%= messages.success %></p>
-  <% } %>
-  <% if (messages.error) { %>
-    <p style="color:red"><%= messages.error %></p>
+  <% if (message.length > 0) { %>
+    <p style="color:green"><%= message %></p>
   <% } %>
   <ul>
     <li><a href="/inv/add-classification">Add Classification</a></li>
-    <li><a href="/inv/add-inventory">Add Vehicle</a></li>
+    <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
   </ul>
 </body>
 </html>

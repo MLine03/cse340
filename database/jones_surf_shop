@@ -1,0 +1,18 @@
+CREATE TABLE classifications (
+  classification_id SERIAL PRIMARY KEY,
+  classification_name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE inventory (
+  inv_id SERIAL PRIMARY KEY,
+  classification_id INT REFERENCES classifications(classification_id),
+  inv_make VARCHAR(50) NOT NULL,
+  inv_model VARCHAR(50) NOT NULL,
+  inv_year INT NOT NULL,
+  inv_description TEXT,
+  inv_image VARCHAR(255),
+  inv_thumbnail VARCHAR(255),
+  inv_price NUMERIC(10,2),
+  inv_miles NUMERIC(10,2),
+  inv_color VARCHAR(50)
+);

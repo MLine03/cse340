@@ -1,23 +1,16 @@
 {
-  "name": "cse340",
+  "name": "jones_surf_shop",
   "version": "1.0.0",
-  "description": "CSE 340 Web Backend Project with Review Enhancement",
-  "main": "app.js",
+  "description": "Inventory management system for Jones Surf Shop",
+  "main": "server.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node server.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "connect-flash": "^0.1.1",
-    "dotenv": "^16.4.5",
-    "ejs": "^3.1.10",
-    "express": "^4.19.2",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
     "express-session": "^1.17.3",
-    "pg": "^8.11.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
+    "pg": "^8.12.0"
   }
 }
