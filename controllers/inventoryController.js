@@ -1,29 +1,29 @@
-// Show inventory management page
-exports.showInventory = (req, res) => {
-  res.render("inventory/management", { title: "Inventory Management" })
-}
+// controllers/inventoryController.js
 
-// Inventory detail view
+// Fake in-memory data for demo
+let inventory = [
+  { id: 1, name: "Delorean DMC-12", type: "Car", price: "$50,000" },
+  { id: 2, name: "Tesla Model S", type: "Car", price: "$80,000" },
+];
+
+exports.listInventory = (req, res) => {
+  res.render("inventory/management", { title: "Inventory Management", inventory });
+};
+
 exports.getInventoryDetail = (req, res) => {
-  const inventoryId = req.params.id
-  // You can fetch from DB here. For now, send dummy data
-  res.render("inventory/details", {
-    title: "Inventory Detail",
-    inventory: { id: inventoryId, name: "Example Vehicle" }
-  })
-}
+  const id = parseInt(req.params.id, 10);
+  const vehicle = inventory.find((v) => v.id === id);
+  if (!vehicle) {
+    req.flash("error", "Vehicle not found");
+    return res.redirect("/inventory");
+  }
+  res.render("inventory/detail", { title: vehicle.name, vehicle });
+};
 
-// Show Add Classification page
-exports.showAddClassification = (req, res) => {
-  res.render("inventory/add-classification", { title: "Add Classification" })
-}
-
-// Show Add Inventory page
 exports.showAddInventory = (req, res) => {
-  res.render("inventory/add-inventory", { title: "Add Inventory" })
-}
+  res.render("inventory/add-inventory", { title: "Add Vehicle" });
+};
 
-// Show Add Vehicle page (optional)
-exports.showAddVehicle = (req, res) => {
-  res.render("inventory/add-vehicle", { title: "Add Vehicle" })
-}
+exports.showAddClassification = (req, res) => {
+  res.render("inventory/add-classification", { title: "Add Classification" });
+};
