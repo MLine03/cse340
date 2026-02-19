@@ -1,10 +1,15 @@
 <h1>Inventory</h1>
+
 <ul>
-  <% vehicles.forEach(vehicle => { %>
-    <li>
-      <a href="/inv/detail/<%= vehicle.id %>">
-        <%= vehicle.make %> <%= vehicle.model %>
-      </a>
-    </li>
-  <% }) %>
+  <% if (vehicles && vehicles.length > 0) { %>
+    <% vehicles.forEach(vehicle => { %>
+      <li>
+        <a href="/inventory/detail/<%= vehicle.inv_id %>">
+          <%= vehicle.inv_make %> <%= vehicle.inv_model %>
+        </a>
+      </li>
+    <% }) %>
+  <% } else { %>
+    <li>No vehicles available</li>
+  <% } %>
 </ul>

@@ -2,70 +2,58 @@ const express = require("express");
 const session = require("express-session");
 const flash = require("connect-flash");
 const path = require("path");
-
-const authRouter = require("./routes/auth");
-const inventoryRouter = require("./routes/inventory");
+const expressLayouts = require("express-ejs-layouts");
+require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// View engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// Static files
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// POST data parsing
-app.use(express.urlencoded({ extended: true }));
+// View engine
+app.use(expressLayouts);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.set("layout", "layouts/main");
 
-// Session & flash
+// Session and flash
 app.use(
   session({
-    secret: "supersecretkey",
+    secret: process.env.SESSION_SECRET || "keyboard cat",
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 1000 * 60 * 60 },
   })
 );
 app.use(flash());
 
-// Middleware for navigation and messages
 app.use((req, res, next) => {
-  res.locals.nav = [
-    { name: "Home", link: "/" },
-    { name: "Inventory", link: "/inv" },
-  ];
-
-  if (req.session.loggedIn) {
-    res.locals.nav.push(
-      { name: "Add Classification", link: "/inv/add-classification" },
-      { name: "Add Inventory", link: "/inv/add-inventory" },
-      { name: "Logout", link: "/auth/logout" }
-    );
-  } else {
-    res.locals.nav.push({ name: "Login", link: "/auth/login" });
-  }
-
-  res.locals.message = req.flash("message") || "";
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
   next();
 });
 
 // Routes
-app.get("/", (req, res) => res.render("index", { title: "Home" }));
-app.use("/auth", authRouter);
-app.use("/inv", inventoryRouter);
+const homeRoute = require("./routes/home");
+const inventoryRoute = require("./routes/inventoryRoute");
+
+app.use("/", homeRoute);
+app.use("/inventory", inventoryRoute);
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).render("error", { title: "Page Not Found", message: "404 - Page Not Found" });
+  res.status(404).render("404", { title: "Page Not Found" });
 });
 
 // 500 error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("error", { title: "Server Error", message: "500 - Internal Server Error" });
+  res.status(err.status || 500).render("500", { title: "Server Error", message: err.message });
 });
 
 // Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

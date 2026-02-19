@@ -1,18 +1,9 @@
-const express = require("express")
-const router = express.Router()
-const inventoryController = require("../controllers/inventoryController")
-const utilities = require("../utilities")
+const express = require("express");
+const router = express.Router();
+const inventoryController = require("../controllers/inventoryController");
 
-// Detail Route
-router.get(
-  "/detail/:inv_id",
-  utilities.handleErrors(inventoryController.getInventoryDetail)
-)
+router.get("/", inventoryController.showInventory);
+router.get("/detail/:id", inventoryController.showVehicleDetail);
+router.get("/trigger-error", inventoryController.triggerError);
 
-// Intentional 500 Error Route
-router.get(
-  "/error",
-  utilities.handleErrors(inventoryController.triggerError)
-)
-
-module.exports = router
+module.exports = router;
