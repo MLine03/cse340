@@ -1,0 +1,55 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+  background-color: #333;
+  padding: 1rem;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+.vehicle-detail {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.vehicle-detail img {
+  max-width: 400px;
+  height: auto;
+}
+
+.vehicle-info {
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .vehicle-detail {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.vehicle-detail {
+  display: flex;
+  gap: 2rem;
+}
+
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .vehicle-detail {
+    flex-direction: column;
+  }
+}

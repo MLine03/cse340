@@ -1,13 +1,18 @@
 const express = require("express")
 const router = express.Router()
 const inventoryController = require("../controllers/inventoryController")
+const utilities = require("../utilities")
 
-// Inventory pages
-router.get("/", inventoryController.showInventory)
-router.get("/details/:id", inventoryController.getInventoryDetail)
-router.get("/add-classification", inventoryController.showAddClassification)
-router.post("/add-classification", inventoryController.addClassification)
-router.get("/add-inventory", inventoryController.showAddInventory)
-router.post("/add-inventory", inventoryController.addInventory)
+// Detail Route
+router.get(
+  "/detail/:inv_id",
+  utilities.handleErrors(inventoryController.getInventoryDetail)
+)
+
+// Intentional 500 Error Route
+router.get(
+  "/error",
+  utilities.handleErrors(inventoryController.triggerError)
+)
 
 module.exports = router

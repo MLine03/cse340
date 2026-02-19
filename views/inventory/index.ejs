@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%= title %></title>
+</head>
+<body>
+  <header>
+    <h1>CSE Motors</h1>
+  </header>
+
+  <nav>
+    <% nav.forEach(item => { %>
+      <a href="<%= item.link %>"><%= item.name %></a>
+    <% }) %>
+  </nav>
+
+  <main>
+    <h2>Inventory</h2>
+    <% if (inventoryList && inventoryList.length) { %>
+      <ul>
+        <% inventoryList.forEach(vehicle => { %>
+          <li>
+            <a href="/inv/detail/<%= vehicle.id %>">
+              <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+    <% } else { %>
+      <p>No inventory available.</p>
+    <% } %>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 CSE Motors</p>
+    <a href="/error-test">Trigger 500 Error</a>
+  </footer>
+</body>
+</html>

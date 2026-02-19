@@ -1,5 +1,5 @@
 // utilities.js
-const inventoryModel = require('./models/inventory');
+const inventoryModel = require('./models/inventory-model'); // <-- fixed
 const reviewModel = require('./models/review-model');
 const accountModel = require('./models/account');
 

@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <%- include("partials/head") %>
-  <title>Add Classification</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%= title %></title>
 </head>
 <body>
-  <%- include("partials/header") %>
-  <%- include("partials/navigation") %>
+  <% include ../partials/header %>
+  <% include ../partials/nav %>
 
   <main>
-    <h2>Add Classification</h2>
-    <form>
-      <label>Classification Name: <input type="text" name="classification"></label><br>
+    <h1>Add Classification</h1>
+    <form action="/inv/add-classification" method="POST">
+      <label for="name">Classification Name:</label>
+      <input type="text" name="name" id="name" required>
       <button type="submit">Add</button>
     </form>
   </main>
+
+  <% include ../partials/footer %>
 </body>
 </html>

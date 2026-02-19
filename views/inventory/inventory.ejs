@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+<h1>Inventory</h1>
+<ul>
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <a href="/inv/detail/<%= vehicle.id %>">
+        <%= vehicle.make %> <%= vehicle.model %> - $<%= Number(vehicle.price).toLocaleString() %>
+      </a>
+    </li>
+  <% }) %>
+</ul>
+<%- include('../partials/footer') %>

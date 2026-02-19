@@ -1,18 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <%- include("partials/head") %>
-  <title>Home</title>
-</head>
-<body>
-  <%- include("partials/header") %>
-  <%- include("partials/navigation") %>
-
-  <main>
-    <h2>Welcome to CSE Motors</h2>
-    <p>Your dream car awaits!</p>
-  </main>
-
-  <%- include("partials/footer") %>
-</body>
-</html>
+<h1>Inventory</h1>
+<ul>
+  <% vehicles.forEach(vehicle => { %>
+    <li>
+      <a href="/inv/detail/<%= vehicle.id %>">
+        <%= vehicle.make %> <%= vehicle.model %>
+      </a>
+    </li>
+  <% }) %>
+</ul>

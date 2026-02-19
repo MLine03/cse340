@@ -1,13 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <%- vehicleHtml %>
-    <a href="/inventory">Back to Inventory</a>
-</body>
-</html>
-
+<%- include('../partials/header') %>
+<main>
+  <div class="vehicle-container">
+    <%- vehicleHTML %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

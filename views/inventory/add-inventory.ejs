@@ -1,12 +1,28 @@
-<form action="/inv/add-inventory" method="POST">
-  <label>Vehicle Name: <input type="text" name="name"></label><br>
-  <label>Price: <input type="number" name="price"></label><br>
-  <label>Classification:
-    <select name="classification">
-      <% classifications.forEach(cls => { %>
-        <option value="<%= cls %>"><%= cls %></option>
-      <% }) %>
-    </select>
-  </label><br>
-  <button type="submit">Add</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title><%= title %></title>
+</head>
+<body>
+  <% include ../partials/header %>
+  <% include ../partials/nav %>
+
+  <main>
+    <h1>Add Inventory Item</h1>
+    <form action="/inv/add-inventory" method="POST">
+      <label>Make:</label><input type="text" name="make" required><br>
+      <label>Model:</label><input type="text" name="model" required><br>
+      <label>Year:</label><input type="number" name="year" required><br>
+      <label>Price:</label><input type="number" name="price" required><br>
+      <label>Mileage:</label><input type="number" name="mileage" required><br>
+      <label>Description:</label><textarea name="description" required></textarea><br>
+      <label>Image URL:</label><input type="text" name="image"><br>
+      <button type="submit">Add Item</button>
+    </form>
+  </main>
+
+  <% include ../partials/footer %>
+</body>
+</html>

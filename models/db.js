@@ -1,13 +1,38 @@
-const { Pool } = require('pg');
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
-const pool = new Pool({
-    user: 'macuser',
-    host: 'localhost',
-    database: 'cse340db',
-    password: '',
-    port: 5432,
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "cse340",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-module.exports = {
-    query: (text, params) => pool.query(text, params),
-};
+module.exports = pool;
+const mysql = require("mysql2/promise");
+
+const mysql = require("mysql2/promise");
+require("dotenv").config();
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "cse340",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+module.exports = pool;
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "yourpassword",
+  database: "cse340",
+});
+
+module.exports = pool;
