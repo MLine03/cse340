@@ -1,8 +1,7 @@
-// db/connection.js
+// database/connection.js
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 
-// Create a MySQL pool using environment variables
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "127.0.0.1",
   user: process.env.DB_USER || "root",
@@ -13,7 +12,6 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-// Test connection
 pool.getConnection()
   .then(conn => {
     console.log("✅ MySQL connected successfully!");
