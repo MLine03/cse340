@@ -1,20 +1,18 @@
-const invModel = require('../models/inventory-model')
-const utilities = require('../utilities')
+const inventoryModel = require('../models/inventory-model');
+const utilities = require('../utilities');
 
-// Show vehicle detail
-async function buildByInventoryId(req, res, next) {
-  const inv_id = req.params.inv_id
-  const vehicle = await invModel.getInventoryById(inv_id)
+async function buildByInventoryId(req, res) {
+  const inv_id = req.params.inv_id;
+  const vehicle = await inventoryModel.getVehicleById(inv_id);
   if (!vehicle) {
-    return res.status(404).render('errors/404', { title: 'Not Found' })
+    return res.status(404).render('errors/404', { title: 'Vehicle Not Found' });
   }
-  const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle)
-  res.render('inventory/detail', { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicleHTML })
+  const html = utilities.buildVehicleDetail(vehicle);
+  res.render('inventory/detail', { html });
 }
 
-// Trigger 500 error (for footer link)
-async function triggerError(req, res, next) {
-  throw new Error('Intentional 500 error for testing')
+async function triggerError(req, res) {
+  throw new Error('This is a test error');
 }
 
-module.exports = { buildByInventoryId, triggerError }
+module.exports = { buildByInventoryId, triggerError };
