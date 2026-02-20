@@ -1,17 +1,19 @@
-const express = require('express');
+// routes/inventory.js
+import express from 'express';
+import {
+  listInventory,
+  addInventory,
+  updateInventory,
+  deleteInventory
+} from '../controllers/inventoryController.js';
+
 const router = express.Router();
-const invController = require('../controllers/inventoryController');
-const { checkClassification, checkVehicle } = require('../middleware/validation');
 
-// Management view
-router.get('/', invController.buildManagementView);
+router.get('/', listInventory);
+router.get('/add', addInventory);
+router.post('/add', addInventory);
+router.get('/update/:id', updateInventory);
+router.post('/update', updateInventory);
+router.post('/delete/:id', deleteInventory);
 
-// Classification routes
-router.get('/add-classification', invController.buildAddClassification);
-router.post('/add-classification', checkClassification, invController.addClassification);
-
-// Vehicle routes
-router.get('/add-vehicle', invController.buildAddVehicle);
-router.post('/add-vehicle', checkVehicle, invController.addVehicle);
-
-module.exports = router;
+export default router;

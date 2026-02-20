@@ -1,4 +1,9 @@
-router.get('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.redirect('/');
-});
+// routes/index.js
+import express from 'express';
+import homeController from '../controllers/homeController.js';
+
+const router = express.Router();
+
+router.get('/', homeController);
+
+export default router;
