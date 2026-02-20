@@ -1,36 +1,29 @@
-// models/inventoryModel.js
 import { pool } from '../utils/db-connection.js';
 
-// Get all inventory items
+// Get all inventory
 export const getAllInventory = async () => {
-  const [rows] = await pool.query('SELECT * FROM inventory');
-  return rows;
+  const res = await pool.query('SELECT * FROM inventory');
+  return res.rows;
 };
 
-// Get single inventory item by ID
-export const getInventoryById = async (id) => {
-  const [rows] = await pool.query('SELECT * FROM inventory WHERE id = ?', [id]);
-  return rows[0];
-};
-
-// Add new inventory item
-export const addInventory = async ({ name, description, price, quantity }) => {
-  const [result] = await pool.query(
-    'INSERT INTO inventory (name, description, price, quantity) VALUES (?, ?, ?, ?)',
-    [name, description, price, quantity]
+// Add inventory
+export const addInventory = async ({ name, price, quantity }) => {
+  const res = await pool.query(
+    'INSERT INTO inventory (name, price, quantity) VALUES ($1, $2, $3) RETURNING id',
+    [name, price, quantity]
   );
-  return result.insertId;
+  return res.rows[0].id;
 };
 
-// Update existing inventory item
-export const updateInventory = async (id, { name, description, price, quantity }) => {
+// Update inventory
+export const updateInventory = async (id, { name, price, quantity }) => {
   await pool.query(
-    'UPDATE inventory SET name = ?, description = ?, price = ?, quantity = ? WHERE id = ?',
-    [name, description, price, quantity, id]
+    'UPDATE inventory SET name=$1, price=$2, quantity=$3 WHERE id=$4',
+    [name, price, quantity, id]
   );
 };
 
-// Delete inventory item
+// Delete inventory
 export const deleteInventory = async (id) => {
-  await pool.query('DELETE FROM inventory WHERE id = ?', [id]);
+  await pool.query('DELETE FROM inventory WHERE id=$1', [id]);
 };
