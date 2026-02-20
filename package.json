@@ -1,11 +1,13 @@
 {
   "name": "jones_surf_shop",
   "version": "1.0.0",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.3.1",
     "ejs": "^3.1.9",
     "express": "^4.22.1",

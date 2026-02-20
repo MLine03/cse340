@@ -1,9 +1,9 @@
-import express from 'express';
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 
 router.get('/', (req, res) => {
-  res.clearCookie('token');
-  res.redirect('/');
-});
+  res.clearCookie('token')
+  res.redirect('/')
+})
 
-export default router;
+module.exports = router
