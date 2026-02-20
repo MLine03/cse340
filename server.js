@@ -13,11 +13,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Session (MemoryStore safe for this class)
+// Session
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: false
 }));
 
 // Routes
@@ -29,7 +29,7 @@ app.use((req, res) => {
   res.status(404).render('errors/404', { title: 'Not Found' });
 });
 
-// 500 error handler
+// 500 handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('errors/500', { title: 'Server Error' });
