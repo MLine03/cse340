@@ -1,19 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home Page</title>
-</head>
-<body>
-  <h1>Home Page</h1>
-  <ul>
-    <% vehicles.forEach(vehicle => { %>
-      <li>
-        <a href="/inv/detail/<%= vehicle.inv_id %>">
-          <%= vehicle.inv_make %> <%= vehicle.inv_model %>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
-</body>
-</html>
+<h1><%= title %></h1>
+
+<div class="inventory-list">
+  <% vehicles.forEach(vehicle => { %>
+    <div class="vehicle-item">
+      <img src="<%= vehicle.inv_image %>" alt="<%= vehicle.inv_make %> <%= vehicle.inv_model %>">
+      <h2><%= vehicle.inv_make %> <%= vehicle.inv_model %></h2>
+      <p>Year: <%= vehicle.inv_year %></p>
+      <p>Price: $<%= vehicle.inv_price.toLocaleString() %></p>
+      <p>Miles: <%= vehicle.inv_miles.toLocaleString() %></p>
+    </div>
+  <% }) %>
+</div>

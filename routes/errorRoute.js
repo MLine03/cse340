@@ -1,22 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-router.use((err, req, res, next) => {
-  console.error('Error handler:', err);
-  res.status(500).render('error', {
-    title: '500 - Server Error',
-    message: err.message,
-    nav: getNav(),
+router.get('*', (req, res) => {
+  res.status(404).render('error', { 
+    title: '404 - Not Found',
+    message: 'The page you requested does not exist.',
+    nav: [
+      { name: 'Home', link: '/' },
+      { name: 'Inventory', link: '/inventory' },
+    ]
   });
 });
-
-function getNav() {
-  return [
-    { name: 'Home', link: '/' },
-    { name: 'Inventory', link: '/inventory' },
-    { name: 'Add Classification', link: '/add-classification' },
-    { name: 'Add Inventory', link: '/add-inventory' },
-  ];
-}
 
 module.exports = router;
