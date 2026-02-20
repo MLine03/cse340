@@ -1,16 +1,13 @@
-const express = require('express')
-const router = express.Router()
-const invController = require('../controllers/inventory-controller')
+const express = require('express');
+const router = express.Router();
+const inventoryController = require('../controllers/inventory-controller');
 
-// Management view
-router.get('/', invController.buildManagementView)
+router.get('/', inventoryController.managementView);
 
-// Add classification
-router.get('/add-classification', invController.buildAddClassificationView)
-router.post('/add-classification', invController.addClassification)
+router.get('/add-classification', inventoryController.addClassificationView);
+router.post('/add-classification', inventoryController.addClassification);
 
-// Add vehicle
-router.get('/add-vehicle', invController.buildAddVehicleView)
-router.post('/add-vehicle', invController.addVehicle)
+router.get('/add-vehicle', inventoryController.addVehicleView);
+router.post('/add-vehicle', inventoryController.addVehicle);
 
-module.exports = router
+module.exports = router;
