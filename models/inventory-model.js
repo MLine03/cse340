@@ -1,16 +1,30 @@
-const pool = require("./db");
+const pool = require('../database/connection');
 
+// Get all vehicles
 async function getAllVehicles() {
-  const [rows] = await pool.query("SELECT * FROM inventory ORDER BY inv_make, inv_model");
-  return rows;
+  try {
+    const sql = 'SELECT * FROM inventory ORDER BY inv_id';
+    const result = await pool.query(sql);
+    return result.rows;
+  } catch (err) {
+    console.error('Database query error:', err);
+    throw err;
+  }
 }
 
-async function getInventoryById(inv_id) {
-  const [rows] = await pool.query("SELECT * FROM inventory WHERE inv_id = ?", [inv_id]);
-  return rows[0];
+// Get a vehicle by ID
+async function getVehicleById(inv_id) {
+  try {
+    const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
+    const result = await pool.query(sql, [inv_id]);
+    return result.rows[0];
+  } catch (err) {
+    console.error('Database query error:', err);
+    throw err;
+  }
 }
 
 module.exports = {
   getAllVehicles,
-  getInventoryById,
+  getVehicleById,
 };

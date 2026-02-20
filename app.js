@@ -1,33 +1,37 @@
-// app.js
-require("dotenv").config();
-const express = require("express");
+const express = require('express');
+const session = require('express-session');
+const flash = require('connect-flash');
+require('dotenv').config();
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
-// Body parsing
-app.use(express.json());
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static('public'));
 
-// Static files
-app.use(express.static("public"));
+// Session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+app.use(flash());
 
-// Example route
-const { buildVehicleDetail } = require("./utilities/buildVehicleDetail");
-app.get("/", async (req, res) => {
-  const sampleVehicle = {
-    inv_image: "/images/vehicles/adventador.jpg",
-    inv_make: "Lamborghini",
-    inv_model: "Adventador",
-    inv_year: 2022,
-    inv_price: 500000,
-    inv_miles: 1200,
-    inv_description: "A supercar in mint condition."
-  };
+// View engine
+app.set('view engine', 'ejs');
 
-  const html = buildVehicleDetail(sampleVehicle);
-  res.send(html);
-});
+// Routes
+app.use('/', require('./routes/home'));
+app.use('/account', require('./routes/accountRoute'));
+app.use('/inventory', require('./routes/inventoryRoute'));
+app.use('/review', require('./routes/reviewRoute'));
+app.use(require('./routes/errorRoute'));
 
+// Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
