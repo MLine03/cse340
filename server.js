@@ -1,65 +1,52 @@
-// server.js
-require("dotenv").config();
-const express = require("express");
-const session = require("express-session");
-const pgSession = require("connect-pg-simple")(session);
-const path = require("path");
-const pool = require("./database/db"); // Make sure this points to your PostgreSQL pool
+require('dotenv').config(); // Load .env variables
+const express = require('express');
+const session = require('express-session');
+const path = require('path');
 
+// Create Express app
 const app = express();
-const PORT = process.env.PORT || 10000;
+
+// Import routes
+const inventoryRoutes = require('./routes/inventory-routes');
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// View engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// Session setup
+// Session middleware (optional if needed for your assignment)
 app.use(
   session({
-    store: new pgSession({
-      pool: pool,                // Use your pg pool
-      tableName: "session",      // Must exist in DB
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET || "changeThisSecret",
+    secret: process.env.SESSION_SECRET || 'defaultSecret',
     resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set true if HTTPS
   })
 );
 
+// Set view engine
+app.set('view engine', 'ejs'); // Or 'pug', 'hbs' depending on your setup
+app.set('views', path.join(__dirname, 'views'));
+
 // Routes
-const homeRoutes = require("./routes/home");
-const inventoryRoutes = require("./routes/inventory");
-const accountRoutes = require("./routes/accountRoute");
-const authRoutes = require("./routes/auth");
-const reviewRoutes = require("./routes/reviewRoute");
-const errorRoutes = require("./routes/errorRoute");
+app.use('/', inventoryRoutes);
 
-app.use("/", homeRoutes);
-app.use("/inventory", inventoryRoutes);
-app.use("/account", accountRoutes);
-app.use("/auth", authRoutes);
-app.use("/reviews", reviewRoutes);
-app.use("/error", errorRoutes);
-
-// 404 handler
-app.use((req, res, next) => {
-  res.status(404).render("errors/404", { url: req.originalUrl });
+// 404 handler (non-existent routes)
+app.use((req, res) => {
+  res.status(404).render('errors/404', { title: 'Page Not Found' });
 });
 
-// 500 error handler
+// 500 handler (errors from controllers)
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("errors/500", { error: err });
+  res.status(err.status || 500).render('errors/500', {
+    title: 'Internal Server Error',
+    message: err.message,
+  });
 });
 
 // Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,7 +1,7 @@
 const model = require('../models/inventory-model');
 const utilities = require('../utilities');
 
-// Classification view
+// Show vehicles by classification
 async function showClassification(req, res, next) {
   try {
     const classification_id = req.params.classification_id;
@@ -12,7 +12,7 @@ async function showClassification(req, res, next) {
   }
 }
 
-// Vehicle detail view
+// Show vehicle detail
 async function showVehicleDetail(req, res, next) {
   try {
     const inv_id = req.params.inv_id;
@@ -29,7 +29,7 @@ async function showVehicleDetail(req, res, next) {
   }
 }
 
-// Footer intentional error
+// Footer intentional 500 error
 function triggerError(req, res, next) {
   const err = new Error('Intentional server error triggered!');
   err.status = 500;

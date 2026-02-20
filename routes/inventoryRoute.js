@@ -5,13 +5,13 @@ const inventoryController = require('../controllers/inventory-controller');
 // Home page
 router.get('/', (req, res) => res.render('index', { vehicles: [], title: 'Home' }));
 
-// Classification
+// Classification view
 router.get('/inventory/classification/:classification_id', inventoryController.showClassification);
 
-// Vehicle detail
+// Vehicle detail view
 router.get('/inventory/detail/:inv_id', inventoryController.showVehicleDetail);
 
-// Footer error
+// Footer intentional error
 router.get('/trigger-error', inventoryController.triggerError);
 
 module.exports = router;
