@@ -1,4 +1,4 @@
-const pool = require("../database/")
+const pool = require("../db")  // Corrected from ../database/
 
 async function getInventoryById(inv_id) {
   try {

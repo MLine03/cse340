@@ -12,7 +12,7 @@ async function buildByInventoryId(req, res, next) {
       throw error
     }
 
-    const nav = await utilities.getNav()
+    const nav = await utilities.getNav?.() || ""  // optional nav if you use it
     const vehicle = await invModel.getInventoryById(inv_id)
 
     if (!vehicle) {

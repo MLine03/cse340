@@ -1,6 +1,6 @@
 const express = require("express")
 const router = new express.Router()
-const invController = require("../controllers/inventory-controller")
+const invController = require("../controllers/inventory-controller") // Fixed
 const utilities = require("../utilities")
 
 router.get(

@@ -1,10 +1,7 @@
-const { Pool } = require("pg");
+const pg = require("pg")
 
-const pool = new Pool({
+const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // required for Render
-  },
-});
+})
 
-module.exports = pool;
+module.exports = pool
