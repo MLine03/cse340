@@ -1,10 +1,10 @@
 // controllers/accountController.js
 import bcrypt from 'bcryptjs';
-import { getAccountById, getAccountByEmail, updateAccount, updatePassword } from '../utils/db-connection.js';
+import { getAccountById, updateAccount, updatePassword, getAccountByEmail } from '../utils/db-connection.js';
 
 export const manageAccount = async (req, res) => {
   const account = res.locals.accountData;
-  res.render('account/manage', { account, message: null, errors: null });
+  res.render('account/manage', { account });
 };
 
 export const updateAccountView = async (req, res) => {
@@ -29,7 +29,7 @@ export const updateAccountInfo = async (req, res) => {
 
   await updateAccount(account_id, firstname, lastname, email);
   const account = await getAccountById(account_id);
-  res.render('account/manage', { account, message: 'Account updated successfully!', errors: null });
+  res.render('account/manage', { account, message: 'Account updated successfully!' });
 };
 
 export const updateAccountPassword = async (req, res) => {
@@ -47,5 +47,5 @@ export const updateAccountPassword = async (req, res) => {
   await updatePassword(account_id, hashedPassword);
 
   const account = await getAccountById(account_id);
-  res.render('account/manage', { account, message: 'Password updated successfully!', errors: null });
+  res.render('account/manage', { account, message: 'Password updated successfully!' });
 };

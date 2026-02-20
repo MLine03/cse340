@@ -1,17 +1,12 @@
 // routes/account.js
 import express from 'express';
-import {
-  manageAccount,
-  updateAccountView,
-  updateAccountInfo,
-  updatePassword
-} from '../controllers/accountController.js';
+import { manageAccount, updateAccountView, updateAccountInfo, updateAccountPassword } from '../controllers/accountController.js';
 
 const router = express.Router();
 
-router.get('/', manageAccount);
+router.get('/manage', manageAccount);
 router.get('/update/:id', updateAccountView);
-router.post('/update', updateAccountInfo);
-router.post('/update-password', updatePassword);
+router.post('/update/info', updateAccountInfo);
+router.post('/update/password', updateAccountPassword);
 
 export default router;
