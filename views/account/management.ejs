@@ -1,31 +1,14 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>Inventory Management</title>
-</head>
+<html lang="en">
+<head><title><%= title %></title></head>
 <body>
   <h1>Inventory Management</h1>
-
-  <% if (messages.error.length > 0) { %>
-    <p style="color:red"><%= messages.error %></p>
+  <% if (message) { %>
+    <p style="color:green"><%= message %></p>
   <% } %>
-
-  <% if (messages.success.length > 0) { %>
-    <p style="color:green"><%= messages.success %></p>
-  <% } %>
-
   <ul>
-    <li><a href="/inventory/add-classification">Add Classification</a></li>
-    <li><a href="/inventory/add-inventory">Add Inventory Item</a></li>
-  </ul>
-
-  <h2>Current Inventory</h2>
-  <ul>
-    <% inventory.forEach(item => { %>
-      <li>
-        <a href="/inventory/details/<%= item.id %>"><%= item.name %></a> - <%= item.price %>
-      </li>
-    <% }) %>
+    <li><a href="/inv/add-classification">Add Classification</a></li>
+    <li><a href="/inv/add-vehicle">Add Vehicle</a></li>
   </ul>
 </body>
 </html>

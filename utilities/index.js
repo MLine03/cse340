@@ -1,37 +1,16 @@
-function buildVehicleDetail(vehicle) {
-  return `
-    <div class="vehicle-detail">
-      <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" />
-      </div>
-      <div class="vehicle-info">
-        <h1>${vehicle.inv_make} ${vehicle.inv_model}</h1>
-        <p><strong>Price:</strong> ${formatCurrency(vehicle.inv_price)}</p>
-        <p><strong>Mileage:</strong> ${formatMileage(vehicle.inv_miles)}</p>
-        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-      </div>
-    </div>
-  `;
-}
+const invModel = require('../models/inventory-model');
 
-function formatCurrency(amount) {
-  return `$${Number(amount).toLocaleString()}`;
-}
+const Util = {};
 
-function formatMileage(miles) {
-  return Number(miles).toLocaleString();
-}
+Util.buildClassificationList = async function (selectedId = null) {
+  const data = await invModel.getClassifications();
+  let list = '<select name="classification_id" id="classificationList" required>';
+  list += "<option value=''>Choose a Classification</option>";
+  data.rows.forEach((row) => {
+    list += `<option value="${row.classification_id}"${selectedId == row.classification_id ? ' selected' : ''}>${row.classification_name}</option>`;
+  });
+  list += '</select>';
+  return list;
+};
 
-// Error handling wrapper
-function handleErrors(fn) {
-  return async (req, res, next) => {
-    try {
-      await fn(req, res, next);
-    } catch (err) {
-      next(err);
-    }
-  };
-}
-
-module.exports = { buildVehicleDetail, formatCurrency, formatMileage, handleErrors };
+module.exports = Util;

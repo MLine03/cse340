@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const invController = require('../controllers/inventory-controller');
-const utilities = require('../utilities');
 
-router.get(
-  '/detail/:inv_id',
-  utilities.handleErrors(invController.buildByInventoryId)
-);
+// Management view
+router.get('/', invController.showManagement);
 
-router.get(
-  '/trigger-error',
-  utilities.handleErrors(invController.triggerError)
-);
+// Add classification
+router.get('/add-classification', invController.addClassificationView);
+router.post('/add-classification', invController.addClassification);
+
+// Add vehicle
+router.get('/add-vehicle', invController.addVehicleView);
+router.post('/add-vehicle', invController.addVehicle);
 
 module.exports = router;
