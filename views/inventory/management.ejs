@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Inventory Management</title>
-</head>
-<body>
-  <h1>Inventory Management</h1>
-  <% if (message.length > 0) { %>
-    <p style="color:green"><%= message %></p>
-  <% } %>
-  <ul>
-    <li><a href="/inv/add-classification">Add Classification</a></li>
-    <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
-  </ul>
-</body>
-</html>
+<h1>Inventory Management</h1>
+<% if (message) { %>
+  <p style="color:green;"><%= message %></p>
+<% } %>
+<ul>
+  <li><a href="/inv/add-classification">Add New Classification</a></li>
+  <li><a href="/inv/add-vehicle">Add New Vehicle</a></li>
+</ul>

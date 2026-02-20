@@ -1,58 +1,83 @@
-const invModel = require('../models/inventory-model');
-const Util = require('../utils/index');
+const pool = require('../db')
+const util = require('../utilities') // fixed path
 
-async function showManagement(req, res) {
-  const message = req.session.message;
-  req.session.message = null;
-  res.render('inventory/management', { title: 'Inventory Management', message });
+// Management view
+exports.buildManagementView = (req, res, next) => {
+  const message = req.session.message
+  delete req.session.message
+  res.render('inventory/management', { message })
 }
 
-async function addClassificationView(req, res) {
-  const message = req.session.message;
-  req.session.message = null;
-  res.render('inventory/add-classification', { title: 'Add Classification', message });
+// Add classification view
+exports.buildAddClassificationView = (req, res, next) => {
+  const message = req.session.message
+  delete req.session.message
+  res.render('inventory/add-classification', { message })
 }
 
-async function addClassification(req, res) {
-  const { classification_name } = req.body;
-  if (!classification_name || /\W/.test(classification_name)) {
-    req.session.message = 'Invalid classification name.';
-    return res.redirect('/inv/add-classification');
-  }
+// Add vehicle view
+exports.buildAddVehicleView = async (req, res, next) => {
   try {
-    await invModel.addClassification(classification_name);
-    req.session.message = 'Classification added successfully!';
-    res.redirect('/inv');
+    const classificationList = await util.buildClassificationList()
+    const message = req.session.message
+    delete req.session.message
+    res.render('inventory/add-vehicle', { classificationList, message })
   } catch (err) {
-    console.error(err);
-    req.session.message = 'Error adding classification.';
-    res.redirect('/inv/add-classification');
+    next(err)
   }
 }
 
-async function addVehicleView(req, res) {
-  const classifications = await Util.buildClassificationList();
-  const message = req.session.message;
-  req.session.message = null;
-  res.render('inventory/add-vehicle', { title: 'Add Vehicle', classifications, message, sticky: {} });
+// Process new classification
+exports.addClassification = async (req, res, next) => {
+  const { classification_name } = req.body
+  if (!classification_name.match(/^[a-zA-Z0-9]+$/)) {
+    req.session.message = 'Classification cannot contain spaces or special characters'
+    return res.redirect('/inv/add-classification')
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO classification (classification_name) VALUES ($1) RETURNING *',
+      [classification_name]
+    )
+    req.session.message = `Successfully added classification: ${result.rows[0].classification_name}`
+    res.redirect('/inv/')
+  } catch (err) {
+    next(err)
+  }
 }
 
-async function addVehicle(req, res) {
-  const vehicle = req.body;
+// Process new vehicle
+exports.addVehicle = async (req, res, next) => {
+  const {
+    classification_id,
+    inv_make,
+    inv_model,
+    inv_year,
+    inv_description,
+    inv_image,
+    inv_thumbnail,
+    inv_price,
+    inv_miles,
+    inv_color
+  } = req.body
+
   // Server-side validation
-  if (!vehicle.inv_make || !vehicle.inv_model || !vehicle.inv_description || !vehicle.classification_id) {
-    req.session.message = 'All required fields must be filled.';
-    return res.redirect('/inv/add-vehicle');
+  if (!classification_id || !inv_make || !inv_model || !inv_year || !inv_price || !inv_miles) {
+    req.session.message = 'Please fill out all required fields'
+    return res.redirect('/inv/add-vehicle')
   }
+
   try {
-    await invModel.addVehicle(vehicle);
-    req.session.message = 'Vehicle added successfully!';
-    res.redirect('/inv');
+    const result = await pool.query(
+      `INSERT INTO inventory 
+      (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+      [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]
+    )
+    req.session.message = `Successfully added vehicle: ${result.rows[0].inv_make} ${result.rows[0].inv_model}`
+    res.redirect('/inv/')
   } catch (err) {
-    console.error(err);
-    req.session.message = 'Error adding vehicle.';
-    res.redirect('/inv/add-vehicle');
+    next(err)
   }
 }
-
-module.exports = { showManagement, addClassificationView, addClassification, addVehicleView, addVehicle };
