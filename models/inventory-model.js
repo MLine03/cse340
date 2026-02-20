@@ -1,26 +1,15 @@
-const { Pool } = require('pg');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+const pool = require('../db/pool'); // your PostgreSQL pool setup
 
-async function getVehiclesByClassification(classification_id) {
-  try {
-    const sql = 'SELECT * FROM inventory WHERE classification_id = $1';
-    const result = await pool.query(sql, [classification_id]);
-    return result.rows;
-  } catch (error) {
-    console.error('getVehiclesByClassification error:', error);
-    throw error;
-  }
-}
+exports.getVehicleById = async (inv_id) => {
+  const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
+  const values = [inv_id];
+  const result = await pool.query(sql, values);
+  return result.rows[0];
+};
 
-async function getVehicleById(inv_id) {
-  try {
-    const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
-    const result = await pool.query(sql, [inv_id]);
-    return result.rows[0];
-  } catch (error) {
-    console.error('getVehicleById error:', error);
-    throw error;
-  }
-}
-
-module.exports = { getVehiclesByClassification, getVehicleById };
+exports.getVehiclesByClassification = async (classification_id) => {
+  const sql = 'SELECT * FROM inventory WHERE classification_id = $1';
+  const values = [classification_id];
+  const result = await pool.query(sql, values);
+  return result.rows;
+};
