@@ -1,10 +1,10 @@
 <nav>
-    <ul>
-        <% if (locals.accountData) { %>
-            <li><a href="/account/manage">Welcome <%= locals.accountData.firstname %></a></li>
-            <li><a href="/logout">Logout</a></li>
-        <% } else { %>
-            <li><a href="/account/login">My Account</a></li>
-        <% } %>
-    </ul>
+  <ul>
+    <% if (locals.account) { %>
+      <li><a href="/account/manage">Welcome <%= account.firstname %></a></li>
+      <li><a href="/logout">Logout</a></li>
+    <% } else { %>
+      <li><a href="/login">My Account</a></li>
+    <% } %>
+  </ul>
 </nav>

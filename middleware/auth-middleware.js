@@ -1,38 +1,25 @@
-const jwt = require('jsonwebtoken');
+// middleware/auth.js
+import jwt from 'jsonwebtoken';
 
-function checkLogin(req, res, next) {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.redirect('/login');
-    }
-
-    try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        res.locals.accountData = payload;
-        next();
-    } catch (err) {
-        return res.redirect('/login');
-    }
+export function checkJWT(req, res, next) {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.redirect('/login');
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.locals.account = decoded;
+    next();
+  } catch (err) {
+    return res.redirect('/login');
+  }
 }
 
-function checkEmployeeOrAdmin(req, res, next) {
-    const token = req.cookies.token;
-    if (!token) {
-        return res.render('account/login', { message: 'Login required.' });
-    }
-
-    try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        res.locals.accountData = payload;
-
-        if (payload.account_type === 'Employee' || payload.account_type === 'Admin') {
-            next();
-        } else {
-            return res.render('account/login', { message: 'Access denied.' });
-        }
-    } catch (err) {
-        return res.render('account/login', { message: 'Invalid token.' });
-    }
+// Authorization middleware for Employee/Admin
+export function checkEmployeeOrAdmin(req, res, next) {
+  const account = res.locals.account;
+  if (account && (account.account_type === 'Employee' || account.account_type === 'Admin')) {
+    return next();
+  }
+  return res.render('login', { message: 'Access denied. Please log in with proper account.' });
 }
-
-module.exports = { checkLogin, checkEmployeeOrAdmin };
