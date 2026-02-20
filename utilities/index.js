@@ -1,12 +1,19 @@
-// utilities/index.js
-function buildVehicleDetailHTML(vehicle) {
-  return `
-    <h2>${vehicle.make} ${vehicle.model} (${vehicle.year})</h2>
-    <img src="${vehicle.image_full}" alt="${vehicle.make} ${vehicle.model}" class="responsive-img"/>
-    <p><strong>Price:</strong> $${vehicle.price.toLocaleString()}</p>
-    <p><strong>Mileage:</strong> ${vehicle.mileage.toLocaleString()} miles</p>
-    <p>${vehicle.description}</p>
-  `;
-}
+exports.buildVehicleDetailHTML = (vehicle) => {
+  const priceFormatted = vehicle.price.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+  const mileageFormatted = vehicle.miles.toLocaleString();
 
-module.exports = { buildVehicleDetailHTML };
+  return `
+    <div class="vehicle-detail">
+      <img src="/images/${vehicle.image}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
+      <div class="vehicle-info">
+        <h1>${vehicle.year} ${vehicle.make} ${vehicle.model}</h1>
+        <p><strong>Price:</strong> ${priceFormatted}</p>
+        <p><strong>Mileage:</strong> ${mileageFormatted} miles</p>
+        <p>${vehicle.description}</p>
+      </div>
+    </div>
+  `;
+};

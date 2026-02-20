@@ -1,4 +1,5 @@
-const pool = require("../database/w02_db")
+// models/review-model.js
+const pool = require("../database/db"); // <-- updated to use db.js
 
 // Add a new review
 async function addReview(review_text, review_rating, inv_id, account_id) {
@@ -7,12 +8,12 @@ async function addReview(review_text, review_rating, inv_id, account_id) {
       INSERT INTO review (review_text, review_rating, inv_id, account_id)
       VALUES ($1, $2, $3, $4)
       RETURNING *
-    `
-    const result = await pool.query(sql, [review_text, review_rating, inv_id, account_id])
-    return result.rows[0]
+    `;
+    const result = await pool.query(sql, [review_text, review_rating, inv_id, account_id]);
+    return result.rows[0];
   } catch (error) {
-    console.error("addReview error:", error)
-    return null
+    console.error("addReview error:", error);
+    return null;
   }
 }
 
@@ -25,13 +26,13 @@ async function getReviewsByInvId(inv_id) {
       JOIN account a ON r.account_id = a.account_id
       WHERE inv_id = $1
       ORDER BY review_date DESC
-    `
-    const result = await pool.query(sql, [inv_id])
-    return result.rows
+    `;
+    const result = await pool.query(sql, [inv_id]);
+    return result.rows;
   } catch (error) {
-    console.error("getReviewsByInvId error:", error)
-    return []
+    console.error("getReviewsByInvId error:", error);
+    return [];
   }
 }
 
-module.exports = { addReview, getReviewsByInvId }
+module.exports = { addReview, getReviewsByInvId };

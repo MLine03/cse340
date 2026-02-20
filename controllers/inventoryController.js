@@ -1,32 +1,25 @@
-const db = require("../database/db");
-const utils = require("../utilities/utils");
+const inventoryModel = require("../models/inventory-model");
+const utilities = require("../utilities");
 
-async function listVehicles(req, res, next) {
+exports.buildVehicleList = async (req, res, next) => {
   try {
-    const vehicles = await db.query("SELECT * FROM vehicles ORDER BY inv_id");
-    res.render("inventory-list", { vehicles: vehicles.rows });
+    const vehicles = await inventoryModel.getAllVehicles();
+    res.render("inventory/list", { title: "All Vehicles", vehicles });
   } catch (err) {
-    console.error(err);
     next(err);
   }
-}
+};
 
-async function vehicleDetail(req, res, next) {
+exports.buildVehicleDetail = async (req, res, next) => {
   try {
-    const { inv_id } = req.params;
-    const vehicle = await db.query(
-      "SELECT * FROM vehicles WHERE inv_id=$1",
-      [inv_id]
-    );
-
-    if (!vehicle.rows.length) return res.status(404).send("Vehicle not found");
-
-    const vehicleHTML = utils.buildVehicleDetailHTML(vehicle.rows[0]);
-    res.render("inventory-detail", { vehicleHTML });
+    const inv_id = parseInt(req.params.inv_id);
+    const vehicle = await inventoryModel.getVehicleById(inv_id);
+    if (!vehicle) {
+      return res.status(404).render("errors/404", { title: "Vehicle Not Found" });
+    }
+    const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle);
+    res.render("inventory/detail", { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
   } catch (err) {
-    console.error(err);
     next(err);
   }
-}
-
-module.exports = { listVehicles, vehicleDetail };
+};
