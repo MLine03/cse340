@@ -1,7 +1,7 @@
 const express = require("express")
 const router = new express.Router()
-const invController = require("../controllers/inventory-controller") // Fixed
-const utilities = require("../utilities")
+const invController = require("../controllers/inventory-controller")
+const utilities = require("../utilities") // automatically loads index.js
 
 router.get(
   "/detail/:inv_id",
