@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head><title><%= title %></title></head>
-<body>
-  <h1>Inventory Management</h1>
-  <% if (message) { %>
-    <p style="color:green"><%= message %></p>
-  <% } %>
-  <ul>
-    <li><a href="/inv/add-classification">Add Classification</a></li>
-    <li><a href="/inv/add-vehicle">Add Vehicle</a></li>
-  </ul>
-</body>
-</html>
+<h2>Welcome <%= account.firstname %></h2>
+
+<a href="/account/update/<%= account.account_id %>">Update Account Info</a>
+
+<% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
+    <h3>Inventory Management</h3>
+    <p><a href="/inventory/manage">Manage Inventory</a></p>
+<% } %>
+
+<% if (message) { %>
+    <p class="success"><%= message %></p>
+<% } %>

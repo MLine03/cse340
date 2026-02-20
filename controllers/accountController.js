@@ -1,94 +1,50 @@
-// controllers/accountController.js
-const accountModel = require("../models/accountmodel");
-const { validationResult } = require("express-validator");
+const accountModel = require('../models/accountModel');
+const bcrypt = require('bcrypt');
 
-const getAccountManagement = (req, res) => {
-  const user = req.user;
-  res.render("account-management", {
-    title: "Account Management",
-    nav: [], // your nav helper here
-    user,
-    errors: [],
-    success: [],
-  });
+exports.manageAccount = async (req, res) => {
+    const account = res.locals.accountData;
+    res.render('account/manage', { account });
 };
 
-const postAccountUpdate = async (req, res) => {
-  const user = req.user;
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user,
-      errors: errors.array(),
-      success: [],
-    });
-  }
-
-  try {
-    const { account_firstname, account_lastname, account_email } = req.body;
-    await accountModel.updateAccount(user.account_id, account_firstname, account_lastname, account_email);
-
-    // Optionally update the JWT with new data here
-
-    res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user: { ...user, account_firstname, account_lastname, account_email },
-      errors: [],
-      success: [{ msg: "Account information updated successfully." }],
-    });
-  } catch (error) {
-    res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user,
-      errors: [{ msg: "Failed to update account. Try again." }],
-      success: [],
-    });
-  }
+exports.updateAccountView = async (req, res) => {
+    const id = req.params.id;
+    const account = await accountModel.getAccountById(id);
+    res.render('account/update', { account, errors: null, message: null });
 };
 
-const postPasswordUpdate = async (req, res) => {
-  const user = req.user;
-  const errors = validationResult(req);
+exports.updateAccountInfo = async (req, res) => {
+    const { account_id, firstname, lastname, email } = req.body;
 
-  if (!errors.isEmpty()) {
-    return res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user,
-      errors: errors.array(),
-      success: [],
-    });
-  }
+    const errors = [];
+    if (!firstname || !lastname || !email) errors.push('All fields are required.');
 
-  try {
-    const { account_password } = req.body;
-    await accountModel.updatePassword(user.account_id, account_password);
+    const emailExists = await accountModel.getAccountByEmail(email);
+    if (emailExists && emailExists.account_id != account_id) errors.push('Email already in use.');
 
-    res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user,
-      errors: [],
-      success: [{ msg: "Password updated successfully." }],
-    });
-  } catch (error) {
-    res.render("account-management", {
-      title: "Account Management",
-      nav: [],
-      user,
-      errors: [{ msg: "Failed to update password. Try again." }],
-      success: [],
-    });
-  }
+    if (errors.length > 0) {
+        const account = await accountModel.getAccountById(account_id);
+        return res.render('account/update', { account, errors, message: null });
+    }
+
+    await accountModel.updateAccount(account_id, firstname, lastname, email);
+    const account = await accountModel.getAccountById(account_id);
+    res.render('account/manage', { account, message: 'Account updated successfully!' });
 };
 
-module.exports = {
-  getAccountManagement,
-  postAccountUpdate,
-  postPasswordUpdate,
+exports.updatePassword = async (req, res) => {
+    const { account_id, password } = req.body;
+    const errors = [];
+
+    if (!password || password.length < 8) errors.push('Password must be at least 8 characters.');
+
+    if (errors.length > 0) {
+        const account = await accountModel.getAccountById(account_id);
+        return res.render('account/update', { account, errors, message: null });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await accountModel.updatePassword(account_id, hashedPassword);
+
+    const account = await accountModel.getAccountById(account_id);
+    res.render('account/manage', { account, message: 'Password updated successfully!' });
 };

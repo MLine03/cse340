@@ -1,13 +1,10 @@
-<!-- views/partials/header.ejs -->
-<header>
-  <nav>
-    <a href="/">Home</a>
-
-    <% if (user) { %>
-      <a href="/account">Welcome <%= user.firstname %></a>
-      <a href="/logout">Logout</a>
-    <% } else { %>
-      <a href="/account/login">My Account</a>
-    <% } %>
-  </nav>
-</header>
+<nav>
+    <ul>
+        <% if (locals.accountData) { %>
+            <li><a href="/account/manage">Welcome <%= locals.accountData.firstname %></a></li>
+            <li><a href="/logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/account/login">My Account</a></li>
+        <% } %>
+    </ul>
+</nav>
