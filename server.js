@@ -1,7 +1,10 @@
+// server.js
 const express = require("express");
 const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
 const path = require("path");
 require("dotenv").config();
+const pool = require("./database"); // PostgreSQL connection
 
 const app = express();
 
@@ -10,11 +13,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session
+// Session using PostgreSQL
 app.use(session({
+  store: new pgSession({
+    pool: pool,              // Use your existing pg Pool
+    tableName: 'session',    // Optional: table name in database
+  }),
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
 // View engine
