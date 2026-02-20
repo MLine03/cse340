@@ -1,34 +1,26 @@
 // controllers/inventory-controller.js
-
 const inventoryModel = require("../models/inventory-model");
-const utilities = require("../utilities");
+const utils = require("../utilities");
 
-// Controller for vehicle detail page
-async function buildVehicleDetail(req, res, next) {
-  const inv_id = req.params.inv_id;
+async function showVehicleDetail(req, res, next) {
+  const inv_id = parseInt(req.params.inv_id);
 
   try {
-    // Get vehicle data by ID
     const vehicle = await inventoryModel.getVehicleById(inv_id);
 
     if (!vehicle) {
-      // If vehicle not found, throw 404
-      const error = new Error("Vehicle not found");
-      error.status = 404;
-      throw error;
+      return res.status(404).render("error", { title: "Vehicle Not Found", message: "Vehicle not found." });
     }
 
-    // Build HTML for the vehicle
-    const vehicleHTML = utilities.buildVehicleHTML(vehicle);
+    const vehicleHTML = utils.buildVehicleDetailHTML(vehicle);
 
-    // Render the detail view
     res.render("inventory/detail", {
-      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+      title: `${vehicle.make} ${vehicle.model}`,
       vehicleHTML,
     });
   } catch (err) {
-    next(err); // Pass errors to the error handler
+    next(err);
   }
 }
 
-module.exports = { buildVehicleDetail };
+module.exports = { showVehicleDetail };

@@ -2,21 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title><%= title %></title>
+  <title>Home</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <%- include("partials/navigation") %>
-  <h1><%= title %></h1>
-
-  <div class="vehicle-list">
-    <% vehicles.forEach(vehicle => { %>
-      <div class="vehicle-item">
-        <h3><%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
-        <p>Year: <%= vehicle.inv_year %></p>
-        <p>Price: $<%= vehicle.inv_price.toLocaleString() %></p>
-      </div>
-    <% }) %>
-  </div>
+  <h1>Welcome to CSE340 Inventory</h1>
+  <a href="/inventory">View Inventory</a>
 </body>
 </html>

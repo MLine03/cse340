@@ -1,8 +1,9 @@
-const pool = require("../database");
+// models/inventory-model.js
+const pool = require("../database/db"); // your PostgreSQL pool
 
 async function getAllVehicles() {
   try {
-    const result = await pool.query("SELECT * FROM inventory");
+    const result = await pool.query("SELECT * FROM vehicles");
     return result.rows;
   } catch (error) {
     console.error("Database query error:", error);
@@ -12,8 +13,7 @@ async function getAllVehicles() {
 
 async function getVehicleById(inv_id) {
   try {
-    const sql = "SELECT * FROM inventory WHERE inv_id = $1";
-    const result = await pool.query(sql, [inv_id]);
+    const result = await pool.query("SELECT * FROM vehicles WHERE inv_id = $1", [inv_id]);
     return result.rows[0];
   } catch (error) {
     console.error("Database query error:", error);
