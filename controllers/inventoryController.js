@@ -1,6 +1,7 @@
+// controllers/inventoryController.js
 import * as inventoryModel from '../models/inventoryModel.js';
 
-export const listInventory = async (req, res) => {
+export const getInventory = async (req, res) => {
   const inventory = await inventoryModel.getAllInventory();
   res.render('inventory/list', { inventory });
 };

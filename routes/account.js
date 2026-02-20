@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/', manageAccount);
 router.get('/update/:id', updateAccountView);
 router.post('/update', updateAccountInfo);
-router.post('/password', updatePassword);
+router.post('/update/password', updatePassword);
 
 export default router;

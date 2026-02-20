@@ -1,13 +1,13 @@
 // routes/auth.js
 import express from 'express';
-import { login, register } from '../controllers/authController.js';
+import { loginView, login, registerView, register, logout } from '../controllers/authController.js';
 
 const router = express.Router();
 
-router.get('/login', (req, res) => res.render('auth/login', { error: null }));
+router.get('/login', loginView);
 router.post('/login', login);
-
-router.get('/register', (req, res) => res.render('auth/register', { errors: null }));
+router.get('/register', registerView);
 router.post('/register', register);
+router.post('/logout', logout);
 
 export default router;

@@ -37,10 +37,10 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Routes
+import indexRouter from './routes/index.js';
 import authRouter from './routes/auth.js';
 import accountRouter from './routes/account.js';
 import inventoryRouter from './routes/inventory.js';
-import indexRouter from './routes/index.js';
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
