@@ -33,7 +33,7 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       mysql2:
-        specifier: ^3.17.2
+        specifier: ^3.17.3
         version: 3.17.3
       pg:
         specifier: ^8.12.0
