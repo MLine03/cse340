@@ -29,3 +29,14 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+
+  const status = err.status || 500
+  res.status(status).render("errors/error", {
+    title: status === 404 ? "404 Not Found" : "Server Error",
+    message: err.message,
+    nav: "",
+  })
+})

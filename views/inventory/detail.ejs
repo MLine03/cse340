@@ -1,4 +1,11 @@
-<h1><%= title %></h1>
-<div class="vehicle-detail">
-  <%- vehicleHTML %>
-</div>
+<%- include("../partials/header") %>
+
+<main>
+  <h1><%= title %></h1>
+
+  <div class="detail-container">
+    <%- vehicleDetail %>
+  </div>
+</main>
+
+<%- include("../partials/footer") %>

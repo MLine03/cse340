@@ -1,17 +1,16 @@
-const express = require('express');
-const router = express.Router();
-const inventoryController = require('../controllers/inventory-controller');
+const express = require("express")
+const router = new express.Router()
+const invController = require("../controllers/inventoryController")
+const utilities = require("../utilities")
 
-// Home
-router.get('/', (req, res) => res.render('index', { vehicles: [], title: 'Home' }));
+router.get(
+  "/detail/:inv_id",
+  utilities.handleErrors(invController.buildByInventoryId)
+)
 
-// Classification
-router.get('/inventory/classification/:classification_id', inventoryController.showClassification);
+router.get(
+  "/trigger-error",
+  utilities.handleErrors(invController.triggerError)
+)
 
-// Vehicle detail
-router.get('/inventory/detail/:inv_id', inventoryController.showVehicleDetail);
-
-// Trigger 500
-router.get('/trigger-error', inventoryController.triggerError);
-
-module.exports = router;
+module.exports = router

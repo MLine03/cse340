@@ -38,3 +38,39 @@ header a, footer a { color: #fff; text-decoration: none; margin: 0 0.5rem; }
     margin-bottom: 20px;
   }
 }
+.detail-container {
+  padding: 1rem;
+}
+
+.vehicle-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.vehicle-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.vehicle-info {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.vehicle-info h2 {
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .vehicle-detail {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .vehicle-image,
+  .vehicle-info {
+    flex: 1;
+  }
+}

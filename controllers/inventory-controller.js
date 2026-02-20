@@ -1,29 +1,39 @@
-const inventoryModel = require('../models/inventory-model');
-const utilities = require('../utilities');
+const invModel = require("../models/inventory-model")
+const utilities = require("../utilities")
 
-exports.showClassification = async (req, res, next) => {
+async function buildByInventoryId(req, res, next) {
   try {
-    const classification_id = req.params.classification_id;
-    const vehicles = await inventoryModel.getVehiclesByClassification(classification_id);
-    res.render('inventory/classification', { title: 'Vehicles', vehicles });
-  } catch (err) {
-    next(err);
+    const inv_id = parseInt(req.params.inv_id)
+
+    if (isNaN(inv_id)) {
+      const error = new Error("Invalid vehicle ID")
+      error.status = 400
+      throw error
+    }
+
+    const nav = await utilities.getNav()
+    const vehicle = await invModel.getInventoryById(inv_id)
+
+    if (!vehicle) {
+      const error = new Error("Vehicle not found")
+      error.status = 404
+      throw error
+    }
+
+    const vehicleDetail = utilities.buildVehicleDetail(vehicle)
+
+    res.render("inventory/detail", {
+      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
+      nav,
+      vehicleDetail,
+    })
+  } catch (error) {
+    next(error)
   }
-};
+}
 
-exports.showVehicleDetail = async (req, res, next) => {
-  try {
-    const inv_id = req.params.inv_id;
-    const vehicle = await inventoryModel.getVehicleById(inv_id);
-    if (!vehicle) return res.status(404).render('errors/404', { title: 'Not Found' });
+async function triggerError(req, res, next) {
+  throw new Error("Intentional 500 server error")
+}
 
-    const vehicleHTML = utilities.buildVehicleHTML(vehicle);
-    res.render('inventory/detail', { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
-  } catch (err) {
-    next(err);
-  }
-};
-
-exports.triggerError = (req, res, next) => {
-  next(new Error('Intentional 500 error'));
-};
+module.exports = { buildByInventoryId, triggerError }
