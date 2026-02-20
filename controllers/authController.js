@@ -2,6 +2,7 @@
 import bcrypt from 'bcryptjs';
 import { getAccountByEmail, createAccount } from '../utils/db-connection.js';
 
+// Named export: login
 export const login = async (req, res) => {
   const { email, password } = req.body;
   const account = await getAccountByEmail(email);
@@ -19,6 +20,7 @@ export const login = async (req, res) => {
   res.redirect('/account');
 };
 
+// Named export: register
 export const register = async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   const errors = [];
