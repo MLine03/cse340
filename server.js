@@ -1,36 +1,39 @@
-const express = require('express');
-const session = require('express-session');
-const flash = require('connect-flash');
-const dotenv = require('dotenv');
-const path = require('path');
-
-dotenv.config();
-
-const homeRouter = require('./routes/home');
-const errorRouter = require('./routes/errorRoute');
+// server.js
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Session & flash
+// Session
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 }));
-app.use(flash());
 
 // View engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Routes
-app.use('/', homeRouter);
-app.use('*', errorRouter);
+app.use("/", require("./routes/home"));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Internal Server Error");
+});
+
+// Start server
+const PORT = process.env.PORT || 10000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

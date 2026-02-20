@@ -1,13 +1,13 @@
-const pool = require('../database/connection');
+// models/inventory-model.js
+const pool = require("./db");
 
 async function getAllVehicles() {
   try {
-    const sql = 'SELECT * FROM inventory ORDER BY inv_id';
-    const result = await pool.query(sql);
+    const result = await pool.query("SELECT * FROM vehicles");
     return result.rows;
-  } catch (err) {
-    console.error('Database query error:', err);
-    throw err;
+  } catch (error) {
+    console.error("Database query error:", error);
+    return [];
   }
 }
 

@@ -1,23 +1,24 @@
-const express = require('express');
+// routes/home.js
+const express = require("express");
 const router = express.Router();
-const { getAllVehicles } = require('../models/inventory-model');
+const inventoryModel = require("../models/inventory-model");
 
-router.get('/', async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const vehicles = await getAllVehicles();
-    res.render('home', {
-      title: 'Home',
-      vehicles,
+    const vehicles = await inventoryModel.getAllVehicles();
+
+    res.render("home", {
+      title: "Jones Surf Shop Inventory",
       nav: [
-        { name: 'Home', link: '/' },
-        { name: 'Inventory', link: '/inventory' },
-      ]
+        { name: "Home", link: "/" },
+        { name: "Inventory", link: "/inventory" },
+        { name: "Add Classification", link: "/classification/add" },
+        { name: "Add Inventory", link: "/inventory/add" }
+      ],
+      vehicles
     });
   } catch (err) {
-    res.render('error', { title: 'Error', message: err.message, nav: [
-      { name: 'Home', link: '/' },
-      { name: 'Inventory', link: '/inventory' },
-    ]});
+    next(err);
   }
 });
 
