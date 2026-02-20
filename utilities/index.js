@@ -3,7 +3,7 @@ function buildVehicleHTML(vehicle) {
   return `
     <div class="vehicle-detail">
       <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" style="max-width:100%;">
+        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
       </div>
       <div class="vehicle-info">
         <h1>${vehicle.inv_make} ${vehicle.inv_model}</h1>

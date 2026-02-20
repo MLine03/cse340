@@ -2,6 +2,17 @@
 const express = require("express");
 const router = express.Router();
 const inventoryController = require("../controllers/inventory-controller");
+const inventoryModel = require("../models/inventory-model");
+
+// List all vehicles
+router.get("/", async (req, res, next) => {
+  try {
+    const vehicles = await inventoryModel.getAllVehicles();
+    res.render("inventory/list", { title: "All Vehicles", vehicles });
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Vehicle detail page
 router.get("/detail/:inv_id", inventoryController.buildVehicleDetail);
