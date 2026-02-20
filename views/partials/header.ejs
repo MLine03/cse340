@@ -1,7 +1,13 @@
+<!-- views/partials/header.ejs -->
 <header>
   <nav>
-    <a href="/">Home</a> |
-    <a href="/inventory/classification/1">SUVs</a> |
-    <a href="/inventory/classification/2">Trucks</a>
+    <a href="/">Home</a>
+
+    <% if (user) { %>
+      <a href="/account">Welcome <%= user.firstname %></a>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <a href="/account/login">My Account</a>
+    <% } %>
   </nav>
 </header>

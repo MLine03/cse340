@@ -1,42 +1,34 @@
-require('dotenv').config();
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const path = require('path');
+require('dotenv').config();
+
+const accountsRouter = require('./routes/accounts');
+
 const app = express();
-const inventoryRoutes = require('./routes/inventory-routes');
 
 // Middleware
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
-// View engine
-app.set('views', path.join(__dirname, 'views'));
+// Set view engine
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Routes
-app.use('/', inventoryRoutes);
+app.use('/account', accountsRouter);
 
-// 404 handler
+// Home route
+app.get('/', (req, res) => {
+    res.render('partials/header', { user: req.user }); // Optional: render header partial
+});
+
+// 404
 app.use((req, res) => {
-  res.status(404).render('errors/404', { url: req.originalUrl });
+    res.status(404).send('Page Not Found');
 });
 
-// 500 handler
-app.use((err, req, res, next) => {
-  console.error('Error caught:', err);
-  res.status(err.status || 500).render('errors/500', { message: err.message || 'Internal Server Error' });
-});
-
-// Start server
+// Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-app.use((err, req, res, next) => {
-  console.error(err.stack)
-
-  const status = err.status || 500
-  res.status(status).render("errors/error", {
-    title: status === 404 ? "404 Not Found" : "Server Error",
-    message: err.message,
-    nav: "",
-  })
-})

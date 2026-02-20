@@ -1,33 +1,23 @@
-// models/accountModel.js
-const pool = require("../database/connection"); // Your DB connection module
-const bcrypt = require("bcryptjs");
+// models/accountsModel.js
+const pool = require('../db/connection'); // Your MySQL pool or database connection
 
-// Update account info
-async function updateAccount(account_id, firstname, lastname, email) {
-  const sql = `UPDATE accounts SET account_firstname = ?, account_lastname = ?, account_email = ? WHERE account_id = ?`;
-  const params = [firstname, lastname, email, account_id];
-  const [result] = await pool.execute(sql, params);
-  return result;
-}
+exports.getAccountByEmail = async (email) => {
+    const [rows] = await pool.query('SELECT * FROM accounts WHERE email = ?', [email]);
+    return rows[0];
+};
 
-// Update password
-async function updatePassword(account_id, password) {
-  const hashedPassword = await bcrypt.hash(password, 12);
-  const sql = `UPDATE accounts SET account_password = ? WHERE account_id = ?`;
-  const params = [hashedPassword, account_id];
-  const [result] = await pool.execute(sql, params);
-  return result;
-}
+exports.getAccountById = async (id) => {
+    const [rows] = await pool.query('SELECT * FROM accounts WHERE account_id = ?', [id]);
+    return rows[0];
+};
 
-// Get account by email
-async function getAccountByEmail(email) {
-  const sql = `SELECT * FROM accounts WHERE account_email = ?`;
-  const [rows] = await pool.execute(sql, [email]);
-  return rows[0];
-}
+exports.updateAccount = async ({ account_id, firstname, lastname, email }) => {
+    await pool.query(
+        'UPDATE accounts SET firstname = ?, lastname = ?, email = ? WHERE account_id = ?',
+        [firstname, lastname, email, account_id]
+    );
+};
 
-module.exports = {
-  updateAccount,
-  updatePassword,
-  getAccountByEmail,
+exports.updatePassword = async (account_id, hashedPassword) => {
+    await pool.query('UPDATE accounts SET password = ? WHERE account_id = ?', [hashedPassword, account_id]);
 };

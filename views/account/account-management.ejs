@@ -1,45 +1,13 @@
-<%- include("partials/header", { user: user }) %>
+<!-- views/account/account-management.ejs -->
+<h2>Welcome <%= user.firstname %></h2>
 
-<h1>Account Management</h1>
-
-<% if (errors.length > 0) { %>
-  <ul>
-    <% errors.forEach(function(error) { %>
-      <li style="color:red;"><%= error.msg %></li>
-    <% }); %>
-  </ul>
+<% if (['Employee','Admin'].includes(user.account_type)) { %>
+  <h3>Inventory Management</h3>
+  <p><a href="/inventory/manage">Manage Inventory</a></p>
 <% } %>
 
-<% if (success.length > 0) { %>
-  <ul>
-    <% success.forEach(function(msg) { %>
-      <li style="color:green;"><%= msg.msg %></li>
-    <% }); %>
-  </ul>
+<a href="/account/update/<%= user.account_id %>">Update Account Info</a>
+
+<% if (message) { %>
+  <p class="success"><%= message %></p>
 <% } %>
-
-<h2>Update Account Information</h2>
-<form action="/account/update-account" method="POST">
-  <label for="account_firstname">First Name:</label>
-  <input type="text" name="account_firstname" id="account_firstname" value="<%= user.account_firstname %>" required />
-  
-  <label for="account_lastname">Last Name:</label>
-  <input type="text" name="account_lastname" id="account_lastname" value="<%= user.account_lastname %>" required />
-  
-  <label for="account_email">Email:</label>
-  <input type="email" name="account_email" id="account_email" value="<%= user.account_email %>" required />
-  
-  <button type="submit">Update Account</button>
-</form>
-
-<% if (user.account_level !== "Client") { %>
-  <h2>Special Admin Section</h2>
-  <p>Welcome Admin! Here's your special content.</p>
-<% } %>
-
-<h2>Update Password</h2>
-<form action="/account/update-password" method="POST">
-  <label for="account_password">New Password:</label>
-  <input type="password" name="account_password" id="account_password" required minlength="8" />
-  <button type="submit">Update Password</button>
-</form>

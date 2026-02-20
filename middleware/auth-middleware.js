@@ -1,19 +1,28 @@
 // middleware/authMiddleware.js
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const requireLogin = (req, res, next) => {
-  const token = req.cookies.jwt;
-  if (!token) {
-    return res.redirect("/account/login");
-  }
+function verifyJWT(req, res, next) {
+    const token = req.cookies.jwt;
+    if (!token) {
+        return res.redirect('/account/login');
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded; // attach user info to request
+        res.locals.user = decoded; // attach user info to views
+        next();
+    } catch (err) {
+        console.error(err);
+        return res.redirect('/account/login');
+    }
+}
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+// Middleware to restrict to Employee/Admin only
+function restrictToStaff(req, res, next) {
+    if (!req.user || !['Employee', 'Admin'].includes(req.user.account_type)) {
+        return res.render('account/login', { message: 'Access denied. Login required.' });
+    }
     next();
-  } catch (err) {
-    return res.redirect("/account/login");
-  }
-};
+}
 
-module.exports = { requireLogin };
+module.exports = { verifyJWT, restrictToStaff };
