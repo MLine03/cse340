@@ -4,9 +4,9 @@ import { manageAccount, updateAccountView, updateAccountInfo, updatePassword } f
 
 const router = express.Router();
 
-router.get('/manage', manageAccount);
+router.get('/', manageAccount);
 router.get('/update/:id', updateAccountView);
 router.post('/update', updateAccountInfo);
-router.post('/update-password', updatePassword);
+router.post('/password', updatePassword);
 
 export default router;

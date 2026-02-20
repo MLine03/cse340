@@ -1,33 +1,26 @@
-const pool = require('../db/connection');
+// models/accountModel.js
+import { query } from '../utils/db-connection.js';
 
-async function getAccountById(account_id) {
-    const [rows] = await pool.query(
-        'SELECT * FROM accounts WHERE account_id = ?',
-        [account_id]
-    );
-    return rows[0];
-}
+export const getAccountById = async (id) => {
+  const rows = await query('SELECT * FROM accounts WHERE account_id = ?', [id]);
+  return rows[0];
+};
 
-async function getAccountByEmail(email) {
-    const [rows] = await pool.query(
-        'SELECT * FROM accounts WHERE email = ?',
-        [email]
-    );
-    return rows[0];
-}
+export const getAccountByEmail = async (email) => {
+  const rows = await query('SELECT * FROM accounts WHERE email = ?', [email]);
+  return rows[0];
+};
 
-async function updateAccount(account_id, firstname, lastname, email) {
-    await pool.query(
-        'UPDATE accounts SET firstname = ?, lastname = ?, email = ? WHERE account_id = ?',
-        [firstname, lastname, email, account_id]
-    );
-}
+export const updateAccount = async (id, firstname, lastname, email) => {
+  return query(
+    'UPDATE accounts SET firstname = ?, lastname = ?, email = ? WHERE account_id = ?',
+    [firstname, lastname, email, id]
+  );
+};
 
-async function updatePassword(account_id, password) {
-    await pool.query(
-        'UPDATE accounts SET password = ? WHERE account_id = ?',
-        [password, account_id]
-    );
-}
-
-module.exports = { getAccountById, getAccountByEmail, updateAccount, updatePassword };
+export const updatePassword = async (id, hashedPassword) => {
+  return query(
+    'UPDATE accounts SET password = ? WHERE account_id = ?',
+    [hashedPassword, id]
+  );
+};

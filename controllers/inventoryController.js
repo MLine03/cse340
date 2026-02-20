@@ -1,15 +1,18 @@
-// controllers/inventoryController.js
-import inventoryModel from '../models/inventoryModel.js';
+import * as inventoryModel from '../models/inventoryModel.js';
 
-export const getInventory = async (req, res) => {
-  const items = await inventoryModel.getAllInventory();
-  res.render('inventory/list', { items });
+export const listInventory = async (req, res) => {
+  const inventory = await inventoryModel.getAllInventory();
+  res.render('inventory/list', { inventory });
 };
 
 export const addInventory = async (req, res) => {
-  const { name, description, price, stock } = req.body;
-  if (!name || !price || !stock) return res.status(400).send('All fields are required');
-  await inventoryModel.insertInventory({ name, description, price, stock });
+  await inventoryModel.addInventory(req.body);
+  res.redirect('/inventory');
+};
+
+export const updateInventory = async (req, res) => {
+  const { id } = req.params;
+  await inventoryModel.updateInventory(id, req.body);
   res.redirect('/inventory');
 };
 

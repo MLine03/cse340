@@ -1,5 +1,5 @@
 // controllers/accountController.js
-import accountModel from '../models/accountmodel.js';
+import * as accountModel from '../models/accountmodel.js';
 import bcrypt from 'bcryptjs';
 
 export const manageAccount = async (req, res) => {
@@ -15,11 +15,12 @@ export const updateAccountView = async (req, res) => {
 
 export const updateAccountInfo = async (req, res) => {
   const { account_id, firstname, lastname, email } = req.body;
+
   const errors = [];
-  if (!firstname || !lastname || !email) errors.push('All fields are required');
+  if (!firstname || !lastname || !email) errors.push('All fields are required.');
 
   const emailExists = await accountModel.getAccountByEmail(email);
-  if (emailExists && emailExists.account_id != account_id) errors.push('Email already in use');
+  if (emailExists && emailExists.account_id != account_id) errors.push('Email already in use.');
 
   if (errors.length > 0) {
     const account = await accountModel.getAccountById(account_id);
@@ -34,7 +35,8 @@ export const updateAccountInfo = async (req, res) => {
 export const updatePassword = async (req, res) => {
   const { account_id, password } = req.body;
   const errors = [];
-  if (!password || password.length < 8) errors.push('Password must be at least 8 characters');
+
+  if (!password || password.length < 8) errors.push('Password must be at least 8 characters.');
 
   if (errors.length > 0) {
     const account = await accountModel.getAccountById(account_id);
