@@ -1,5 +1,5 @@
 // models/review-model.js
-const pool = require("../database/db"); // <-- updated to use db.js
+const pool = require("../db/pool"); // Fixed path
 
 // Add a new review
 async function addReview(review_text, review_rating, inv_id, account_id) {
