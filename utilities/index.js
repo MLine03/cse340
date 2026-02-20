@@ -1,19 +1,17 @@
-exports.buildVehicleDetailHTML = (vehicle) => {
-  const priceFormatted = vehicle.price.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-  const mileageFormatted = vehicle.miles.toLocaleString();
-
+function buildVehicleDetailHTML(vehicle) {
   return `
     <div class="vehicle-detail">
-      <img src="/images/${vehicle.image}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-img">
+      <div class="vehicle-image">
+        <img src="${vehicle.image}" alt="${vehicle.make} ${vehicle.model}" />
+      </div>
       <div class="vehicle-info">
-        <h1>${vehicle.year} ${vehicle.make} ${vehicle.model}</h1>
-        <p><strong>Price:</strong> ${priceFormatted}</p>
-        <p><strong>Mileage:</strong> ${mileageFormatted} miles</p>
+        <h2>${vehicle.make} ${vehicle.model} (${vehicle.year})</h2>
+        <p><strong>Price:</strong> $${Number(vehicle.price).toLocaleString()}</p>
+        <p><strong>Mileage:</strong> ${Number(vehicle.miles).toLocaleString()} miles</p>
         <p>${vehicle.description}</p>
       </div>
     </div>
   `;
-};
+}
+
+module.exports = { buildVehicleDetailHTML };

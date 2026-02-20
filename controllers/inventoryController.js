@@ -1,25 +1,39 @@
-const inventoryModel = require("../models/inventory-model");
-const utilities = require("../utilities");
+const model = require('../models/inventory-model');
+const utilities = require('../utilities');
 
-exports.buildVehicleList = async (req, res, next) => {
+// Classification view
+async function showClassification(req, res, next) {
   try {
-    const vehicles = await inventoryModel.getAllVehicles();
-    res.render("inventory/list", { title: "All Vehicles", vehicles });
-  } catch (err) {
-    next(err);
+    const classification_id = req.params.classification_id;
+    const vehicles = await model.getVehiclesByClassification(classification_id);
+    res.render('index', { vehicles, title: 'Classification View' });
+  } catch (error) {
+    next(error);
   }
-};
+}
 
-exports.buildVehicleDetail = async (req, res, next) => {
+// Vehicle detail view
+async function showVehicleDetail(req, res, next) {
   try {
-    const inv_id = parseInt(req.params.inv_id);
-    const vehicle = await inventoryModel.getVehicleById(inv_id);
+    const inv_id = req.params.inv_id;
+    const vehicle = await model.getVehicleById(inv_id);
     if (!vehicle) {
-      return res.status(404).render("errors/404", { title: "Vehicle Not Found" });
+      const err = new Error('Vehicle not found');
+      err.status = 404;
+      throw err;
     }
     const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle);
-    res.render("inventory/detail", { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
-  } catch (err) {
-    next(err);
+    res.render('inventory/detail', { vehicleHTML, title: `${vehicle.make} ${vehicle.model}` });
+  } catch (error) {
+    next(error);
   }
-};
+}
+
+// Footer intentional error
+function triggerError(req, res, next) {
+  const err = new Error('Intentional server error triggered!');
+  err.status = 500;
+  next(err);
+}
+
+module.exports = { showClassification, showVehicleDetail, triggerError };

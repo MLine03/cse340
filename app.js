@@ -1,24 +1,31 @@
-const express = require("express");
-const session = require("express-session");
-const pgSession = require("connect-pg-simple")(session);
-const db = require("./database/db"); // same Pool you use everywhere
-require("dotenv").config();
-
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
 const app = express();
+const inventoryRoutes = require('./routes/inventory-routes');
 
+// Middleware
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-// Session setup
-app.use(session({
-  store: new pgSession({
-    pool: db,           // ← same DB connection
-    tableName: "session" 
-  }),
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { maxAge: 24*60*60*1000 } // 1 day
-}));
+// View engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-module.exports = app;
+// Routes
+app.use('/', inventoryRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render('errors/404', { url: req.originalUrl });
+});
+
+// 500 handler
+app.use((err, req, res, next) => {
+  console.error('Error caught:', err);
+  res.status(err.status || 500).render('errors/500', { message: err.message || 'Internal Server Error' });
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

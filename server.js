@@ -4,74 +4,59 @@ const express = require("express");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const path = require("path");
-
-// Database connection
-const pool = require("./database/db"); // your cse340_db connection
-
-// Import routes
-const homeRouter = require("./routes/home");
-const inventoryRouter = require("./routes/inventory");
-const inventoryRouteRouter = require("./routes/inventoryRoute");
-const accountRouter = require("./routes/accountRoute");
-const authRouter = require("./routes/auth");
-const reviewRouter = require("./routes/reviewRoute");
-const staticRouter = require("./routes/static");
-const errorRouter = require("./routes/errorRoute");
-const indexRouter = require("./routes/indexRoute");
+const pool = require("./database/db"); // Make sure this points to your PostgreSQL pool
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-
-// Set view engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+// View engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
 // Session setup
 app.use(
   session({
     store: new pgSession({
-      pool: pool, // Use the same pool as your database
-      tableName: "session",
+      pool: pool,                // Use your pg pool
+      tableName: "session",      // Must exist in DB
+      createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || "changeThisSecret",
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 1000 * 60 * 60 }, // 1 hour
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
   })
 );
 
 // Routes
-app.use("/", indexRouter);
-app.use("/home", homeRouter);
-app.use("/inventory", inventoryRouter);
-app.use("/inventoryRoute", inventoryRouteRouter);
-app.use("/account", accountRouter);
-app.use("/auth", authRouter);
-app.use("/reviews", reviewRouter);
-app.use("/static", staticRouter);
-app.use("/error", errorRouter);
+const homeRoutes = require("./routes/home");
+const inventoryRoutes = require("./routes/inventory");
+const accountRoutes = require("./routes/accountRoute");
+const authRoutes = require("./routes/auth");
+const reviewRoutes = require("./routes/reviewRoute");
+const errorRoutes = require("./routes/errorRoute");
 
-// 404 error handler
-app.use((req, res) => {
-  res.status(404).render("errors/404", {
-    title: "404 - Page Not Found",
-    message: "Sorry, the page you requested does not exist.",
-  });
+app.use("/", homeRoutes);
+app.use("/inventory", inventoryRoutes);
+app.use("/account", accountRoutes);
+app.use("/auth", authRoutes);
+app.use("/reviews", reviewRoutes);
+app.use("/error", errorRoutes);
+
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).render("errors/404", { url: req.originalUrl });
 });
 
-// Global error handler
+// 500 error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("errors/500", {
-    title: "500 - Internal Server Error",
-    message: "Something went wrong on the server. Please try again later.",
-    error: err,
-  });
+  res.status(500).render("errors/500", { error: err });
 });
 
 // Start server

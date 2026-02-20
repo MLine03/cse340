@@ -2,41 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/styles.css">
   <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <header>
-    <h1>CSE Motors</h1>
-  </header>
+  <%- include('partials/header') %>
 
-  <nav>
-    <% nav.forEach(item => { %>
-      <a href="<%= item.link %>"><%= item.name %></a>
-    <% }) %>
-  </nav>
+  <h1><%= title %></h1>
 
-  <main>
-    <h2>Inventory</h2>
-    <% if (inventoryList && inventoryList.length) { %>
-      <ul>
-        <% inventoryList.forEach(vehicle => { %>
-          <li>
-            <a href="/inv/detail/<%= vehicle.id %>">
-              <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %>
-            </a>
-          </li>
-        <% }) %>
-      </ul>
-    <% } else { %>
-      <p>No inventory available.</p>
-    <% } %>
-  </main>
+  <% if (vehicles.length === 0) { %>
+    <p>No vehicles to display</p>
+  <% } else { %>
+    <ul>
+      <% vehicles.forEach(vehicle => { %>
+        <li>
+          <a href="/inventory/detail/<%= vehicle.inv_id %>">
+            <%= vehicle.make %> <%= vehicle.model %>
+          </a>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
 
-  <footer>
-    <p>&copy; 2026 CSE Motors</p>
-    <a href="/error-test">Trigger 500 Error</a>
-  </footer>
+  <%- include('partials/footer') %>
 </body>
 </html>
