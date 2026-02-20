@@ -1,34 +1,22 @@
-// models/inventory-model.js
-const pool = require('../utils/db-connection');
+const pool = require('../db/connection'); // your PostgreSQL pool
 
-// Get all classifications
-async function getClassifications() {
-  const sql = 'SELECT * FROM classification ORDER BY classification_name ASC';
-  const data = await pool.query(sql);
-  return data;
-}
+exports.getClassifications = async () => {
+  return pool.query('SELECT * FROM classification ORDER BY classification_name');
+};
 
-// Insert a new classification
-async function addClassification(classification_name) {
+exports.insertClassification = async (name) => {
   const sql = 'INSERT INTO classification (classification_name) VALUES ($1) RETURNING *';
-  const data = await pool.query(sql, [classification_name]);
-  return data;
-}
+  const values = [name];
+  const result = await pool.query(sql, values);
+  return result.rows[0];
+};
 
-// Insert a new vehicle
-async function addVehicle(vehicle) {
-  const { classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color } = vehicle;
+exports.insertVehicle = async ({ inv_make, inv_model, inv_year, classification_id }) => {
   const sql = `
-    INSERT INTO inventory 
-      (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
-    RETURNING *`;
-  const data = await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]);
-  return data;
-}
-
-module.exports = {
-  getClassifications,
-  addClassification,
-  addVehicle,
+    INSERT INTO inventory (inv_make, inv_model, inv_year, classification_id)
+    VALUES ($1, $2, $3, $4) RETURNING *
+  `;
+  const values = [inv_make, inv_model, inv_year, classification_id];
+  const result = await pool.query(sql, values);
+  return result.rows[0];
 };

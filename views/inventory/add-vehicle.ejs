@@ -1,14 +1,29 @@
-<h1>Add Vehicle</h1>
-<% if(message){ %>
-  <p style="color:red;"><%= message %></p>
-<% } %>
-<form method="POST" action="/inv/add-vehicle" novalidate>
-  <%= classificationList %>
-  <input type="text" name="inv_make" placeholder="Make" value="<%= sticky.inv_make || '' %>" required>
-  <input type="text" name="inv_model" placeholder="Model" value="<%= sticky.inv_model || '' %>" required>
-  <input type="number" name="inv_year" placeholder="Year" value="<%= sticky.inv_year || '' %>" required>
-  <input type="number" step="0.01" name="inv_price" placeholder="Price" value="<%= sticky.inv_price || '' %>" required>
-  <input type="number" name="inv_miles" placeholder="Miles" value="<%= sticky.inv_miles || '' %>" required>
-  <input type="text" name="inv_color" placeholder="Color" value="<%= sticky.inv_color || '' %>" required>
-  <button type="submit">Add Vehicle</button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Add Vehicle</h1>
+  <% if(errors.length > 0) { %>
+    <ul style="color:red;">
+      <% errors.forEach(e => { %><li><%= e.msg %></li><% }) %>
+    </ul>
+  <% } %>
+  <form method="POST" action="/inv/add-vehicle">
+    <label for="inv_make">Make:</label>
+    <input type="text" name="inv_make" id="inv_make" required value="<%= data.inv_make || '' %>"><br>
+
+    <label for="inv_model">Model:</label>
+    <input type="text" name="inv_model" id="inv_model" required value="<%= data.inv_model || '' %>"><br>
+
+    <label for="inv_year">Year:</label>
+    <input type="number" name="inv_year" id="inv_year" required value="<%= data.inv_year || '' %>"><br>
+
+    <label for="classificationList">Classification:</label>
+    <%= classificationList %><br>
+
+    <button type="submit">Add Vehicle</button>
+  </form>
+</body>
+</html>

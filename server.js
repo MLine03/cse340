@@ -1,42 +1,34 @@
-// server.js
-require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const inventoryRoutes = require('./routes/inventory-routes');
 const path = require('path');
+require('dotenv').config();
+
+const invRouter = require('./routes/inventory');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Middleware
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret',
+  secret: process.env.SESSION_SECRET || 'keyboard cat',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 }));
 
-// Set view engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 // Routes
-app.use('/inv', inventoryRoutes);
+app.use('/inv', invRouter);
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send('Page Not Found');
-});
+// Root redirect
+app.get('/', (req, res) => res.redirect('/inv'));
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send('Server Error');
-});
+// 404 fallback
+app.use((req, res) => res.status(404).render('errors/404', { title: 'Page Not Found' }));
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
