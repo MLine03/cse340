@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventory List</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Vehicle Inventory</h1>
+  <ul>
+    <% vehicles.forEach(vehicle => { %>
+      <li>
+        <a href="/inventory/<%= vehicle.inv_id %>">
+          <%= vehicle.make %> <%= vehicle.model %> (<%= vehicle.year %>)
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+  <a href="/">Go Home</a>
+</body>
+</html>

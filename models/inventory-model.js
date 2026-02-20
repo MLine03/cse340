@@ -1,24 +1,13 @@
-// models/inventory-model.js
-const pool = require("../database/db"); // your PostgreSQL pool
+const pool = require("../database/db");
 
 async function getAllVehicles() {
-  try {
-    const result = await pool.query("SELECT * FROM vehicles");
-    return result.rows;
-  } catch (error) {
-    console.error("Database query error:", error);
-    return [];
-  }
+  const result = await pool.query("SELECT * FROM vehicles ORDER BY inv_id ASC");
+  return result.rows;
 }
 
 async function getVehicleById(inv_id) {
-  try {
-    const result = await pool.query("SELECT * FROM vehicles WHERE inv_id = $1", [inv_id]);
-    return result.rows[0];
-  } catch (error) {
-    console.error("Database query error:", error);
-    return null;
-  }
+  const result = await pool.query("SELECT * FROM vehicles WHERE inv_id = $1", [inv_id]);
+  return result.rows[0];
 }
 
 module.exports = { getAllVehicles, getVehicleById };

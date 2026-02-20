@@ -1,9 +1,8 @@
-// routes/inventory.js
 const express = require("express");
 const router = express.Router();
-const inventoryController = require("../controllers/inventory-controller");
+const inventoryController = require("../controllers/inventoryController");
 
-// Vehicle detail route
-router.get("/detail/:inv_id", inventoryController.showVehicleDetail);
+router.get("/", inventoryController.listVehicles);
+router.get("/:inv_id", inventoryController.vehicleDetail);
 
 module.exports = router;

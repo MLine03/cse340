@@ -1,7 +1,7 @@
 // routes/inventory.js
 const express = require("express");
 const router = express.Router();
-const inventoryController = require("../controllers/inventory-controller");
+const inventoryController = require("../controllers/inventoryController");
 
 // Route: Display all vehicles (optional, useful for classification/home page)
 router.get("/", async (req, res, next) => {

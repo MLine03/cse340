@@ -1,10 +1,9 @@
-// server.js
 const express = require("express");
 const session = require("express-session");
 const pgSession = require("connect-pg-simple")(session);
 const path = require("path");
+const pool = require("./database/db");
 require("dotenv").config();
-const pool = require("./database/db"); // PostgreSQL pool
 
 const app = express();
 
@@ -13,16 +12,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Sessions with PostgreSQL
+// Session with PostgreSQL store
 app.use(
   session({
     store: new pgSession({
-      pool: pool,
+      pool,
       tableName: "session",
+      createTableIfMissing: true
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
   })
 );
 
@@ -31,25 +32,19 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Routes
-app.use("/inventory", require("./routes/inventory")); // inventory routes
+app.use("/inventory", require("./routes/inventory"));
 
-// Home route (optional)
-app.get("/", (req, res) => {
-  res.send("Home Page");
-});
+// Home route
+app.get("/", (req, res) => res.redirect("/inventory"));
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).render("error", { title: "Server Error", message: "Internal Server Error" });
+  if (!res.headersSent) {
+    res.status(500).send("Internal Server Error");
+  }
 });
 
-// 404
-app.use((req, res) => {
-  res.status(404).render("error", { title: "404 Not Found", message: "Page not found." });
-});
-
+// Start server
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
