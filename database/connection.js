@@ -1,7 +1,26 @@
-const { Pool } = require("pg")
+// db/connection.js
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://postgres:password@localhost:5432/jones_surf_shop"
-})
+// Create a MySQL pool using environment variables
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "127.0.0.1",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "cse340",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
 
-module.exports = pool
+// Test connection
+pool.getConnection()
+  .then(conn => {
+    console.log("✅ MySQL connected successfully!");
+    conn.release();
+  })
+  .catch(err => {
+    console.error("❌ Database connection failed:", err);
+  });
+
+module.exports = pool;

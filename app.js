@@ -1,63 +1,33 @@
-const express = require("express")
-const session = require("express-session")
-const flash = require("connect-flash")
-const path = require("path")
-const expressLayouts = require("express-ejs-layouts")
+// app.js
+require("dotenv").config();
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const app = express()
+// Body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname, "public")))
+// Static files
+app.use(express.static("public"));
 
-// View engine
-app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
-app.use(expressLayouts)
-app.set("layout", "layouts/main")
+// Example route
+const { buildVehicleDetail } = require("./utilities/buildVehicleDetail");
+app.get("/", async (req, res) => {
+  const sampleVehicle = {
+    inv_image: "/images/vehicles/adventador.jpg",
+    inv_make: "Lamborghini",
+    inv_model: "Adventador",
+    inv_year: 2022,
+    inv_price: 500000,
+    inv_miles: 1200,
+    inv_description: "A supercar in mint condition."
+  };
 
-// Session
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "keyboard cat",
-    resave: false,
-    saveUninitialized: true,
-  })
-)
+  const html = buildVehicleDetail(sampleVehicle);
+  res.send(html);
+});
 
-app.use(flash())
-
-// Flash locals
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success")
-  res.locals.error = req.flash("error")
-  next()
-})
-
-// Routes
-const inventoryRoute = require("./routes/inventoryRoute")
-app.use("/inv", inventoryRoute)
-
-// Home
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home" })
-})
-
-/* 404 Handler */
-app.use((req, res, next) => {
-  const err = new Error("Page Not Found")
-  err.status = 404
-  next(err)
-})
-
-/* 500 Handler (MUST BE LAST) */
-app.use((err, req, res, next) => {
-  res.status(err.status || 500)
-  res.render("errors/error", {
-    title: err.status || "Server Error",
-    message: err.message,
-  })
-})
-
-module.exports = app
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
