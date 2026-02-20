@@ -36,4 +36,8 @@ function triggerError(req, res, next) {
   next(err);
 }
 
-module.exports = { showClassification, showVehicleDetail, triggerError };
+module.exports = {
+  showClassification,
+  showVehicleDetail,
+  triggerError
+};
