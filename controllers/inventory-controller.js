@@ -1,6 +1,7 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities")
 
+// Build vehicle detail page
 async function buildByInventoryId(req, res, next) {
   try {
     const inv_id = parseInt(req.params.inv_id)
@@ -32,8 +33,9 @@ async function buildByInventoryId(req, res, next) {
   }
 }
 
+// Footer-triggered 500 error
 async function triggerError(req, res, next) {
-  throw new Error("Intentional 500 server error")
+  throw new Error("Intentional server error")
 }
 
 module.exports = { buildByInventoryId, triggerError }

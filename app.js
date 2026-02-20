@@ -40,3 +40,13 @@ app.use((err, req, res, next) => {
     nav: "",
   })
 })
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+
+  const status = err.status || 500
+  res.status(status).render("errors/error", {
+    title: status === 404 ? "404 Not Found" : "Server Error",
+    message: err.message,
+    nav: "",
+  })
+})
