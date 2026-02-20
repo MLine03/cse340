@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <h1>Welcome to CSE340 Inventory</h1>
-  <a href="/inventory">View Inventory</a>
-</body>
-</html>
+<h1><%= title %></h1>
+<ul>
+  <% vehicles.forEach(v => { %>
+    <li>
+      <a href="/inventory/detail/<%= v.inv_id %>"><%= v.make %> <%= v.model %></a>
+    </li>
+  <% }) %>
+</ul>

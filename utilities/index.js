@@ -16,6 +16,4 @@ function buildVehicleDetailHTML(vehicle) {
   `;
 }
 
-module.exports = {
-  buildVehicleDetailHTML
-};
+module.exports = { buildVehicleDetailHTML };
