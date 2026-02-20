@@ -1,4 +1,4 @@
-const pool = require("../db")  // Corrected from ../database/
+const pool = require("../db")  // points to db/index.js
 
 async function getInventoryById(inv_id) {
   try {
@@ -9,10 +9,10 @@ async function getInventoryById(inv_id) {
       ON i.classification_id = c.classification_id
       WHERE inv_id = $1
     `
-    const data = await pool.query(sql, [inv_id])
-    return data.rows[0]
+    const result = await pool.query(sql, [inv_id])
+    return result.rows[0] || null
   } catch (error) {
-    console.error("getInventoryById error: " + error)
+    console.error("Database error: ", error)
     throw error
   }
 }

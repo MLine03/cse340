@@ -1,26 +1,17 @@
-// utilities/utilities.js
-
-// Wrap async route handlers in error catcher
 function handleErrors(fn) {
   return function (req, res, next) {
     Promise.resolve(fn(req, res, next)).catch(next)
   }
 }
 
-// Build HTML string for vehicle detail page
 function buildVehicleDetail(vehicle) {
-  const price = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(vehicle.inv_price)
-
+  const price = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(vehicle.inv_price)
   const mileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles)
 
   return `
     <div class="vehicle-detail">
       <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" 
-             alt="Image of ${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}">
+        <img src="${vehicle.inv_image}" alt="${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}">
       </div>
       <div class="vehicle-info">
         <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
@@ -33,9 +24,8 @@ function buildVehicleDetail(vehicle) {
   `
 }
 
-// Example getNav function (optional)
 async function getNav() {
-  return "<nav>Navigation HTML here</nav>"
+  return "<nav>Navigation</nav>"
 }
 
 module.exports = { handleErrors, buildVehicleDetail, getNav }
