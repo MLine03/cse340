@@ -1,10 +1,20 @@
-const { Pool } = require("pg")
+// database/index.js
+const { Pool } = require("pg");
 
+// Use the DATABASE_URL environment variable provided by Render
 const pool = new Pool({
-  host: "localhost",
-  port: 5432,
-  database: "cse340",
-  user: "mac",  // your Mac username
-})
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // required for Render Postgres
+  },
+});
 
-module.exports = pool
+// Optional: simple test function to check connection
+pool.connect()
+  .then(client => {
+    console.log("PostgreSQL connected successfully!");
+    client.release();
+  })
+  .catch(err => console.error("PostgreSQL connection error:", err));
+
+module.exports = pool;
