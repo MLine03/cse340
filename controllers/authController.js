@@ -2,10 +2,8 @@
 import { getAccountByEmail, createAccount } from '../models/accountmodel.js';
 import bcrypt from 'bcryptjs';
 
-// Show login page
 export const loginView = (req, res) => res.render('auth/login', { errors: null });
 
-// Handle login
 export const login = async (req, res) => {
   const { email, password } = req.body;
   const errors = [];
@@ -13,9 +11,10 @@ export const login = async (req, res) => {
   if (!email || !password) errors.push('All fields are required.');
 
   const account = await getAccountByEmail(email);
-  if (!account || !(await bcrypt.compare(password, account.password))) {
+  if (!account) errors.push('Invalid email or password.');
+
+  if (account && !(await bcrypt.compare(password, account.password)))
     errors.push('Invalid email or password.');
-  }
 
   if (errors.length) return res.render('auth/login', { errors });
 
@@ -29,18 +28,16 @@ export const login = async (req, res) => {
   res.redirect('/account/manage');
 };
 
-// Show registration page
 export const registerView = (req, res) => res.render('auth/register', { errors: null });
 
-// Handle registration
 export const register = async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   const errors = [];
 
   if (!firstname || !lastname || !email || !password) errors.push('All fields are required.');
   if (password && password.length < 8) errors.push('Password must be at least 8 characters.');
-  if (await getAccountByEmail(email)) errors.push('Email already in use.');
 
+  if (await getAccountByEmail(email)) errors.push('Email already in use.');
   if (errors.length) return res.render('auth/register', { errors });
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,7 +46,6 @@ export const register = async (req, res) => {
   res.redirect('/auth/login');
 };
 
-// Logout
 export const logout = (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('connect.sid');

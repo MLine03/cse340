@@ -1,13 +1,22 @@
 // models/inventoryModel.js
 import { query } from '../utils/db-connection.js';
 
-export const getAllInventory = async () => query('SELECT * FROM inventory');
+// Get all inventory items
+export const getInventory = async () => {
+  const [rows] = await query('SELECT * FROM inventory');
+  return rows;
+};
 
-export const addInventory = async ({ name, quantity, price }) =>
-  query('INSERT INTO inventory (name, quantity, price) VALUES (?, ?, ?)', [name, quantity, price]);
+// Add inventory item
+export const addInventory = async ({ name, description, price, quantity }) => {
+  const [result] = await query(
+    'INSERT INTO inventory (name, description, price, quantity) VALUES (?, ?, ?, ?)',
+    [name, description, price, quantity]
+  );
+  return result.insertId;
+};
 
-export const updateInventory = async (id, { name, quantity, price }) =>
-  query('UPDATE inventory SET name = ?, quantity = ?, price = ? WHERE id = ?', [name, quantity, price, id]);
-
-export const deleteInventory = async (id) =>
-  query('DELETE FROM inventory WHERE id = ?', [id]);
+// Delete inventory item
+export const deleteInventory = async (id) => {
+  await query('DELETE FROM inventory WHERE inventory_id = ?', [id]);
+};
