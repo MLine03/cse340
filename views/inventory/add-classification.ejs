@@ -1,9 +1,8 @@
 <h1>Add Classification</h1>
-<% if (message) { %>
+<% if(message){ %>
   <p style="color:red;"><%= message %></p>
 <% } %>
-<form method="POST" action="/inv/add-classification">
-  <label for="classification_name">Classification Name:</label>
-  <input type="text" name="classification_name" id="classification_name" required pattern="[a-zA-Z0-9]+">
+<form method="POST" action="/inv/add-classification" novalidate>
+  <input type="text" name="classification_name" value="<%= sticky %>" required pattern="[A-Za-z0-9]+">
   <button type="submit">Add</button>
 </form>
