@@ -1,8 +1,7 @@
-// db/index.js
-const pg = require("pg")
+const { Pool } = require('pg')
 
-const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL, // make sure this is set in Render
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 })
 
 module.exports = pool

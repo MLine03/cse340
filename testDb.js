@@ -1,12 +1,15 @@
-const pool = require("./database/db");
+// testDb.js
+const pool = require('./db'); // correct path
 
-(async () => {
+async function testDb() {
   try {
-    const res = await pool.query("SELECT NOW()");
-    console.log("Database connected:", res.rows);
-    process.exit(0);
+    const res = await pool.query('SELECT NOW()');
+    console.log(res.rows);
   } catch (err) {
-    console.error("DB connection error:", err);
-    process.exit(1);
+    console.error(err);
+  } finally {
+    process.exit();
   }
-})();
+}
+
+testDb();

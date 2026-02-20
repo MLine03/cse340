@@ -1,10 +1,15 @@
-<%- include("../partials/header") %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- vehicleHTML %>
 
-<main>
-  <h1><%= title %></h1>
-  <div class="detail-container">
-    <%- vehicleDetail %>
-  </div>
-</main>
-
-<%- include("../partials/footer") %>
+  <footer>
+    <a href="/inventory/trigger-error">Trigger 500 Error</a>
+  </footer>
+</body>
+</html>

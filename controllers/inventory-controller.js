@@ -1,35 +1,20 @@
-const invModel = require("../models/inventory-model")
-const utilities = require("../utilities")
+const invModel = require('../models/inventory-model')
+const utilities = require('../utilities')
 
+// Show vehicle detail
 async function buildByInventoryId(req, res, next) {
-  try {
-    const inv_id = parseInt(req.params.inv_id)
-    if (isNaN(inv_id)) {
-      const error = new Error("Invalid vehicle ID")
-      error.status = 400
-      throw error
-    }
-
-    const vehicle = await invModel.getInventoryById(inv_id)
-    if (!vehicle) {
-      const error = new Error("Vehicle not found")
-      error.status = 404
-      throw error
-    }
-
-    const vehicleDetail = utilities.buildVehicleDetail(vehicle)
-
-    res.render("inventory/detail", {
-      title: `${vehicle.inv_make} ${vehicle.inv_model}`,
-      vehicleDetail,
-    })
-  } catch (err) {
-    next(err)
+  const inv_id = req.params.inv_id
+  const vehicle = await invModel.getInventoryById(inv_id)
+  if (!vehicle) {
+    return res.status(404).render('errors/404', { title: 'Not Found' })
   }
+  const vehicleHTML = utilities.buildVehicleDetailHTML(vehicle)
+  res.render('inventory/detail', { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicleHTML })
 }
 
+// Trigger 500 error (for footer link)
 async function triggerError(req, res, next) {
-  throw new Error("Intentional 500 Error")
+  throw new Error('Intentional 500 error for testing')
 }
 
 module.exports = { buildByInventoryId, triggerError }
