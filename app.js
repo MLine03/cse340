@@ -1,37 +1,24 @@
-const express = require('express');
-const session = require('express-session');
-const flash = require('connect-flash');
-require('dotenv').config();
+const express = require("express");
+const session = require("express-session");
+const pgSession = require("connect-pg-simple")(session);
+const db = require("./database/db"); // same Pool you use everywhere
+require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('public'));
 
-// Session
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-app.use(flash());
+// Session setup
+app.use(session({
+  store: new pgSession({
+    pool: db,           // ← same DB connection
+    tableName: "session" 
+  }),
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 24*60*60*1000 } // 1 day
+}));
 
-// View engine
-app.set('view engine', 'ejs');
-
-// Routes
-app.use('/', require('./routes/home'));
-app.use('/account', require('./routes/accountRoute'));
-app.use('/inventory', require('./routes/inventoryRoute'));
-app.use('/review', require('./routes/reviewRoute'));
-app.use(require('./routes/errorRoute'));
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = app;
