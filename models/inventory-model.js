@@ -1,4 +1,3 @@
-// models/inventory-model.js
 const pool = require("../database");
 
 async function getAllVehicles() {
