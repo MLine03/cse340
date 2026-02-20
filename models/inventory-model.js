@@ -1,36 +1,34 @@
-const pool = require('../utils/db-connection'); // Assume you have pg Pool configured
+// models/inventory-model.js
+const pool = require('../utils/db-connection');
 
-exports.addClassification = async (name) => {
-  try {
-    await pool.query('INSERT INTO classification (classification_name) VALUES ($1)', [name]);
-    return { success: true };
-  } catch (err) {
-    console.error(err);
-    return { success: false };
-  }
-};
+// Get all classifications
+async function getClassifications() {
+  const sql = 'SELECT * FROM classification ORDER BY classification_name ASC';
+  const data = await pool.query(sql);
+  return data;
+}
 
-exports.addVehicle = async (vehicle) => {
-  const { classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color } = vehicle;
-  try {
-    await pool.query(
-      `INSERT INTO inventory (classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color)
-       VALUES ($1,$2,$3,$4,$5,$6,$7)`,
-      [classification_id, inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color]
-    );
-    return { success: true };
-  } catch (err) {
-    console.error(err);
-    return { success: false };
-  }
-};
+// Insert a new classification
+async function addClassification(classification_name) {
+  const sql = 'INSERT INTO classification (classification_name) VALUES ($1) RETURNING *';
+  const data = await pool.query(sql, [classification_name]);
+  return data;
+}
 
-exports.getClassifications = async () => {
-  try {
-    const result = await pool.query('SELECT * FROM classification ORDER BY classification_name');
-    return result;
-  } catch (err) {
-    console.error(err);
-    return { rows: [] };
-  }
+// Insert a new vehicle
+async function addVehicle(vehicle) {
+  const { classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color } = vehicle;
+  const sql = `
+    INSERT INTO inventory 
+      (classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+    RETURNING *`;
+  const data = await pool.query(sql, [classification_id, inv_make, inv_model, inv_year, inv_description, inv_image, inv_thumbnail, inv_price, inv_miles, inv_color]);
+  return data;
+}
+
+module.exports = {
+  getClassifications,
+  addClassification,
+  addVehicle,
 };
