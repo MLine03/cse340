@@ -1,15 +1,22 @@
-<h1>Inventory</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include("partials/navigation") %>
+  <h1><%= title %></h1>
 
-<ul>
-  <% if (vehicles && vehicles.length > 0) { %>
+  <div class="vehicle-list">
     <% vehicles.forEach(vehicle => { %>
-      <li>
-        <a href="/inventory/detail/<%= vehicle.inv_id %>">
-          <%= vehicle.inv_make %> <%= vehicle.inv_model %>
-        </a>
-      </li>
+      <div class="vehicle-item">
+        <h3><%= vehicle.inv_make %> <%= vehicle.inv_model %></h3>
+        <p>Year: <%= vehicle.inv_year %></p>
+        <p>Price: $<%= vehicle.inv_price.toLocaleString() %></p>
+      </div>
     <% }) %>
-  <% } else { %>
-    <li>No vehicles available</li>
-  <% } %>
-</ul>
+  </div>
+</body>
+</html>

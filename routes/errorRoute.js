@@ -1,17 +1,22 @@
-const express = require("express")
-const router = express.Router()
-const utilities = require("../utilities")
+const express = require('express');
+const router = express.Router();
 
-router.get(
-  "*",
-  utilities.handleErrors(async (req, res) => {
-    const nav = await utilities.getNav()
-    res.status(404).render("errors/error", {
-      title: "404 Not Found",
-      nav,
-      message: "Sorry, the page you requested does not exist.",
-    })
-  })
-)
+router.use((err, req, res, next) => {
+  console.error('Error handler:', err);
+  res.status(500).render('error', {
+    title: '500 - Server Error',
+    message: err.message,
+    nav: getNav(),
+  });
+});
 
-module.exports = router
+function getNav() {
+  return [
+    { name: 'Home', link: '/' },
+    { name: 'Inventory', link: '/inventory' },
+    { name: 'Add Classification', link: '/add-classification' },
+    { name: 'Add Inventory', link: '/add-inventory' },
+  ];
+}
+
+module.exports = router;

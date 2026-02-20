@@ -2,29 +2,22 @@ const express = require('express');
 const router = express.Router();
 const inventoryModel = require('../models/inventory-model');
 
-// Home page
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const vehicles = await inventoryModel.getAllVehicles();
-    res.render('home', { vehicles });
+    res.render('index', { title: 'Jones Surf Shop', nav: getNav(), vehicles });
   } catch (err) {
-    console.error('Error fetching vehicles:', err);
-    res.status(500).render('error', { message: 'Unable to fetch vehicles' });
+    next(err);
   }
 });
 
-// Vehicle detail page
-router.get('/vehicle/:id', async (req, res) => {
-  try {
-    const vehicle = await inventoryModel.getVehicleById(req.params.id);
-    if (!vehicle) {
-      return res.status(404).render('error', { message: 'Vehicle not found' });
-    }
-    res.render('vehicle-detail', { vehicle });
-  } catch (err) {
-    console.error('Error fetching vehicle:', err);
-    res.status(500).render('error', { message: 'Unable to fetch vehicle' });
-  }
-});
+function getNav() {
+  return [
+    { name: 'Home', link: '/' },
+    { name: 'Inventory', link: '/inventory' },
+    { name: 'Add Classification', link: '/add-classification' },
+    { name: 'Add Inventory', link: '/add-inventory' },
+  ];
+}
 
 module.exports = router;
