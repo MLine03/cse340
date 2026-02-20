@@ -4,9 +4,9 @@ import { getInventory, addInventory, updateInventory, deleteInventory } from '..
 
 const router = express.Router();
 
-router.get('/', getInventory);
-router.post('/add', addInventory);
-router.post('/update/:id', updateInventory);
-router.post('/delete/:id', deleteInventory);
+router.get('/', getInventory); // list inventory
+router.post('/add', addInventory); // add new item
+router.post('/update/:id', updateInventory); // update item by ID
+router.post('/delete/:id', deleteInventory); // delete item by ID
 
 export default router;
