@@ -1,64 +1,43 @@
-// server.js
 import express from 'express';
 import session from 'express-session';
-import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import accountRoutes from './routes/account.js';
+import inventoryRoutes from './routes/inventory.js';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-// Load environment variables
 dotenv.config();
-
-// __dirname replacement for ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'defaultSecret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
-  })
-);
 
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Session
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
 
 // View engine
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.resolve('./views'));
 app.set('view engine', 'ejs');
 
+// Middleware to attach logged-in account to res.locals
+app.use((req, res, next) => {
+  res.locals.accountData = req.session.account || null;
+  next();
+});
+
 // Routes
-import indexRouter from './routes/index.js';
-import authRouter from './routes/auth.js';
-import accountRouter from './routes/account.js';
-import inventoryRouter from './routes/inventory.js';
+app.use('/auth', accountRoutes);
+app.use('/account', accountRoutes);
+app.use('/inventory', inventoryRoutes);
 
-app.use('/', indexRouter);
-app.use('/auth', authRouter);
-app.use('/account', accountRouter);
-app.use('/inventory', inventoryRouter);
+app.get('/', (req, res) => res.redirect('/inventory'));
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).render('errors/404', { url: req.originalUrl });
-});
+// Error handling
+app.use((req, res) => res.status(404).render('errors/404'));
+app.use((err, req, res, next) => res.status(500).render('errors/500', { error: err }));
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render('errors/500', { error: err });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
