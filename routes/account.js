@@ -1,8 +1,17 @@
+// routes/account.js
 import express from 'express';
 import {
-  loginView, login, registerView, register, logout,
-  manageAccount, updateAccountView, updateAccountInfo, updatePassword
+  loginView,
+  login,
+  registerView,
+  register,
+  logout,
+  manageAccount,
+  updateAccountView,
+  updateAccountInfo,
+  updatePassword,
 } from '../controllers/accountController.js';
+import { loginRequired } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -13,10 +22,10 @@ router.get('/register', registerView);
 router.post('/register', register);
 router.get('/logout', logout);
 
-// Account management
-router.get('/manage', manageAccount);
-router.get('/update/:id', updateAccountView);
-router.post('/update', updateAccountInfo);
-router.post('/update-password', updatePassword);
+// Account management routes
+router.get('/manage', loginRequired, manageAccount);
+router.get('/update/:id', loginRequired, updateAccountView);
+router.post('/update', loginRequired, updateAccountInfo);
+router.post('/update-password', loginRequired, updatePassword);
 
 export default router;

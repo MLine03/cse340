@@ -13,7 +13,7 @@ export const getAccountById = async (id) => {
   return res.rows[0];
 };
 
-// Create a new account
+// Create account
 export const createAccount = async ({ firstname, lastname, email, password }) => {
   const res = await pool.query(
     'INSERT INTO accounts (firstname, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING account_id',

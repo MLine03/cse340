@@ -1,37 +1,35 @@
 // controllers/inventoryController.js
 import * as inventoryModel from '../models/inventoryModel.js';
 
-// Get all inventory
+// GET /inventory
 export const getInventory = async (req, res) => {
   try {
     const inventory = await inventoryModel.getAllInventory();
-    res.render('inventory/index', { inventory, errors: null, message: null });
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('errors/500', { error: err });
+    res.json(inventory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error retrieving inventory');
   }
 };
 
-// Add inventory
-export const addInventoryItem = async (req, res) => {
+// POST /inventory/add
+export const addInventory = async (req, res) => {
   try {
-    const { name, description, price, quantity } = req.body;
-    await inventoryModel.addInventoryItem({ name, description, price, quantity });
-    res.redirect('/inventory');
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('errors/500', { error: err });
+    const newItem = await inventoryModel.addInventoryItem(req.body);
+    res.json(newItem);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error adding inventory');
   }
 };
 
-// Delete inventory
-export const deleteInventoryItem = async (req, res) => {
+// POST /inventory/delete/:id
+export const deleteInventory = async (req, res) => {
   try {
-    const { id } = req.params;
-    await inventoryModel.deleteInventoryItem(id);
-    res.redirect('/inventory');
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('errors/500', { error: err });
+    const deletedItem = await inventoryModel.deleteInventoryItem(req.params.id);
+    res.json(deletedItem);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error deleting inventory');
   }
 };
