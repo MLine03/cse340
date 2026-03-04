@@ -1,0 +1,21 @@
+# Node modules (very important)
+node_modules/
+
+# Environment variables (passwords, secrets)
+.env
+
+# macOS system files
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Render / build output (if any later)
+dist/
+build/
+
+# Optional: VS Code settings (if you don't want them in GitHub)
+.vscode/
