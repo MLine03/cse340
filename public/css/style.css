@@ -1,21 +1,21 @@
-/* Base styles */
+/* -------- Base Styles (Mobile First) -------- */
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   background-color: #f4f4f4;
   color: #222;
 }
 
 header {
-  background: #1c3d5a;
+  background-color: #1c3d5a;
   color: white;
   text-align: center;
   padding: 1rem;
 }
 
 nav {
-  background: #16324a;
+  background-color: #16324a;
 }
 
 nav ul {
@@ -27,7 +27,7 @@ nav ul {
   text-align: center;
 }
 
-nav ul li {
+nav li {
   padding: .5rem;
 }
 
@@ -45,7 +45,7 @@ h2 {
   text-align: center;
 }
 
-/* HERO */
+/* -------- HERO SECTION -------- */
 
 .hero {
   display: flex;
@@ -53,10 +53,7 @@ h2 {
   align-items: center;
   background: white;
   padding: 1rem;
-}
-
-.hero-text {
-  text-align: center;
+  border-radius: 5px;
 }
 
 .hero-text ul {
@@ -66,7 +63,7 @@ h2 {
 
 .btn {
   display: inline-block;
-  background: #ff6a00;
+  background-color: #ff6a00;
   color: white;
   padding: .6rem 1.2rem;
   text-decoration: none;
@@ -75,10 +72,11 @@ h2 {
 }
 
 .hero-image img {
-  max-width: 100%;
+  width: 100%;
+  max-width: 400px;
 }
 
-/* CONTENT SECTION */
+/* -------- CONTENT SECTION -------- */
 
 .content {
   display: flex;
@@ -87,7 +85,7 @@ h2 {
   margin-top: 2rem;
 }
 
-/* UPGRADES */
+/* -------- UPGRADES -------- */
 
 .upgrade-grid {
   display: grid;
@@ -104,27 +102,28 @@ h2 {
 
 .upgrade img {
   width: 100%;
+  height: auto;
 }
 
-/* REVIEWS */
+/* -------- REVIEWS -------- */
 
 .reviews ul {
   padding-left: 1.2rem;
 }
 
-/* FOOTER */
+/* -------- FOOTER -------- */
 
 footer {
   text-align: center;
-  background: #1c3d5a;
+  background-color: #1c3d5a;
   color: white;
   padding: 1rem;
   margin-top: 2rem;
 }
 
-/* DESKTOP STYLES */
+/* -------- DESKTOP STYLES -------- */
 
-@media (min-width: 768px) {
+@media screen and (min-width: 768px) {
 
   nav ul {
     flex-direction: row;
@@ -135,10 +134,15 @@ footer {
   .hero {
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
   }
 
   .hero-text {
-    text-align: left;
+    width: 40%;
+  }
+
+  .hero-image {
+    width: 55%;
   }
 
   .content {
