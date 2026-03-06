@@ -1,5 +1,5 @@
 /* ******************************************
- * Node.js + Express Server with PostgreSQL
+ * Node.js + Express Server for CSE Motors
  * ******************************************/
 const express = require("express");
 const { Pool } = require("pg");
@@ -9,12 +9,12 @@ require("dotenv").config();
 const app = express();
 
 /* ******************************************
- * Serve Static Files
+ * Serve Static Files from /public
  * ******************************************/
 app.use(express.static(path.join(__dirname, "public")));
 
 /* ******************************************
- * EJS Setup
+ * EJS View Engine Setup
  * ******************************************/
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -34,10 +34,13 @@ const pool = new Pool({
 /* ******************************************
  * Routes
  * ******************************************/
+
+// Home Page
 app.get("/", (req, res) => {
-  res.render("index"); // render index.ejs
+  res.render("index"); // renders views/index.ejs
 });
 
+// Optional: Database Test Route
 app.get("/db-test", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
@@ -46,6 +49,11 @@ app.get("/db-test", async (req, res) => {
     console.error("Database error:", err.message);
     res.status(500).send("Database connection failed");
   }
+});
+
+// Optional: 404 Page for Unknown Routes
+app.use((req, res) => {
+  res.status(404).send("404: Page Not Found");
 });
 
 /* ******************************************

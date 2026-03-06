@@ -1,5 +1,4 @@
-/* -------- Base Styles (Mobile First) -------- */
-
+/* ---------- BASE (Mobile First) ---------- */
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -45,8 +44,7 @@ h2 {
   text-align: center;
 }
 
-/* -------- HERO SECTION -------- */
-
+/* ---------- HERO ---------- */
 .hero {
   display: flex;
   flex-direction: column;
@@ -54,6 +52,7 @@ h2 {
   background: white;
   padding: 1rem;
   border-radius: 5px;
+  margin-bottom: 2rem;
 }
 
 .hero-text ul {
@@ -76,17 +75,14 @@ h2 {
   max-width: 400px;
 }
 
-/* -------- CONTENT SECTION -------- */
-
+/* ---------- CONTENT ---------- */
 .content {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  margin-top: 2rem;
 }
 
-/* -------- UPGRADES -------- */
-
+/* ---------- UPGRADES ---------- */
 .upgrade-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -105,14 +101,12 @@ h2 {
   height: auto;
 }
 
-/* -------- REVIEWS -------- */
-
+/* ---------- REVIEWS ---------- */
 .reviews ul {
   padding-left: 1.2rem;
 }
 
-/* -------- FOOTER -------- */
-
+/* ---------- FOOTER ---------- */
 footer {
   text-align: center;
   background-color: #1c3d5a;
@@ -121,8 +115,7 @@ footer {
   margin-top: 2rem;
 }
 
-/* -------- DESKTOP STYLES -------- */
-
+/* ---------- DESKTOP ---------- */
 @media screen and (min-width: 768px) {
 
   nav ul {
@@ -153,5 +146,4 @@ footer {
   .reviews {
     width: 50%;
   }
-
 }
