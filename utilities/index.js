@@ -1,74 +1,24 @@
-const invModel = require("../models/inventory-model")
-const Util = {}
-
-/* ************************
- * Constructs the nav HTML unordered list
- ************************** */
-Util.getNav = async function () {
-  let data = await invModel.getClassifications()
-
-  let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
-
-  data.rows.forEach((row) => {
-    list += "<li>"
-    list +=
-      '<a href="/inv/type/' +
-      row.classification_id +
-      '" title="See our inventory of ' +
-      row.classification_name +
-      ' vehicles">' +
-      row.classification_name +
-      "</a>"
-    list += "</li>"
-  })
-
-  list += "</ul>"
-  return list
+async function getNav() {
+  return `
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inv/class/1">SUV</a></li>
+        <li><a href="/inv/class/2">Sedan</a></li>
+      </ul>
+    </nav>
+  `
 }
 
-/* **************************************
-* Build the classification view HTML
-* ************************************ */
-Util.buildClassificationGrid = async function(data){
-  let grid
-
-  if(data.length > 0){
-    grid = '<ul id="inv-display">'
-
-    data.forEach(vehicle => { 
-      grid += '<li>'
-
-      grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">'
-      grid += '<img src="' + vehicle.inv_thumbnail 
-      + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model 
-      + ' on CSE Motors" /></a>'
-
-      grid += '<div class="namePrice">'
-      grid += '<hr />'
-
-      grid += '<h2>'
-      grid += '<a href="../../inv/detail/' + vehicle.inv_id + '" title="View ' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + ' details">' 
-      + vehicle.inv_make + ' ' + vehicle.inv_model + '</a>'
-      grid += '</h2>'
-
-      grid += '<span>$' 
-      + new Intl.NumberFormat('en-US').format(vehicle.inv_price) 
-      + '</span>'
-
-      grid += '</div>'
-      grid += '</li>'
-    })
-
-    grid += '</ul>'
-
-  } else { 
-    grid = '<p class="notice">Sorry, no matching vehicles could be found.</p>'
-  }
-
-  return grid
+function buildVehicleDetail(vehicle) {
+  return `
+    <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
+    <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" style="max-width:400px">
+    <p>Year: ${vehicle.inv_year}</p>
+    <p>Price: $${vehicle.inv_price.toLocaleString()}</p>
+    <p>Mileage: ${vehicle.inv_miles.toLocaleString()} miles</p>
+    <p>${vehicle.inv_description}</p>
+  `
 }
 
-module.exports = Util
+module.exports = { getNav, buildVehicleDetail }

@@ -1,31 +1,32 @@
-const express = require("express");
-const app = express();
-const path = require("path"); // needed for views folder path
+const express = require("express")
+const path = require("path")
+const app = express()
+require("dotenv").config()
 
-// Set EJS as the template engine
-app.set("view engine", "ejs");
+// View engine
+app.set("view engine", "ejs")
+app.set("views", path.join(__dirname, "views"))
 
-// Set views folder (optional if using default 'views' folder)
-app.set("views", path.join(__dirname, "views"));
-
-// Static files (REQUIRED for favicon, CSS, JS, images)
-app.use(express.static("public"));
+// Static files
+app.use(express.static(path.join(__dirname, "public")))
 
 // Routes
-const baseController = require("./controllers/baseController");
-const inventoryRoute = require("./routes/inventoryRoute");
+const baseController = require("./controllers/baseController")
+const inventoryRoute = require("./routes/inventoryRoute")
 
-// Index route
-app.get("/", baseController.buildHome);
+app.get("/", baseController.buildHome)
+app.use("/inv", inventoryRoute)
 
-// Inventory routes
-app.use("/inv", inventoryRoute);
+// Favicon
+app.get("/favicon.ico", (req, res) => res.status(204))
 
-// Handle favicon request (extra safety — optional)
-app.get("/favicon.ico", (req, res) => res.status(204));
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err)
+  res.status(err.status || 500)
+  res.render("error", { title: "Error", message: err.message })
+})
 
-// Server
-const port = 5500;
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+// Start server
+const port = process.env.PORT || 5500
+app.listen(port, () => console.log(`Server running on http://localhost:${port}`))
