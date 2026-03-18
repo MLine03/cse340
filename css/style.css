@@ -1,0 +1,31 @@
+#inv-display {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+}
+
+#inv-display li {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+#inv-display img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+.namePrice h2 {
+  font-size: 1.1rem;
+  margin: 5px 0;
+}
+
+.namePrice span {
+  font-weight: bold;
+  color: #2a9d8f;
+}

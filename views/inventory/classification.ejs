@@ -1,21 +1,14 @@
-<%- include("../partials/head") %>
+<!-- Classification View -->
 
-<body>
-  <header>
-    <%- include("../partials/header") %>
-  </header>
+<!-- Content Heading -->
+<% if (title) { %>
+  <h1><%= title %></h1>
+<% } else { %>
+  <% res.redirect('/') %>
+<% } %>
 
-  <nav>
-    <%- nav %>
-  </nav>
+<!-- Message Block (future-proofing for error or success messages) -->
+<%# messages() %>
 
-  <main>
-    <h1><%= title %></h1>
-
-    <%- grid %>
-  </main>
-
-  <footer>
-    <%- include("../partials/footer") %>
-  </footer>
-</body>
+<!-- Inventory Items Display -->
+<%- grid %>
