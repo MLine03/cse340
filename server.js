@@ -1,65 +1,31 @@
-/* ******************************************
- * Node.js + Express Server for CSE Motors
- * ******************************************/
 const express = require("express");
-const { Pool } = require("pg");
-const path = require("path");
-require("dotenv").config();
-
 const app = express();
+const path = require("path"); // needed for views folder path
 
-/* ******************************************
- * Serve Static Files from /public
- * ******************************************/
-app.use(express.static(path.join(__dirname, "public")));
-
-/* ******************************************
- * EJS View Engine Setup
- * ******************************************/
+// Set EJS as the template engine
 app.set("view engine", "ejs");
+
+// Set views folder (optional if using default 'views' folder)
 app.set("views", path.join(__dirname, "views"));
 
-/* ******************************************
- * Database Configuration
- * ******************************************/
-const pool = new Pool({
-  user: process.env.DB_USER || "cse340",
-  host: process.env.DB_HOST || "dpg-d6j0ro7gi27c73e7kje0-a.oregon-postgres.render.com",
-  database: process.env.DB_NAME || "cse340_0vp4",
-  password: process.env.DB_PASS || "Lb9fq65Yk42rGoznOoZoUEQoJUUSMDNg",
-  port: process.env.DB_PORT || 5432,
-  ssl: { rejectUnauthorized: false }
-});
+// Static files (REQUIRED for favicon, CSS, JS, images)
+app.use(express.static("public"));
 
-/* ******************************************
- * Routes
- * ******************************************/
+// Routes
+const baseController = require("./controllers/baseController");
+const inventoryRoute = require("./routes/inventoryRoute");
 
-// Home Page
-app.get("/", (req, res) => {
-  res.render("index"); // renders views/index.ejs
-});
+// Index route
+app.get("/", baseController.buildHome);
 
-// Optional: Database Test Route
-app.get("/db-test", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT NOW()");
-    res.send(`Database connected! Current time: ${result.rows[0].now}`);
-  } catch (err) {
-    console.error("Database error:", err.message);
-    res.status(500).send("Database connection failed");
-  }
-});
+// Inventory routes
+app.use("/inv", inventoryRoute);
 
-// Optional: 404 Page for Unknown Routes
-app.use((req, res) => {
-  res.status(404).send("404: Page Not Found");
-});
+// Handle favicon request (extra safety — optional)
+app.get("/favicon.ico", (req, res) => res.status(204));
 
-/* ******************************************
- * Start Server
- * ******************************************/
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+// Server
+const port = 5500;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
