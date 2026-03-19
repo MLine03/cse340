@@ -6,7 +6,12 @@ async function buildByClassification(req, res, next) {
     const classificationId = req.params.classificationId
     const nav = await utilities.getNav()
     const inventory = await inventoryModel.getInventoryByClassification(classificationId)
-    res.render("classification", { title: "Classification", nav, inventory })
+
+    res.render("classification", { 
+      title: "Classification", 
+      nav, 
+      inventory 
+    })
   } catch (error) {
     next(error)
   }
@@ -17,11 +22,13 @@ async function buildVehicleDetail(req, res, next) {
     const invId = req.params.invId
     const nav = await utilities.getNav()
     const vehicle = await inventoryModel.getVehicleById(invId)
+
     const vehicleHTML = utilities.buildVehicleDetail(vehicle)
+
     res.render("vehicle-detail", { 
       title: `${vehicle.inv_make} ${vehicle.inv_model}`, 
       nav, 
-      vehicleHTML 
+      detailHtml: vehicleHTML   // ✅ FIXED
     })
   } catch (error) {
     next(error)

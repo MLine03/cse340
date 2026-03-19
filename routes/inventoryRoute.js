@@ -1,5 +1,5 @@
 const express = require("express")
-const router = express.Router()
+const router = new express.Router()
 const inventoryController = require("../controllers/inventoryController")
 
 router.get("/class/:classificationId", inventoryController.buildByClassification)
