@@ -1,0 +1,21 @@
+<h1>Add Inventory</h1>
+<% if (errors && errors.length > 0) { %>
+    <ul><% errors.forEach(err => { %>
+        <li style="color:red;"><%= err %></li>
+    <% }) %></ul>
+<% } %>
+
+<form action="/inv/add-inventory" method="POST">
+    <input name="inv_make" required value="<%= oldInput.inv_make || '' %>" placeholder="Make">
+    <input name="inv_model" required value="<%= oldInput.inv_model || '' %>" placeholder="Model">
+    <input type="number" name="inv_year" required value="<%= oldInput.inv_year || '' %>" placeholder="Year">
+    <input type="text" name="inv_description" required value="<%= oldInput.inv_description || '' %>" placeholder="Description">
+    <input type="text" name="inv_image" value="<%= oldInput.inv_image || '/images/no-image.png' %>">
+    <input type="text" name="inv_thumbnail" value="<%= oldInput.inv_thumbnail || '/images/no-image.png' %>">
+    <input type="number" step="0.01" name="inv_price" required value="<%= oldInput.inv_price || '' %>" placeholder="Price">
+    <input type="number" name="inv_miles" required value="<%= oldInput.inv_miles || '' %>" placeholder="Miles">
+    <input type="text" name="inv_color" required value="<%= oldInput.inv_color || '' %>" placeholder="Color">
+    <label>Classification:</label>
+    <%= classificationList %>
+    <button type="submit">Add Inventory</button>
+</form>

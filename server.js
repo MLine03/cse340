@@ -1,32 +1,32 @@
-const express = require("express")
-const path = require("path")
-const app = express()
-require("dotenv").config()
+const express = require('express');
+const session = require('express-session');
+const flash = require('connect-flash');
+const path = require('path');
 
-// View engine
-app.set("view engine", "ejs")
-app.set("views", path.join(__dirname, "views"))
+const inventoryRoutes = require('./routes/inventoryRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
-// Static files
-app.use(express.static(path.join(__dirname, "public")))
+const app = express();
 
-// Routes
-const baseController = require("./controllers/baseController")
-const inventoryRoute = require("./routes/inventoryRoute")
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
 
-app.get("/", baseController.buildHome)
-app.use("/inv", inventoryRoute)
+app.use(session({ secret: 'secret', resave: false, saveUninitialized: true }));
+app.use(flash());
 
-// Favicon
-app.get("/favicon.ico", (req, res) => res.status(204))
+// Mount inventory routes
+app.use('/inv', inventoryRoutes);
 
-// Error handler
-app.use((err, req, res, next) => {
-  console.error(err)
-  res.status(err.status || 500)
-  res.render("error", { title: "Error", message: err.message })
-})
+// 404 handler
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
 
-// Start server
-const port = process.env.PORT || 5500
-app.listen(port, () => console.log(`Server running on http://localhost:${port}`))
+// Error middleware
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
