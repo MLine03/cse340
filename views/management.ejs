@@ -1,10 +1,16 @@
-<h1>Inventory Management</h1>
-
-<% if (message && message.length > 0) { %>
-    <div class="flash-message"><%= message %></div>
-<% } %>
-
-<ul>
-    <li><a href="/inv/add-classification">Add Classification</a></li>
-    <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
-</ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+</head>
+<body>
+    <h1>Inventory Management</h1>
+    <% if(message.length > 0){ %>
+        <p><%= message %></p>
+    <% } %>
+    <ul>
+        <li><a href="/inv/add-classification">Add Classification</a></li>
+        <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
+    </ul>
+</body>
+</html>
