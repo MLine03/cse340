@@ -1,38 +1,37 @@
-// controllers/inventoryController.js
-const inventoryModel = require('../models/inventory-model');
-const util = require('../utilities');
+const invModel = require('../models/inventory-model');
 
-// Display all inventory
-exports.listInventory = async (req, res, next) => {
+async function buildInventoryList(req, res, next) {
   try {
-    const inventoryData = await inventoryModel.getAllInventory();
-    res.render('inventory/list', {
-      title: 'Vehicle Inventory',
-      inventory: inventoryData.rows,
-    });
+    const vehicles = await invModel.getAllVehicles();
+    res.render('inventory/list', { title: 'Vehicle Inventory', vehicles, messages: req.flash('message') });
   } catch (err) {
     next(err);
   }
-};
+}
 
-// Display a single vehicle detail
-exports.vehicleDetail = async (req, res, next) => {
+async function buildInventoryDetail(req, res, next) {
   try {
-    const inv_id = req.params.inv_id;
-    const vehicle = await inventoryModel.getVehicleById(inv_id);
+    const vehicle = await invModel.getVehicleById(req.params.inv_id);
+    if (!vehicle) throw new Error('Vehicle not found');
+    res.render('inventory/detail', { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicle });
+  } catch (err) {
+    next(err);
+  }
+}
 
-    if (!vehicle.rows[0]) {
-      req.flash('info', 'Vehicle not found');
-      return res.redirect('/inventory');
+async function addNewVehicle(req, res, next) {
+  try {
+    const data = req.body;
+    if (!data.inv_make || !data.inv_model) {
+      req.flash('message', 'Make and Model are required');
+      return res.redirect('/inventory/add');
     }
-
-    const vehicleHTML = util.buildVehicleDetailHTML(vehicle.rows[0]);
-
-    res.render('inventory/detail', {
-      title: `${vehicle.rows[0].inv_make} ${vehicle.rows[0].inv_model}`,
-      vehicleHTML,
-    });
+    const newVehicle = await invModel.addVehicle(data);
+    req.flash('message', 'Vehicle added successfully!');
+    res.redirect(`/inventory/detail/${newVehicle.inv_id}`);
   } catch (err) {
     next(err);
   }
-};
+}
+
+module.exports = { buildInventoryList, buildInventoryDetail, addNewVehicle };

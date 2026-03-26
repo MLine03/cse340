@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title><%= title %></title>
+  <meta charset="UTF-8">
+  <title>Add Classification</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <h1>Add Classification</h1>
-    <% if(message.length > 0){ %>
-        <p><%= message %></p>
-    <% } %>
-    <form action="/inv/add-classification" method="POST">
-        <label for="classification_name">Classification Name:</label>
-        <input type="text" name="classification_name" id="classification_name" pattern="\w+" required>
-        <button type="submit">Add Classification</button>
+  <%- include('../partials/header') %>
+  <main>
+    <form action="/classification/add" method="post">
+      <label for="classification_name">Classification Name:</label>
+      <input type="text" name="classification_name" id="classification_name" required>
+      <button type="submit">Add Classification</button>
     </form>
+  </main>
+  <%- include('../partials/footer') %>
 </body>
 </html>

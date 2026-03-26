@@ -1,14 +1,26 @@
-// models/inventory-model.js
-const pool = require('../db'); // your db connection
+const pool = require('../db');
 
-// Get all inventory
-exports.getAllInventory = async function () {
-  return pool.query('SELECT * FROM inventory ORDER BY inv_make');
-};
+async function getAllVehicles() {
+  const sql = 'SELECT * FROM inventory ORDER BY inv_make, inv_model';
+  const result = await pool.query(sql);
+  return result.rows;
+}
 
-// Get single vehicle by ID
-exports.getVehicleById = async function (inv_id) {
-  const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
-  const values = [inv_id];
-  return pool.query(sql, values);
-};
+async function getVehicleById(inv_id) {
+  const sql = 'SELECT * FROM inventory WHERE inv_id=$1';
+  const result = await pool.query(sql, [inv_id]);
+  return result.rows[0];
+}
+
+async function addVehicle(data) {
+  const { inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color, classification_id } = data;
+  const sql = `
+    INSERT INTO inventory (inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color, classification_id)
+    VALUES ($1,$2,$3,$4,$5,$6,$7)
+    RETURNING inv_id
+  `;
+  const result = await pool.query(sql, [inv_make, inv_model, inv_year, inv_price, inv_miles, inv_color, classification_id]);
+  return result.rows[0];
+}
+
+module.exports = { getAllVehicles, getVehicleById, addVehicle };
