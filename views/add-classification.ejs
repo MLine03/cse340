@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Add Classification</title>
-  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <%- include('../partials/header') %>
-  <main>
-    <form action="/classification/add" method="post">
-      <label for="classification_name">Classification Name:</label>
-      <input type="text" name="classification_name" id="classification_name" required>
-      <button type="submit">Add Classification</button>
-    </form>
-  </main>
-  <%- include('../partials/footer') %>
+  <h1>Add Classification</h1>
+
+  <% if (message) { %>
+    <p style="color:red;"><%= message %></p>
+  <% } %>
+
+  <form action="/inventory/add-classification" method="POST">
+    <input 
+      type="text" 
+      name="classificationName" 
+      placeholder="Classification Name" 
+      value="<%= previousInput.classificationName || '' %>" 
+      required
+    >
+    <button type="submit">Add</button>
+  </form>
+
+  <a href="/">Home</a>
 </body>
 </html>

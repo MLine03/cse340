@@ -1,43 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Add Vehicle</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle Details</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .vehicle-detail { max-width: 700px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
+    h1 { text-align: center; }
+    .field { margin-bottom: 15px; }
+    .label { font-weight: bold; }
+  </style>
 </head>
 <body>
-  <% if (messages.length) { %>
-    <ul>
-      <% messages.forEach(msg => { %>
-        <li style="color:green;"><%= msg %></li>
-      <% }) %>
-    </ul>
-  <% } %>
+  <div class="vehicle-detail">
+    <h1>Vehicle Details</h1>
 
-  <% if (errors.length) { %>
-    <ul>
-      <% errors.forEach(err => { %>
-        <li style="color:red;"><%= err %></li>
-      <% }) %>
-    </ul>
-  <% } %>
+    <div class="field">
+      <span class="label">Make:</span> <span><%= vehicle.make %></span>
+    </div>
 
-  <h1>Add Classification</h1>
-  <form action="/inventory/classification" method="POST">
-    <input type="text" name="classificationName" placeholder="Classification Name" required>
-    <button type="submit">Add</button>
-  </form>
+    <div class="field">
+      <span class="label">Model:</span> <span><%= vehicle.model %></span>
+    </div>
 
-  <h1>Add Vehicle</h1>
-  <form action="/inventory/vehicle" method="POST">
-    <input type="text" name="make" placeholder="Make" required>
-    <input type="text" name="model" placeholder="Model" required>
-    <input type="number" name="year" placeholder="Year" required>
-    <input type="text" name="description" placeholder="Description">
-    <input type="number" name="price" placeholder="Price">
-    <input type="number" name="miles" placeholder="Miles">
-    <input type="text" name="color" placeholder="Color">
-    <input type="number" name="classification_id" placeholder="Classification ID">
-    <button type="submit">Add Vehicle</button>
-  </form>
+    <div class="field">
+      <span class="label">Year:</span> <span><%= vehicle.year %></span>
+    </div>
+
+    <div class="field">
+      <span class="label">Price:</span> <span>$<%= vehicle.price.toLocaleString('en-US', {minimumFractionDigits: 2}) %></span>
+    </div>
+
+    <div class="field">
+      <span class="label">Mileage:</span> <span><%= vehicle.mileage.toLocaleString() %> miles</span>
+    </div>
+
+    <div class="field">
+      <span class="label">Classification:</span> <span><%= vehicle.classification_name %></span>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="/inventory/add-vehicle">Add Another Vehicle</a> | 
+      <a href="/inventory">Back to Inventory</a>
+    </div>
+  </div>
 </body>
 </html>

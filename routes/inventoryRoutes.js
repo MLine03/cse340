@@ -1,10 +1,15 @@
+// routes/inventoryRoutes.js
 const express = require('express');
 const router = express.Router();
 const inventoryController = require('../controllers/inventoryController');
 
-// Example routes
-router.get('/manage', inventoryController.buildManagementView);
-router.post('/add-classification', inventoryController.addClassification);
-router.post('/add-vehicle', inventoryController.addVehicle);
+// Show add vehicle form
+router.get('/add-vehicle', inventoryController.showAddVehicleForm);
+
+// Handle form submission
+router.post('/add-vehicle', inventoryController.handleAddVehicle);
+
+// Show vehicle details
+router.get('/vehicle/:id', inventoryController.showVehicleDetail);
 
 module.exports = router;
