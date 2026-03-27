@@ -1,17 +1,16 @@
 // db.js
-const mysql = require('mysql2/promise');
-const dotenv = require('dotenv');
-
+import pkg from 'pg';
+const { Pool } = pkg;
+import dotenv from 'dotenv';
 dotenv.config();
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'cse340',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 5432,
+  ssl: { rejectUnauthorized: false }, // Required for Render PostgreSQL
 });
 
-module.exports = pool;
+export default pool;

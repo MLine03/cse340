@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { handleAddClassification } from '../controllers/vehicleController.js';
+
 const router = express.Router();
-const classificationController = require('../controllers/classificationController');
 
-router.get('/add', (req, res) => res.render('classification/add', { messages: req.flash('message') }));
-router.post('/add', classificationController.addClassification);
+router.post('/add-classification', handleAddClassification);
 
-module.exports = router;
+export default router;

@@ -1,40 +1,37 @@
-// models/inventory-model.js
-const db = require('../db');
+// inventory-model.js
+import pool from '../db.js';
 
-async function getClassifications() {
-  const [rows] = await db.query('SELECT * FROM carclassification ORDER BY classification_name');
-  return rows;
+// Get all classifications
+export async function getClassifications() {
+  const sql = `SELECT * FROM classifications ORDER BY name`;
+  const result = await pool.query(sql);
+  return result.rows;
 }
 
-async function addVehicle(vehicle) {
+// Add a new vehicle
+export async function addVehicle(vehicle) {
   const sql = `
-    INSERT INTO inventory
-      (make, model, year, price, mileage, classification_id)
-    VALUES (?, ?, ?, ?, ?, ?)`;
-  const params = [
+    INSERT INTO inventory (make, model, year, price, classification_id)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *`;
+  const values = [
     vehicle.make,
     vehicle.model,
     vehicle.year,
     vehicle.price,
-    vehicle.mileage,
-    vehicle.classification
+    vehicle.classification_id
   ];
-  const [result] = await db.query(sql, params);
-  return result.insertId; // return new vehicle ID
+  const result = await pool.query(sql, values);
+  return result.rows[0];
 }
 
-async function getVehicleById(id) {
+// Get vehicle by ID
+export async function getVehicleById(id) {
   const sql = `
-    SELECT v.*, c.classification_name
-    FROM inventory v
-    JOIN carclassification c ON v.classification_id = c.classification_id
-    WHERE v.vehicle_id = ?`;
-  const [rows] = await db.query(sql, [id]);
-  return rows[0];
+    SELECT i.*, c.name AS classification_name
+    FROM inventory i
+    JOIN classifications c ON i.classification_id = c.id
+    WHERE i.id = $1`;
+  const result = await pool.query(sql, [id]);
+  return result.rows[0];
 }
-
-module.exports = {
-  getClassifications,
-  addVehicle,
-  getVehicleById
-};

@@ -2,13 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title><%= title %></title>
+  <title>Vehicle Management</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>Welcome to Vehicle Management</h1>
-  <ul>
-    <li><a href="/inventory/add-classification">Add Classification</a></li>
-    <li><a href="/inventory/add-vehicle">Add Vehicle</a></li>
-  </ul>
+  <h1>Vehicle Inventory</h1>
+
+  <% if (messages.length > 0) { %>
+    <ul style="color:red;">
+      <% messages.forEach(msg => { %>
+        <li><%= msg %></li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  import express from 'express';
+import { handleAddClassification } from '../controllers/vehicleController.js';
+
+const router = express.Router();
+
+router.post('/add-classification', handleAddClassification);
+
+export default router;
+
+  <!-- Add Vehicle -->
+<form action="/inventory/add-vehicle" method="POST">
+    <input type="text" name="make" placeholder="Make" value="<%= old.make || '' %>">
+    <input type="text" name="model" placeholder="Model" value="<%= old.model || '' %>">
+    <input type="number" name="year" placeholder="Year" value="<%= old.year || '' %>">
+    <input type="number" step="0.01" name="price" placeholder="Price" value="<%= old.price || '' %>">
+    <textarea name="description" placeholder="Description"><%= old.description || '' %></textarea>
+    <select name="classification">
+      <option value="">Select Classification</option>
+      <% classifications.forEach(c => { %>
+        <option value="<%= c.id %>" <%= old.classification == c.id ? 'selected' : '' %>><%= c.name %></option>
+      <% }) %>
+    </select>
+    <button type="submit">Add Vehicle</button>
+  </form>
 </body>
 </html>

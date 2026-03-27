@@ -1,50 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vehicle Details</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    .vehicle-detail { max-width: 700px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 8px; }
-    h1 { text-align: center; }
-    .field { margin-bottom: 15px; }
-    .label { font-weight: bold; }
-  </style>
+  <title>Vehicle Detail</title>
 </head>
 <body>
-  <div class="vehicle-detail">
-    <h1>Vehicle Details</h1>
-
-    <div class="field">
-      <span class="label">Make:</span> <span><%= vehicle.make %></span>
-    </div>
-
-    <div class="field">
-      <span class="label">Model:</span> <span><%= vehicle.model %></span>
-    </div>
-
-    <div class="field">
-      <span class="label">Year:</span> <span><%= vehicle.year %></span>
-    </div>
-
-    <div class="field">
-      <span class="label">Price:</span> <span>$<%= vehicle.price.toLocaleString('en-US', {minimumFractionDigits: 2}) %></span>
-    </div>
-
-    <div class="field">
-      <span class="label">Mileage:</span> <span><%= vehicle.mileage.toLocaleString() %> miles</span>
-    </div>
-
-    <div class="field">
-      <span class="label">Classification:</span> <span><%= vehicle.classification_name %></span>
-    </div>
-
-    <div style="text-align: center; margin-top: 20px;">
-      <a href="/inventory/add-vehicle">Add Another Vehicle</a> | 
-      <a href="/inventory">Back to Inventory</a>
-    </div>
-  </div>
+  <h1><%= vehicle.make %> <%= vehicle.model %> (<%= vehicle.year %>)</h1>
+  <p>Price: $<%= vehicle.price %></p>
+  <p>Classification: <%= vehicle.classification_name %></p>
+  <a href="/">Back to Home</a>
 </body>
 </html>

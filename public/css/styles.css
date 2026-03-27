@@ -1,87 +1,15 @@
-/* General page styles */
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0 20px;
-  line-height: 1.6;
-  background-color: #f4f4f4;
-  color: #333;
+  margin: 20px;
 }
 
-h1, h2 {
-  color: #222;
+input, textarea, select {
+  display: block;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 300px;
 }
 
-nav a {
-  display: inline-block;
-  margin: 10px;
-  text-decoration: none;
-  color: #007BFF;
-}
-
-nav a:hover {
-  text-decoration: underline;
-}
-
-/* Inventory list */
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  margin: 10px 0;
-}
-
-/* Vehicle detail layout */
-.vehicle-detail {
-  display: flex;
-  flex-wrap: wrap;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  margin-top: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.vehicle-image {
-  flex: 1 1 300px;
-  max-width: 500px;
-  margin-right: 20px;
-}
-
-.vehicle-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.vehicle-info {
-  flex: 2 1 300px;
-}
-
-.vehicle-info p {
-  margin: 10px 0;
-  font-size: 1rem;
-}
-
-.vehicle-info strong {
-  color: #555;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .vehicle-detail {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .vehicle-image {
-    margin-right: 0;
-    margin-bottom: 20px;
-  }
-
-  .vehicle-info {
-    text-align: center;
-  }
+button {
+  padding: 5px 10px;
 }

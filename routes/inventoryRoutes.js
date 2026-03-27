@@ -1,15 +1,9 @@
-// routes/inventoryRoutes.js
-const express = require('express');
+import express from 'express';
+import { showHome, handleAddVehicle } from '../controllers/vehicleController.js';
+
 const router = express.Router();
-const inventoryController = require('../controllers/inventoryController');
 
-// Show add vehicle form
-router.get('/add-vehicle', inventoryController.showAddVehicleForm);
+router.get('/', showHome);
+router.post('/add-vehicle', handleAddVehicle);
 
-// Handle form submission
-router.post('/add-vehicle', inventoryController.handleAddVehicle);
-
-// Show vehicle details
-router.get('/vehicle/:id', inventoryController.showVehicleDetail);
-
-module.exports = router;
+export default router;
