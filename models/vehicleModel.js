@@ -1,34 +1,25 @@
-import pkg from 'pg';
-const { Pool } = pkg;
+// models/vehicleModel.js
+import { pool } from './db.js';
 
-const pool = new Pool({
-  user: 'vehicle_user',          // PostgreSQL user you created
-  host: 'localhost',
-  database: 'vehicle_db',        // Your database
-  password: 'StrongPassword123', // Your password
-  port: 5432
-});
-
+// Get all vehicle classifications
 export async function getClassifications() {
-  const res = await pool.query('SELECT * FROM classifications ORDER BY name');
-  return res.rows;
+  const sql = 'SELECT * FROM classifications ORDER BY classification_name ASC';
+  const result = await pool.query(sql);
+  return result.rows;
 }
 
-export async function addClassification(name) {
-  const res = await pool.query(
-    'INSERT INTO classifications (name) VALUES ($1) RETURNING id',
-    [name]
-  );
-  return res.rows[0].id;
+// Get all vehicles for a specific classification
+export async function getVehiclesByClassification(classificationId) {
+  const sql = 'SELECT * FROM inventory WHERE classification_id = $1 ORDER BY make ASC';
+  const result = await pool.query(sql, [classificationId]);
+  return result.rows;
 }
 
-export async function addVehicle(data) {
-  const { make, model, year, price, description, classificationId } = data;
-  const res = await pool.query(
-    `INSERT INTO vehicles 
-    (make, model, year, price, description, classification_id)
-    VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-    [make, model, year, price, description, classificationId]
-  );
-  return res.rows[0].id;
+// Get a single vehicle by ID
+export async function getVehicleById(vehicleId) {
+  const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
+  const result = await pool.query(sql, [vehicleId]);
+  return result.rows[0];
 }
+
+// Add more queries as needed (insert/update/delete)

@@ -1,87 +1,25 @@
-// app.js
-import express from 'express';
-import session from 'express-session';
-import pg from 'pg';
-import pgSession from 'connect-pg-simple';
-import bodyParser from 'body-parser';
-import path from 'path';
-import { fileURLToPath } from 'url';
+// models/vehicleModel.js
+import { pool } from './db.js';
 
-// Import routes
-import vehicleRoutes from './routes/vehicles.js';
-import classificationRoutes from './routes/classificationRoutes.js';
-import inventoryRoutes from './routes/inventoryRoutes.js';
+// Get all vehicle classifications
+export async function getClassifications() {
+  const sql = 'SELECT * FROM classifications ORDER BY classification_name ASC';
+  const result = await pool.query(sql);
+  return result.rows;
+}
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Get all vehicles for a specific classification
+export async function getVehiclesByClassification(classificationId) {
+  const sql = 'SELECT * FROM inventory WHERE classification_id = $1 ORDER BY make ASC';
+  const result = await pool.query(sql, [classificationId]);
+  return result.rows;
+}
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Get a single vehicle by ID
+export async function getVehicleById(vehicleId) {
+  const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
+  const result = await pool.query(sql, [vehicleId]);
+  return result.rows[0];
+}
 
-// -----------------------------
-// PostgreSQL Connection
-// -----------------------------
-const { Pool } = pg;
-const pool = new Pool({
-  user: process.env.DB_USER || 'vehicle_user',          // Use env vars in production
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'vehicle_db',
-  password: process.env.DB_PASSWORD || 'StrongPassword123',
-  port: process.env.DB_PORT || 5432,
-});
-
-// -----------------------------
-// Session Store in PostgreSQL
-// -----------------------------
-const pgStore = pgSession(session);
-
-app.use(
-  session({
-    store: new pgStore({
-      pool: pool,                // Connection pool
-      tableName: 'session',      // Table created earlier
-      createTableIfMissing: true,
-    }),
-    secret: process.env.SESSION_SECRET || 'SuperSecretSessionKey', // Change in prod!
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
-  })
-);
-
-// -----------------------------
-// Middleware
-// -----------------------------
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// -----------------------------
-// Routes
-// -----------------------------
-app.use('/vehicles', vehicleRoutes);        // Correct route prefix
-app.use('/classification', classificationRoutes);
-app.use('/inventory', inventoryRoutes);
-
-// Home route
-app.get('/', (req, res) => {
-  res.render('index', { message: 'Welcome to Vehicle Inventory!' });
-});
-
-// -----------------------------
-// Start Server (handle EADDRINUSE)
-// -----------------------------
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Stop other servers or change the port.`);
-    process.exit(1);
-  } else {
-    console.error(err);
-  }
-});
+// Add more queries as needed (insert/update/delete)

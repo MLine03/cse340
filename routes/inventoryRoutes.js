@@ -1,9 +1,17 @@
+// routes/inventoryRoutes.js
 import express from 'express';
-import { showHome, handleAddVehicle } from '../controllers/vehicleController.js';
+import { getAllVehicles } from '../models/vehicleModel.js';
 
 const router = express.Router();
 
-router.get('/', showHome);
-router.post('/add-vehicle', handleAddVehicle);
+router.get('/', async (req, res) => {
+  try {
+    const vehicles = await getAllVehicles();
+    res.render('inventory/index', { vehicles });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 
 export default router;

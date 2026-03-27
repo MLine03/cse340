@@ -1,5 +1,5 @@
 // inventory-model.js
-import pool from '../db.js';
+import pool from './db.js';
 
 // Get all classifications
 export async function getClassifications() {
