@@ -1,7 +1,11 @@
-const { Pool } = require('pg');
+// src/db.js
+const mysql = require('mysql2');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://username:password@localhost:5432/cse340',
+const pool = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: 'yourpassword',
+  database: 'cse340',
 });
 
-module.exports = pool;
+module.exports = pool.promise();

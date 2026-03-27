@@ -1,37 +1,57 @@
-const invModel = require('../models/inventory-model');
+// src/controllers/inventoryController.js
+const inventoryModel = require('../models/inventoryModel');
 
-async function buildInventoryList(req, res, next) {
+// Render manage view
+function manageView(req, res) {
+  res.render('add-vehicle', {
+    messages: req.flash('success'),
+    errors: req.flash('error'),
+  });
+}
+
+// Add classification
+async function addClassification(req, res) {
+  const { classificationName } = req.body;
+  if (!classificationName) {
+    req.flash('error', 'Classification name is required');
+    return res.redirect('/inventory/manage');
+  }
   try {
-    const vehicles = await invModel.getAllVehicles();
-    res.render('inventory/list', { title: 'Vehicle Inventory', vehicles, messages: req.flash('message') });
+    await inventoryModel.addClassification(classificationName);
+    req.flash('success', 'Classification added successfully');
+    res.redirect('/inventory/manage');
   } catch (err) {
-    next(err);
+    req.flash('error', 'Error adding classification');
+    res.redirect('/inventory/manage');
   }
 }
 
-async function buildInventoryDetail(req, res, next) {
+// Add vehicle
+async function addVehicle(req, res) {
+  const vehicleData = req.body;
+  // Server-side validation
+  if (!vehicleData.make || !vehicleData.model || !vehicleData.year) {
+    req.flash('error', 'Make, Model, and Year are required');
+    return res.redirect('/inventory/manage');
+  }
   try {
-    const vehicle = await invModel.getVehicleById(req.params.inv_id);
-    if (!vehicle) throw new Error('Vehicle not found');
-    res.render('inventory/detail', { title: `${vehicle.inv_make} ${vehicle.inv_model}`, vehicle });
+    await inventoryModel.addVehicle(vehicleData);
+    req.flash('success', 'Vehicle added successfully');
+    res.redirect('/inventory/manage');
   } catch (err) {
-    next(err);
+    req.flash('error', 'Error adding vehicle');
+    res.redirect('/inventory/manage');
   }
 }
 
-async function addNewVehicle(req, res, next) {
-  try {
-    const data = req.body;
-    if (!data.inv_make || !data.inv_model) {
-      req.flash('message', 'Make and Model are required');
-      return res.redirect('/inventory/add');
-    }
-    const newVehicle = await invModel.addVehicle(data);
-    req.flash('message', 'Vehicle added successfully!');
-    res.redirect(`/inventory/detail/${newVehicle.inv_id}`);
-  } catch (err) {
-    next(err);
+// Vehicle detail
+async function vehicleDetail(req, res) {
+  const vehicleId = req.params.id;
+  const vehicle = await inventoryModel.getVehicleById(vehicleId);
+  if (!vehicle) {
+    return res.status(404).send('Vehicle not found');
   }
+  res.render('inventory-detail', { vehicle });
 }
 
-module.exports = { buildInventoryList, buildInventoryDetail, addNewVehicle };
+module.exports = { manageView, addClassification, addVehicle, vehicleDetail };
