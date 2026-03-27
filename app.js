@@ -23,11 +23,11 @@ const PORT = process.env.PORT || 3000;
 // -----------------------------
 const { Pool } = pg;
 const pool = new Pool({
-  user: 'vehicle_user',          // Your DB user
-  host: 'localhost',             // Change if using remote DB
-  database: 'vehicle_db',        // Your DB name
-  password: 'StrongPassword123', // Your DB password
-  port: 5432,
+  user: process.env.DB_USER || 'vehicle_user',          // Use env vars in production
+  host: process.env.DB_HOST || 'localhost',
+  database: process.env.DB_NAME || 'vehicle_db',
+  password: process.env.DB_PASSWORD || 'StrongPassword123',
+  port: process.env.DB_PORT || 5432,
 });
 
 // -----------------------------
@@ -42,7 +42,7 @@ app.use(
       tableName: 'session',      // Table created earlier
       createTableIfMissing: true,
     }),
-    secret: 'SuperSecretSessionKey', // Change in production!
+    secret: process.env.SESSION_SECRET || 'SuperSecretSessionKey', // Change in prod!
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
@@ -61,11 +61,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // -----------------------------
 // Routes
 // -----------------------------
-app.use('/', vehicleRoutes);
+app.use('/vehicles', vehicleRoutes);        // Correct route prefix
 app.use('/classification', classificationRoutes);
 app.use('/inventory', inventoryRoutes);
 
-// Home route (optional)
+// Home route
 app.get('/', (req, res) => {
   res.render('index', { message: 'Welcome to Vehicle Inventory!' });
 });
@@ -79,7 +79,8 @@ const server = app.listen(PORT, () => {
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use. Try stopping other servers or changing the port.`);
+    console.error(`Port ${PORT} is already in use. Stop other servers or change the port.`);
+    process.exit(1);
   } else {
     console.error(err);
   }
