@@ -3,41 +3,30 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
-const path = require('path');
 
-const inventoryRoutes = require('./src/routes/inventoryRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes'); // ✅ fixed path
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
+const PORT = process.env.PORT || 3000; // ✅ use Render port
 
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(session({
   secret: 'mysecret',
   resave: false,
   saveUninitialized: true,
 }));
-app.use(flash());
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src/views'));
+app.use(flash());
 
 // Routes
 app.use('/inventory', inventoryRoutes);
 
-// Home route
+// Test route
 app.get('/', (req, res) => {
-  res.redirect('/inventory/manage');
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send('Page not found');
+  res.send('Server is running');
 });
 
 // Start server

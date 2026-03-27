@@ -1,34 +1,19 @@
-// src/models/inventoryModel.js
-const db = require('../db');
+const pool = require('../db');
 
-async function addClassification(classificationName) {
-  const sql = 'INSERT INTO classifications (classification_name) VALUES (?)';
-  const [result] = await db.execute(sql, [classificationName]);
+exports.getClassifications = async () => {
+  const [rows] = await pool.query('SELECT * FROM classifications ORDER BY classification_name');
+  return rows;
+};
+
+exports.insertClassification = async (name) => {
+  const [result] = await pool.query('INSERT INTO classifications (classification_name) VALUES (?)', [name]);
   return result;
-}
+};
 
-async function addVehicle(vehicleData) {
-  const sql = `
-    INSERT INTO inventory
-    (make, model, year, description, price, miles, color, classification_id)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  const [result] = await db.execute(sql, [
-    vehicleData.make,
-    vehicleData.model,
-    vehicleData.year,
-    vehicleData.description,
-    vehicleData.price,
-    vehicleData.miles,
-    vehicleData.color,
-    vehicleData.classification_id
-  ]);
+exports.insertVehicle = async ({ make, model, year, price, classification_id }) => {
+  const [result] = await pool.query(
+    'INSERT INTO inventory (make, model, year, price, classification_id) VALUES (?, ?, ?, ?, ?)',
+    [make, model, year, price, classification_id]
+  );
   return result;
-}
-
-async function getVehicleById(id) {
-  const sql = 'SELECT * FROM inventory WHERE inv_id = ?';
-  const [rows] = await db.execute(sql, [id]);
-  return rows[0];
-}
-
-module.exports = { addClassification, addVehicle, getVehicleById };
+};

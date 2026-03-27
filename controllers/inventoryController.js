@@ -1,57 +1,41 @@
-// src/controllers/inventoryController.js
-const inventoryModel = require('../models/inventoryModel');
+const inventoryModel = require('../models/inventory-model');
+const utilities = require('../utilities'); // optional helper functions
 
-// Render manage view
-function manageView(req, res) {
-  res.render('add-vehicle', {
-    messages: req.flash('success'),
-    errors: req.flash('error'),
-  });
-}
+exports.buildManagementView = async (req, res) => {
+  try {
+    const classifications = await inventoryModel.getClassifications();
+    res.render('inventory/manage', { classifications, message: req.flash('message') });
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+};
 
-// Add classification
-async function addClassification(req, res) {
-  const { classificationName } = req.body;
-  if (!classificationName) {
-    req.flash('error', 'Classification name is required');
+exports.addClassification = async (req, res) => {
+  const { classification_name } = req.body;
+  if (!classification_name) {
+    req.flash('message', 'Classification name is required');
     return res.redirect('/inventory/manage');
   }
   try {
-    await inventoryModel.addClassification(classificationName);
-    req.flash('success', 'Classification added successfully');
+    const result = await inventoryModel.insertClassification(classification_name);
+    req.flash('message', `Classification added: ${classification_name}`);
     res.redirect('/inventory/manage');
-  } catch (err) {
-    req.flash('error', 'Error adding classification');
-    res.redirect('/inventory/manage');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
   }
-}
+};
 
-// Add vehicle
-async function addVehicle(req, res) {
-  const vehicleData = req.body;
-  // Server-side validation
-  if (!vehicleData.make || !vehicleData.model || !vehicleData.year) {
-    req.flash('error', 'Make, Model, and Year are required');
+exports.addVehicle = async (req, res) => {
+  const { make, model, year, price, classification_id } = req.body;
+  if (!make || !model || !year || !price || !classification_id) {
+    req.flash('message', 'All fields are required');
     return res.redirect('/inventory/manage');
   }
   try {
-    await inventoryModel.addVehicle(vehicleData);
-    req.flash('success', 'Vehicle added successfully');
+    const result = await inventoryModel.insertVehicle({ make, model, year, price, classification_id });
+    req.flash('message', `Vehicle added: ${make} ${model}`);
     res.redirect('/inventory/manage');
-  } catch (err) {
-    req.flash('error', 'Error adding vehicle');
-    res.redirect('/inventory/manage');
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
   }
-}
-
-// Vehicle detail
-async function vehicleDetail(req, res) {
-  const vehicleId = req.params.id;
-  const vehicle = await inventoryModel.getVehicleById(vehicleId);
-  if (!vehicle) {
-    return res.status(404).send('Vehicle not found');
-  }
-  res.render('inventory-detail', { vehicle });
-}
-
-module.exports = { manageView, addClassification, addVehicle, vehicleDetail };
+};
