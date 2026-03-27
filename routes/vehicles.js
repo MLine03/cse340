@@ -2,29 +2,42 @@
 import express from 'express';
 import {
   getClassifications,
+  getAllVehicles,
   getVehiclesByClassification,
-  getAllVehicles
-} from '../models/vehicleModel.js';
+  getVehicleById,
+} from '../models/vehicleModel.js'; // Names must match exactly
 
 const router = express.Router();
 
-// List all vehicles
-router.get('/', async (req, res) => {
+// Display all vehicles
+router.get('/vehicles', async (req, res) => {
   try {
     const vehicles = await getAllVehicles();
-    res.render('vehicles/index', { vehicles });
+    res.render('vehicles', { vehicles });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// List vehicles by classification
-router.get('/classification/:classification_id', async (req, res) => {
+// Display vehicles by classification
+router.get('/vehicles/classification/:id', async (req, res) => {
   try {
-    const classification_id = req.params.classification_id;
-    const vehicles = await getVehiclesByClassification(classification_id);
-    res.render('vehicles/list', { vehicles });
+    const classificationId = req.params.id;
+    const vehicles = await getVehiclesByClassification(classificationId);
+    res.render('vehicles', { vehicles });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+// Display single vehicle
+router.get('/vehicle/:id', async (req, res) => {
+  try {
+    const vehicleId = req.params.id;
+    const vehicle = await getVehicleById(vehicleId);
+    res.render('vehicle-detail', { vehicle });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
