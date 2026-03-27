@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-const inventoryRoutes = require('./routes/inventoryRoutes'); // <-- no extra src/
+const inventoryRoutes = require('./src/routes/inventoryRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // <- use Render's assigned port
 
 // Middleware
 app.use(bodyParser.json());
