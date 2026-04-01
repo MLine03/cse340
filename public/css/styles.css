@@ -1,15 +1,21 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
+.vehicle-detail-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-input, textarea, select {
-  display: block;
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 300px;
+.vehicle-image img {
+  max-width: 100%;
+  height: auto;
 }
 
-button {
-  padding: 5px 10px;
+.vehicle-info {
+  flex: 1;
+  min-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .vehicle-detail-container {
+    flex-direction: column;
+  }
 }

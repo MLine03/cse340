@@ -1,17 +1,7 @@
-// routes/inventoryRoutes.js
-import express from 'express';
-import { getAllVehicles } from '../models/vehicleModel.js';
-
+const express = require('express');
 const router = express.Router();
+const inventoryController = require('../controllers/inventoryController');
 
-router.get('/', async (req, res) => {
-  try {
-    const vehicles = await getAllVehicles();
-    res.render('inventory/index', { vehicles });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
+router.get('/detail/:id', inventoryController.vehicleDetail);
 
-export default router;
+module.exports = router;

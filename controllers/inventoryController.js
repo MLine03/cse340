@@ -1,29 +1,26 @@
-// inventoryController.js
-import { getClassifications, addVehicle, getVehicleById } from '../models/inventory-model.js';
+const inventoryModel = require('../models/inventory-model');
+const { buildVehicleDetailHTML } = require('../utilities');
 
-// Show add vehicle form
-export async function showAddVehicleForm(req, res) {
-  const classifications = await getClassifications();
-  res.render('add-vehicle', { classifications });
-}
-
-// Handle adding vehicle
-export async function handleAddVehicle(req, res) {
+async function vehicleDetail(req, res, next) {
   try {
-    const vehicle = req.body;
-    await addVehicle(vehicle);
-    res.redirect('/');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error adding vehicle");
+    const inventory_id = req.params.id;
+    const vehicle = await inventoryModel.getVehicleById(inventory_id);
+
+    if (!vehicle) {
+      return res.status(404).render('errors/error', {
+        title: 'Vehicle Not Found',
+        message: 'The requested vehicle does not exist.',
+      });
+    }
+
+    const detailHTML = buildVehicleDetailHTML(vehicle);
+    res.render('inventory/detail', {
+      title: `${vehicle.make} ${vehicle.model}`,
+      vehicleHTML: detailHTML,
+    });
+  } catch (error) {
+    next(error);
   }
 }
 
-// Show vehicle details
-export async function showVehicleDetail(req, res) {
-  const vehicle = await getVehicleById(req.params.id);
-  if (!vehicle) {
-    return res.status(404).send("Vehicle not found");
-  }
-  res.render('vehicle-detail', { vehicle });
-}
+module.exports = { vehicleDetail };

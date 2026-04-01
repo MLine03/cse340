@@ -1,18 +1,21 @@
 // utilities/index.js
-
-exports.buildVehicleDetailHTML = function (vehicle) {
+function buildVehicleDetailHTML(vehicle) {
   return `
-    <div class="vehicle-detail">
+    <h1>${vehicle.make} ${vehicle.model}</h1>
+    <div class="vehicle-detail-container">
       <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" />
+        <img src="${vehicle.image_full}" alt="${vehicle.make} ${vehicle.model}" />
       </div>
       <div class="vehicle-info">
-        <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
-        <p><strong>Year:</strong> ${vehicle.inv_year}</p>
-        <p><strong>Price:</strong> $${vehicle.inv_price.toLocaleString()}</p>
-        <p><strong>Mileage:</strong> ${vehicle.inv_miles.toLocaleString()} miles</p>
-        <p>${vehicle.inv_description}</p>
+        <p><strong>Make:</strong> ${vehicle.make}</p>
+        <p><strong>Model:</strong> ${vehicle.model}</p>
+        <p><strong>Year:</strong> ${vehicle.year}</p>
+        <p><strong>Price:</strong> $${vehicle.price.toLocaleString()}</p>
+        <p><strong>Mileage:</strong> ${vehicle.mileage.toLocaleString()} miles</p>
+        <p><strong>Description:</strong> ${vehicle.description}</p>
       </div>
     </div>
   `;
-};
+}
+
+module.exports = { buildVehicleDetailHTML };

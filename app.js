@@ -1,71 +1,38 @@
 // app.js
-import express from 'express';
-import session from 'express-session';
-import pgSession from 'connect-pg-simple';
-import bodyParser from 'body-parser';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-// Import routes
-import vehicleRoutes from './routes/vehicles.js';
-import classificationRoutes from './routes/classificationRoutes.js';
-import inventoryRoutes from './routes/inventoryRoutes.js';
-
-// Import database pool
-import { pool } from './models/db.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+require('dotenv').config();
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const inventoryRoutes = require('./routes/inventoryRoutes');
+const accountsRoutes = require('./routes/accountsRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// -----------------------------
-// Session Store in PostgreSQL
-// -----------------------------
-const pgStore = pgSession(session);
-
-app.use(
-  session({
-    store: new pgStore({
-      pool: pool,                // Connection pool
-      tableName: 'session',      // Table created earlier
-      createTableIfMissing: true,
-    }),
-    secret: 'SuperSecretSessionKey', // Change in production!
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
-  })
-);
-
-// -----------------------------
 // Middleware
-// -----------------------------
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
 
-// -----------------------------
 // Routes
-// -----------------------------
-app.use('/', vehicleRoutes);
-app.use('/classification', classificationRoutes);
 app.use('/inventory', inventoryRoutes);
+app.use('/accounts', accountsRoutes);
 
-// Home route
-app.get('/', (req, res) => {
-  res.render('index', { message: 'Welcome to Vehicle Inventory!' });
+// 404 Error
+app.use((req, res, next) => {
+  res.status(404).render('errors/error', {
+    title: 'Page Not Found',
+    message: 'The page you requested does not exist.',
+  });
 });
 
-// -----------------------------
-// Start Server
-// -----------------------------
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// 500 Error
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).render('errors/error', {
+    title: 'Server Error',
+    message: 'Oops! Something went wrong on the server.',
+  });
 });
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
