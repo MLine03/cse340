@@ -1,17 +1,17 @@
-import pg from 'pg';
-import dotenv from 'dotenv';
-dotenv.config();
+import pool from "./db.js";
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const InventoryModel = {
+  getByClassification: async (classification_id) => {
+    const sql = "SELECT * FROM inventory WHERE classification_id=$1";
+    const result = await pool.query(sql, [classification_id]);
+    return result.rows;
+  },
 
-export async function getVehicleById(inv_id) {
-  const sql = 'SELECT * FROM inventory WHERE inv_id = $1';
-  const values = [inv_id];
-  try {
-    const result = await pool.query(sql, values);
+  getVehicleById: async (inventory_id) => {
+    const sql = "SELECT * FROM inventory WHERE inventory_id=$1";
+    const result = await pool.query(sql, [inventory_id]);
     return result.rows[0];
-  } catch (err) {
-    console.error(err);
-    throw err;
   }
-}
+};
+
+export default InventoryModel;

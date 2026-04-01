@@ -1,13 +1,20 @@
-import pg from 'pg';
-import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
-dotenv.config();
+import pool from "./db.js";
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const AccountModel = {
+  getAccount: async (userId) => {
+    const sql = "SELECT * FROM account WHERE account_id = $1";
+    const result = await pool.query(sql, [userId]);
+    return result.rows[0];
+  },
 
-export async function updateAccountData(userId, name, email, password) {
-  const hashed = await bcrypt.hash(password, 10);
-  const sql = 'UPDATE account SET name=$1, email=$2, password=$3 WHERE account_id=$4';
-  const values = [name, email, hashed, userId];
-  await pool.query(sql, values);
-}
+  updateAccount: async ({ account_id, first_name, last_name, email }) => {
+    const sql = `
+      UPDATE account
+      SET first_name=$1, last_name=$2, email=$3
+      WHERE account_id=$4
+    `;
+    await pool.query(sql, [first_name, last_name, email, account_id]);
+  }
+};
+
+export default AccountModel;

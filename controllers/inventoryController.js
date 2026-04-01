@@ -1,18 +1,23 @@
-import { getVehicleById } from '../models/inventoryModel.js';
-import { buildVehicleHTML } from '../utilities/index.js';
+import InventoryModel from "../models/inventoryModel.js";
+import { wrapVehicleDetail } from "../utilities/index.js";
 
-export async function getInventoryDetail(req, res, next) {
+export const getInventoryByClassification = async (req, res) => {
+  const classification_id = req.params.classification_id;
   try {
-    const inv_id = parseInt(req.params.inv_id);
-    if (isNaN(inv_id)) return res.status(400).send('Invalid ID');
-
-    const vehicle = await getVehicleById(inv_id);
-    if (!vehicle)
-      return res.status(404).render('error', { error: { message: 'Vehicle not found', status: 404 } });
-
-    const vehicleHTML = buildVehicleHTML(vehicle);
-    res.render('inventory/detail', { vehicleHTML, vehicle });
+    const vehicles = await InventoryModel.getByClassification(classification_id);
+    res.render("inventory/classification", { vehicles });
   } catch (err) {
-    next(err);
+    res.status(500).render("error", { message: err.message, status: 500 });
   }
-}
+};
+
+export const getInventoryDetail = async (req, res) => {
+  const inventory_id = req.params.inventory_id;
+  try {
+    const vehicle = await InventoryModel.getVehicleById(inventory_id);
+    const vehicleHTML = wrapVehicleDetail(vehicle);
+    res.render("inventory/detail", { vehicleHTML, vehicle });
+  } catch (err) {
+    res.status(500).render("error", { message: err.message, status: 500 });
+  }
+};

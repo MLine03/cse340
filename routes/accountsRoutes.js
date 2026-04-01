@@ -1,11 +1,9 @@
-const express = require('express');
+import express from "express";
+import { getAccount, updateAccount } from "../controllers/accountController.js";
+
 const router = express.Router();
-const accountsController = require('../controllers/accountsController');
-const { requireLogin } = require('../middleware/authMiddleware');
 
-router.get('/manage', requireLogin, accountsController.manageAccount);
-router.get('/update/:id', requireLogin, accountsController.getUpdateAccount);
-router.post('/update', requireLogin, accountsController.postUpdateAccount);
-router.post('/update-password', requireLogin, accountsController.postChangePassword);
+router.get("/", getAccount);
+router.post("/update", updateAccount);
 
-module.exports = router;
+export default router;
