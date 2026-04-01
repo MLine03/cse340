@@ -1,15 +1,20 @@
-// models/accounts-model.js
-import pool from "../database/connection.js";
+// Correct import for the model
+import accountsModel from "../models/accounts-model.js";
+import bcrypt from "bcryptjs";
 
-export async function checkExistingEmail(email) {
-  const sql = "SELECT account_id FROM accounts WHERE account_email = $1";
-  const result = await pool.query(sql, [email]);
-  return result.rowCount > 0;
-}
-
-export async function registerAccount({ account_firstname, account_lastname, account_email, account_password }) {
-  const sql =
-    "INSERT INTO accounts (account_firstname, account_lastname, account_email, account_password) VALUES ($1,$2,$3,$4) RETURNING account_id";
-  const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
-  return result.rows[0];
+// Example registration function
+export async function registerAccount(req, res, next) {
+  const { firstname, lastname, email, password } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await accountsModel.registerAccount({ firstname, lastname, email, password: hashedPassword });
+    if (result) {
+      req.flash("message", "Registration successful!");
+      res.redirect("/account/login");
+    } else {
+      res.render("account/register", { errors: [{ msg: "Registration failed" }] });
+    }
+  } catch (error) {
+    next(error);
+  }
 }
