@@ -1,47 +1,33 @@
-// src/app.js
-import express from 'express';
-import session from 'express-session';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Import routes
-import accountRoutes from './routes/accountRoutes.js';
-import inventoryRoutes from './routes/inventoryRoutes.js';
-import errorRoutes from './routes/errorRoutes.js';
+import express from "express";
+import session from "express-session";
+import dotenv from "dotenv";
+import accountRoutes from "./routes/accountRoutes.js"; // relative to CSE340
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5500;
 
-// Needed for __dirname in ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
-// Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(
-  session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
-
-// View engine
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.use(express.static("public"));
 
 // Routes
-app.use('/account', accountRoutes);
-app.use('/inventory', inventoryRoutes);
-app.use('/', errorRoutes);
+app.use("/account", accountRoutes);
 
-// Start server
-const PORT = process.env.PORT || 5500;
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render("error", { title: "404 - Page Not Found" });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("error", { title: "500 - Server Error" });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
