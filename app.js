@@ -1,12 +1,14 @@
 import express from "express";
 import session from "express-session";
-import flash from "connect-flash"; // Ensure package installed
+import flash from "connect-flash";
 import accountRoutes from "./routes/accountRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import classificationRoutes from "./routes/classificationRoutes.js";
 import errorRoutes from "./routes/error.js";
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
 
 // session middleware
 app.use(session({

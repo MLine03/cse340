@@ -1,6 +1,8 @@
-import accountsModel from "../models/accounts-model.js"; // exact file name
+// Correct import to match actual file name
+import accountsModel from "../models/accounts-model.js"; 
 import bcrypt from "bcryptjs";
 
+// Example controller function
 export async function registerAccount(req, res, next) {
   const { firstname, lastname, email, password } = req.body;
   try {
