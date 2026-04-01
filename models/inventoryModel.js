@@ -1,26 +1,20 @@
-import pkg from 'pg';
-const { Pool } = pkg;
-import dotenv from 'dotenv';
-dotenv.config();
+// models/inventory-model.js
+import pool from "../database/connection.js";
 
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-});
-
-// Get inventory by classification
-export const getInventoryByClassification = async (classificationId) => {
-  const sql = 'SELECT * FROM inventory WHERE classification_id=$1 ORDER BY make, model';
-  const result = await pool.query(sql, [classificationId]);
-  return result.rows;
-};
-
-// Get inventory by id
-export const getInventoryById = async (inventoryId) => {
-  const sql = 'SELECT * FROM inventory WHERE inventory_id=$1';
-  const result = await pool.query(sql, [inventoryId]);
+export async function addInventoryItem(itemData) {
+  const sql = `INSERT INTO inventory (inv_make, inv_model, inv_year, inv_price, classification_id)
+               VALUES ($1,$2,$3,$4,$5) RETURNING *`;
+  const result = await pool.query(sql, [
+    itemData.inv_make,
+    itemData.inv_model,
+    itemData.inv_year,
+    itemData.inv_price,
+    itemData.classification_id,
+  ]);
   return result.rows[0];
-};
+}
+
+export async function getClassifications() {
+  const sql = "SELECT * FROM classifications ORDER BY classification_name";
+  return pool.query(sql);
+}

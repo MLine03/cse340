@@ -1,31 +1,15 @@
-import pool from "../database/connection.js"
+// models/accounts-model.js
+import pool from "../database/connection.js";
 
-const accountModel = {}
-
-accountModel.getAccountById = async (id) => {
-  const result = await pool.query(
-    "SELECT * FROM account WHERE account_id = $1",
-    [id]
-  )
-  return result.rows[0]
+export async function checkExistingEmail(email) {
+  const sql = "SELECT account_id FROM accounts WHERE account_email = $1";
+  const result = await pool.query(sql, [email]);
+  return result.rowCount > 0;
 }
 
-accountModel.updateAccount = async (data) => {
-  const result = await pool.query(
-    `UPDATE account
-     SET account_firstname=$1, account_lastname=$2, account_email=$3
-     WHERE account_id=$4`,
-    [data.account_firstname, data.account_lastname, data.account_email, data.account_id]
-  )
-  return result.rowCount
+export async function registerAccount({ account_firstname, account_lastname, account_email, account_password }) {
+  const sql =
+    "INSERT INTO accounts (account_firstname, account_lastname, account_email, account_password) VALUES ($1,$2,$3,$4) RETURNING account_id";
+  const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
+  return result.rows[0];
 }
-
-accountModel.updatePassword = async (id, password) => {
-  const result = await pool.query(
-    "UPDATE account SET account_password=$1 WHERE account_id=$2",
-    [password, id]
-  )
-  return result.rowCount
-}
-
-export default accountModel

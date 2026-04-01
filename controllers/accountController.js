@@ -1,49 +1,15 @@
-import accountModel from "../models/accountModel.js"
-import bcrypt from "bcryptjs"
+// models/accounts-model.js
+import pool from "../database/connection.js";
 
-const accountController = {}
-
-accountController.buildAccount = async (req, res) => {
-  res.render("account/account", {
-    title: "Account Management",
-    account_firstname: "User",
-    account_type: "Admin"
-  })
+export async function checkExistingEmail(email) {
+  const sql = "SELECT account_id FROM accounts WHERE account_email = $1";
+  const result = await pool.query(sql, [email]);
+  return result.rowCount > 0;
 }
 
-accountController.buildUpdate = async (req, res) => {
-  const account = await accountModel.getAccountById(req.params.account_id)
-
-  res.render("account/update", {
-    title: "Update Account",
-    account
-  })
+export async function registerAccount({ account_firstname, account_lastname, account_email, account_password }) {
+  const sql =
+    "INSERT INTO accounts (account_firstname, account_lastname, account_email, account_password) VALUES ($1,$2,$3,$4) RETURNING account_id";
+  const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
+  return result.rows[0];
 }
-
-accountController.updateAccount = async (req, res) => {
-  const result = await accountModel.updateAccount(req.body)
-
-  if (result) {
-    res.render("account/account", { message: "Update successful" })
-  } else {
-    res.render("account/update", { message: "Update failed" })
-  }
-}
-
-accountController.updatePassword = async (req, res) => {
-  const hash = await bcrypt.hash(req.body.password, 10)
-  const result = await accountModel.updatePassword(req.body.account_id, hash)
-
-  if (result) {
-    res.render("account/account", { message: "Password updated" })
-  } else {
-    res.render("account/update", { message: "Password failed" })
-  }
-}
-
-accountController.logout = (req, res) => {
-  res.clearCookie("jwt")
-  res.redirect("/")
-}
-
-export default accountController
