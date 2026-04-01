@@ -1,25 +1,42 @@
-import inventoryModel from "../models/inventory-model.js"; // exact file name
-import util from "../utilities/index.js"; // if needed
+// controllers/inventoryController.js
+import invModel from "../models/inventoryModel.js";
+import { validationResult } from "express-validator";
+import express from "express";
+import utilities from "../utilities/index.js";
 
-export async function addInventory(req, res, next) {
-  const { classification_id, inv_make, inv_model, inv_year } = req.body;
-  try {
-    const result = await inventoryModel.addInventory({
-      classification_id,
-      inv_make,
-      inv_model,
-      inv_year,
+const inventoryController = {};
+
+// Add inventory page
+inventoryController.addInventoryPage = async (req, res) => {
+  let classificationList = await utilities.buildClassificationList();
+  res.render("inventory/add-inventory", {
+    classificationList,
+    title: "Add Inventory",
+  });
+};
+
+// Add inventory handler
+inventoryController.addInventory = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    let classificationList = await utilities.buildClassificationList(req.body.classification_id);
+    return res.render("inventory/add-inventory", {
+      classificationList,
+      errors: errors.array(),
+      data: req.body,
     });
-    if (result) {
-      req.flash("message", "Inventory added successfully!");
-      res.redirect("/inv/");
-    } else {
-      res.render("inventory/add-inventory", {
-        errors: [{ msg: "Failed to add inventory" }],
-        message: null,
-      });
+  }
+
+  try {
+    const result = await invModel.addInventory(req.body);
+    if (result.rowCount === 1) {
+      req.flash("success", "Inventory item added successfully");
+      return res.redirect("/inv/");
     }
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).render("error", { message: "Server error" });
   }
-}
+};
+
+export default inventoryController;

@@ -1,28 +1,40 @@
-// Correct import to match actual file name
-import accountsModel from "../models/accounts-model.js"; 
+// controllers/accountController.js
 import bcrypt from "bcryptjs";
+import accountModel from "../models/accountModel.js";
+import { validationResult } from "express-validator";
+import express from "express";
 
-// Example controller function
-export async function registerAccount(req, res, next) {
-  const { firstname, lastname, email, password } = req.body;
+const accountController = {};
+
+// Example: registration function
+accountController.registerAccount = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.render("accounts/register", { errors: errors.array() });
+  }
+
+  const { client_firstname, client_lastname, client_email, client_password } = req.body;
+  const hashedPassword = await bcrypt.hash(client_password, 10);
+
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const result = await accountsModel.registerAccount({
-      firstname,
-      lastname,
-      email,
-      password: hashedPassword,
+    const result = await accountModel.registerAccount({
+      client_firstname,
+      client_lastname,
+      client_email,
+      client_password: hashedPassword,
     });
-    if (result) {
-      req.flash("message", "Registration successful!");
-      res.redirect("/account/login");
+
+    if (result.rowCount === 1) {
+      req.flash("success", "Account created successfully.");
+      return res.redirect("/account/login");
     } else {
-      res.render("account/register", {
-        errors: [{ msg: "Registration failed" }],
-        message: null,
-      });
+      req.flash("error", "Account creation failed.");
+      return res.render("accounts/register");
     }
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).render("error", { message: "Server error" });
   }
-}
+};
+
+export default accountController;
