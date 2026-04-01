@@ -1,23 +1,27 @@
-import InventoryModel from "../models/inventoryModel.js";
-import { wrapVehicleDetail } from "../utilities/index.js";
+import { getInventoryByClassification, getInventoryById } from '../models/inventory-model.js';
+import { buildVehicleDetailHTML } from '../utils/index.js';
 
-export const getInventoryByClassification = async (req, res) => {
-  const classification_id = req.params.classification_id;
+export const getClassification = async (req, res, next) => {
   try {
-    const vehicles = await InventoryModel.getByClassification(classification_id);
-    res.render("inventory/classification", { vehicles });
+    const classificationId = req.params.classificationId;
+    const inventory = await getInventoryByClassification(classificationId);
+    res.render('inventory/classification', { inventory });
   } catch (err) {
-    res.status(500).render("error", { message: err.message, status: 500 });
+    next(err);
   }
 };
 
-export const getInventoryDetail = async (req, res) => {
-  const inventory_id = req.params.inventory_id;
+export const getVehicleDetail = async (req, res, next) => {
   try {
-    const vehicle = await InventoryModel.getVehicleById(inventory_id);
-    const vehicleHTML = wrapVehicleDetail(vehicle);
-    res.render("inventory/detail", { vehicleHTML, vehicle });
+    const inventoryId = req.params.inventoryId;
+    const vehicle = await getInventoryById(inventoryId);
+    if (!vehicle) {
+      res.status(404).render('error', { message: 'Vehicle not found', status: 404 });
+      return;
+    }
+    const vehicleHTML = buildVehicleDetailHTML(vehicle);
+    res.render('inventory/detail', { vehicleHTML, vehicle });
   } catch (err) {
-    res.status(500).render("error", { message: err.message, status: 500 });
+    next(err);
   }
 };

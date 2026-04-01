@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Error <%= status %></title>
-</head>
-<body>
-  <h1>Error <%= status %></h1>
-  <p><%= message %></p>
-  <a href="/">Return Home</a>
-</body>
-</html>
+<%- include('./partials/header.ejs', { title: status + ' Error' }) %>
+
+<h1>Error <%= status %></h1>
+<p><%= message %></p>
+
+<%- include('./partials/footer.ejs') %>

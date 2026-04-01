@@ -1,9 +1,12 @@
-import express from "express";
-import { getInventoryDetail, getInventoryByClassification } from "../controllers/inventoryController.js";
+import express from 'express';
+import { getClassification, getVehicleDetail } from '../controllers/inventoryController.js';
 
 const router = express.Router();
 
-router.get("/classification/:classification_id", getInventoryByClassification);
-router.get("/detail/:inventory_id", getInventoryDetail);
+// Show classification list
+router.get('/classification/:classificationId', getClassification);
+
+// Vehicle detail view
+router.get('/detail/:inventoryId', getVehicleDetail);
 
 export default router;
