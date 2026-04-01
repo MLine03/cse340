@@ -1,17 +1,29 @@
 import express from "express";
 import session from "express-session";
-import flash from "connect-flash";
+import flash from "connect-flash"; // Ensure package installed
 import accountRoutes from "./routes/accountRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
+import classificationRoutes from "./routes/classificationRoutes.js";
+import errorRoutes from "./routes/error.js";
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(session({ secret: "keyboard cat", resave: false, saveUninitialized: true }));
+// session middleware
+app.use(session({
+  secret: "yourSecretKey",
+  resave: false,
+  saveUninitialized: true,
+}));
+
+// flash messages
 app.use(flash());
 
-// Use routes
+// Routes
 app.use("/account", accountRoutes);
 app.use("/inv", inventoryRoutes);
+app.use("/classification", classificationRoutes);
 
-app.listen(process.env.PORT || 5500, () => console.log("Server running"));
+// Error handling
+app.use(errorRoutes);
+
+export default app;

@@ -1,18 +1,19 @@
-const classModel = require('../models/classification-model');
+import classificationModel from "../models/classification-model.js"; // exact file name
 
-async function addClassification(req, res, next) {
+export async function addClassification(req, res, next) {
+  const { classification_name } = req.body;
   try {
-    const name = req.body.classification_name;
-    if (!name) {
-      req.flash('message', 'Classification name is required');
-      return res.redirect('/classification/add');
+    const result = await classificationModel.addClassification(classification_name);
+    if (result) {
+      req.flash("message", "Classification added successfully!");
+      res.redirect("/inv/");
+    } else {
+      res.render("inventory/add-classification", {
+        errors: [{ msg: "Failed to add classification" }],
+        message: null,
+      });
     }
-    const newClass = await classModel.addClassification(name);
-    req.flash('message', 'Classification added successfully!');
-    res.redirect('/inventory/add');
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 }
-
-module.exports = { addClassification };
