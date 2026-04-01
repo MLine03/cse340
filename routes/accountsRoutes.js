@@ -1,9 +1,10 @@
-import express from "express";
-import { getAccount, updateAccount } from "../controllers/accountController.js";
-
+// src/routes/accountRoutes.js
+import express from 'express';
 const router = express.Router();
 
-router.get("/", getAccount);
-router.post("/update", updateAccount);
+// Example route for /account
+router.get('/', (req, res) => {
+  res.render('account', { title: 'Account Page' });
+});
 
 export default router;

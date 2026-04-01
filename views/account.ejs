@@ -1,0 +1,51 @@
+<!-- src/views/account.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="User account page for CSE340 Inventory App">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>CSE340 Inventory App</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inventory">Inventory</a></li>
+        <li><a href="/account">Account</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2><%= title %></h2>
+    <p>Welcome to your account dashboard. Here you can view and manage your account details.</p>
+
+    <!-- Example account info -->
+    <section>
+      <h3>Account Information</h3>
+      <ul>
+        <li>Username: <strong>mac</strong></li>
+        <li>Email: <strong>user@example.com</strong></li>
+        <li>Member Since: <strong>2026</strong></li>
+      </ul>
+    </section>
+
+    <!-- Example actions -->
+    <section>
+      <h3>Actions</h3>
+      <ul>
+        <li><a href="/account/edit">Edit Account</a></li>
+        <li><a href="/account/delete">Delete Account</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 CSE340 Inventory App</p>
+  </footer>
+</body>
+</html>

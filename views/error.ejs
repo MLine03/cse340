@@ -1,6 +1,33 @@
-<%- include('./partials/header.ejs', { title: status + ' Error' }) %>
+<!-- src/views/error.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Error page for CSE340 Inventory App">
+  <title>Error - <%= message %></title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>CSE340 Inventory App</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/inventory">Inventory</a></li>
+        <li><a href="/account">Account</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<h1>Error <%= status %></h1>
-<p><%= message %></p>
+  <main>
+    <h2>Error: <%= message %></h2>
+    <p><%= error.status %> - <%= error.stack %></p>
+    <a href="/">Return Home</a>
+  </main>
 
-<%- include('./partials/footer.ejs') %>
+  <footer>
+    <p>&copy; 2026 CSE340 Inventory App</p>
+  </footer>
+</body>
+</html>
