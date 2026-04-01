@@ -1,16 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title><%= title %></title>
-</head>
-<body>
-    <h1>Inventory Management</h1>
-    <% if(message.length > 0){ %>
-        <p><%= message %></p>
-    <% } %>
-    <ul>
-        <li><a href="/inv/add-classification">Add Classification</a></li>
-        <li><a href="/inv/add-inventory">Add Inventory Item</a></li>
-    </ul>
-</body>
-</html>
+<h2>Account Management</h2>
+<form method="POST" action="/account/update">
+  <input type="text" name="name" value="<%= user.name %>" required>
+  <input type="email" name="email" value="<%= user.email %>" required>
+  <input type="password" name="password" placeholder="New Password">
+  <button type="submit">Update</button>
+</form>
+<a href="/account/logout">Logout</a>

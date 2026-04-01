@@ -1,26 +1,18 @@
-const inventoryModel = require('../models/inventory-model');
-const { buildVehicleDetailHTML } = require('../utilities');
+import { getVehicleById } from '../models/inventoryModel.js';
+import { buildVehicleHTML } from '../utilities/index.js';
 
-async function vehicleDetail(req, res, next) {
+export async function getInventoryDetail(req, res, next) {
   try {
-    const inventory_id = req.params.id;
-    const vehicle = await inventoryModel.getVehicleById(inventory_id);
+    const inv_id = parseInt(req.params.inv_id);
+    if (isNaN(inv_id)) return res.status(400).send('Invalid ID');
 
-    if (!vehicle) {
-      return res.status(404).render('errors/error', {
-        title: 'Vehicle Not Found',
-        message: 'The requested vehicle does not exist.',
-      });
-    }
+    const vehicle = await getVehicleById(inv_id);
+    if (!vehicle)
+      return res.status(404).render('error', { error: { message: 'Vehicle not found', status: 404 } });
 
-    const detailHTML = buildVehicleDetailHTML(vehicle);
-    res.render('inventory/detail', {
-      title: `${vehicle.make} ${vehicle.model}`,
-      vehicleHTML: detailHTML,
-    });
-  } catch (error) {
-    next(error);
+    const vehicleHTML = buildVehicleHTML(vehicle);
+    res.render('inventory/detail', { vehicleHTML, vehicle });
+  } catch (err) {
+    next(err);
   }
 }
-
-module.exports = { vehicleDetail };

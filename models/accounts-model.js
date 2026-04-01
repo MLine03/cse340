@@ -1,25 +1,13 @@
-const pool = require('../database/connection');
+import pg from 'pg';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
-async function getAccountById(account_id) {
-  const sql = `SELECT * FROM account WHERE account_id = $1`;
-  const result = await pool.query(sql, [account_id]);
-  return result.rows[0];
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+
+export async function updateAccountData(userId, name, email, password) {
+  const hashed = await bcrypt.hash(password, 10);
+  const sql = 'UPDATE account SET name=$1, email=$2, password=$3 WHERE account_id=$4';
+  const values = [name, email, hashed, userId];
+  await pool.query(sql, values);
 }
-
-async function validateAccountUpdate(account_id, email) {
-  const sql = `SELECT * FROM account WHERE email = $1 AND account_id <> $2`;
-  const result = await pool.query(sql, [email, account_id]);
-  return result.rows.length > 0 ? ['Email already exists'] : [];
-}
-
-async function updateAccount(account_id, first_name, last_name, email) {
-  const sql = `UPDATE account SET first_name=$1, last_name=$2, email=$3 WHERE account_id=$4`;
-  await pool.query(sql, [first_name, last_name, email, account_id]);
-}
-
-async function updatePassword(account_id, hashed) {
-  const sql = `UPDATE account SET password=$1 WHERE account_id=$2`;
-  await pool.query(sql, [hashed, account_id]);
-}
-
-module.exports = { getAccountById, validateAccountUpdate, updateAccount, updatePassword };

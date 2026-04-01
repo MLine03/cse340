@@ -1,37 +1,39 @@
 // app.js
-require('dotenv').config();
-const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const inventoryRoutes = require('./routes/inventoryRoutes');
-const accountsRoutes = require('./routes/accountsRoutes');
+import express from "express";
+import session from "express-session";
+import dotenv from "dotenv";
+import inventoryRoutes from "./routes/inventoryRoutes.js";
+import accountRoutes from "./routes/accountRoutes.js";
+
+dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public"));
+
+// Session setup
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Routes
-app.use('/inventory', inventoryRoutes);
-app.use('/accounts', accountsRoutes);
+app.use("/inventory", inventoryRoutes);
+app.use("/account", accountRoutes);
 
-// 404 Error
-app.use((req, res, next) => {
-  res.status(404).render('errors/error', {
-    title: 'Page Not Found',
-    message: 'The page you requested does not exist.',
-  });
+// 404 handler
+app.use((req, res) => {
+  res.status(404).render("error", { code: 404, message: "Page Not Found" });
 });
 
-// 500 Error
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).render('errors/error', {
-    title: 'Server Error',
-    message: 'Oops! Something went wrong on the server.',
-  });
+  console.error(err.stack);
+  res.status(500).render("error", { code: 500, message: "Internal Server Error" });
 });
 
 const PORT = process.env.PORT || 3000;
