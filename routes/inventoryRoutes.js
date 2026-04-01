@@ -1,12 +1,22 @@
-import express from 'express';
-import { getClassification, getVehicleDetail } from '../controllers/inventoryController.js';
+import express from "express"
+import invController from "../controllers/inventoryController.js"
 
-const router = express.Router();
+const router = express.Router()
 
-// Show classification list
-router.get('/classification/:classificationId', getClassification);
+router.get("/", invController.managementView)
 
-// Vehicle detail view
-router.get('/detail/:inventoryId', getVehicleDetail);
+router.get("/add-classification", invController.buildAddClassification)
+router.post("/add-classification", invController.addClassification)
 
-export default router;
+router.get("/add-inventory", invController.buildAddInventory)
+router.post("/add-inventory", invController.addInventory)
+
+// Assignment 3 DETAIL VIEW
+router.get("/detail/:inv_id", invController.buildDetail)
+
+// 500 ERROR TEST
+router.get("/error", (req, res, next) => {
+  next(new Error("Intentional 500 error"))
+})
+
+export default router

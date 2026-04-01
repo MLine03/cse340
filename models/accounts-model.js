@@ -1,20 +1,31 @@
-import pool from "./db.js";
+import pool from "../database/connection.js"
 
-const AccountModel = {
-  getAccount: async (userId) => {
-    const sql = "SELECT * FROM account WHERE account_id = $1";
-    const result = await pool.query(sql, [userId]);
-    return result.rows[0];
-  },
+const accountModel = {}
 
-  updateAccount: async ({ account_id, first_name, last_name, email }) => {
-    const sql = `
-      UPDATE account
-      SET first_name=$1, last_name=$2, email=$3
-      WHERE account_id=$4
-    `;
-    await pool.query(sql, [first_name, last_name, email, account_id]);
-  }
-};
+accountModel.getAccountById = async (id) => {
+  const result = await pool.query(
+    "SELECT * FROM account WHERE account_id = $1",
+    [id]
+  )
+  return result.rows[0]
+}
 
-export default AccountModel;
+accountModel.updateAccount = async (data) => {
+  const result = await pool.query(
+    `UPDATE account
+     SET account_firstname=$1, account_lastname=$2, account_email=$3
+     WHERE account_id=$4`,
+    [data.account_firstname, data.account_lastname, data.account_email, data.account_id]
+  )
+  return result.rowCount
+}
+
+accountModel.updatePassword = async (id, password) => {
+  const result = await pool.query(
+    "UPDATE account SET account_password=$1 WHERE account_id=$2",
+    [password, id]
+  )
+  return result.rowCount
+}
+
+export default accountModel

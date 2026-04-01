@@ -1,8 +1,14 @@
-import express from "express";
-const router = express.Router();
+import express from "express"
+import accountController from "../controllers/accountController.js"
 
-router.get("/", (req, res) => {
-  res.render("account", { title: "Account Page" });
-});
+const router = express.Router()
 
-export default router;
+router.get("/", accountController.buildAccount)
+router.get("/update/:account_id", accountController.buildUpdate)
+
+router.post("/update", accountController.updateAccount)
+router.post("/password", accountController.updatePassword)
+
+router.get("/logout", accountController.logout)
+
+export default router

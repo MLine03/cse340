@@ -1,14 +1,27 @@
-export const buildVehicleDetailHTML = (vehicle) => {
-  const price = vehicle.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-  const mileage = vehicle.miles.toLocaleString();
+import invModel from "../models/inventoryModel.js"
 
+const Util = {}
+
+Util.buildClassificationList = async () => {
+  const data = await invModel.getClassifications()
+  let list = '<select name="classification_id">'
+
+  data.rows.forEach(row => {
+    list += `<option value="${row.classification_id}">
+      ${row.classification_name}
+    </option>`
+  })
+
+  list += "</select>"
+  return list
+}
+
+Util.buildDetailView = (data) => {
   return `
-    <div class="vehicle-detail">
-      <h2>${vehicle.make} ${vehicle.model} (${vehicle.year})</h2>
-      <img src="${vehicle.inv_image}" alt="${vehicle.make} ${vehicle.model}" class="vehicle-image">
-      <p><strong>Price:</strong> ${price}</p>
-      <p><strong>Mileage:</strong> ${mileage} miles</p>
-      <p><strong>Description:</strong> ${vehicle.description}</p>
-    </div>
-  `;
-};
+    <h2>${data.inv_make} ${data.inv_model}</h2>
+    <p>$${data.inv_price}</p>
+    <p>${data.inv_description}</p>
+  `
+}
+
+export default Util

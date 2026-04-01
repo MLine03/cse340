@@ -1,27 +1,48 @@
-import { getInventoryByClassification, getInventoryById } from '../models/inventory-model.js';
-import { buildVehicleDetailHTML } from '../utils/index.js';
+import invModel from "../models/inventoryModel.js"
+import Util from "../utilities/index.js"
 
-export const getClassification = async (req, res, next) => {
-  try {
-    const classificationId = req.params.classificationId;
-    const inventory = await getInventoryByClassification(classificationId);
-    res.render('inventory/classification', { inventory });
-  } catch (err) {
-    next(err);
-  }
-};
+const invController = {}
 
-export const getVehicleDetail = async (req, res, next) => {
-  try {
-    const inventoryId = req.params.inventoryId;
-    const vehicle = await getInventoryById(inventoryId);
-    if (!vehicle) {
-      res.status(404).render('error', { message: 'Vehicle not found', status: 404 });
-      return;
-    }
-    const vehicleHTML = buildVehicleDetailHTML(vehicle);
-    res.render('inventory/detail', { vehicleHTML, vehicle });
-  } catch (err) {
-    next(err);
+invController.managementView = (req, res) => {
+  res.render("inventory/management", { title: "Inventory Management" })
+}
+
+invController.buildAddClassification = (req, res) => {
+  res.render("inventory/add-classification", { title: "Add Classification" })
+}
+
+invController.addClassification = async (req, res) => {
+  const result = await invModel.addClassification(req.body.classification_name)
+
+  if (result) {
+    res.render("inventory/management", { message: "Added successfully" })
+  } else {
+    res.render("inventory/add-classification", { message: "Failed" })
   }
-};
+}
+
+invController.buildAddInventory = async (req, res) => {
+  const list = await Util.buildClassificationList()
+  res.render("inventory/add-inventory", {
+    title: "Add Inventory",
+    classificationList: list
+  })
+}
+
+invController.addInventory = async (req, res) => {
+  const result = await invModel.addInventory(req.body)
+
+  if (result) {
+    res.render("inventory/management", { message: "Vehicle added" })
+  } else {
+    res.render("inventory/add-inventory", { message: "Failed" })
+  }
+}
+
+invController.buildDetail = async (req, res) => {
+  const data = await invModel.getVehicleById(req.params.inv_id)
+  const html = Util.buildDetailView(data)
+  res.render("inventory/detail", { title: "Detail", html })
+}
+
+export default invController
