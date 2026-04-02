@@ -1,26 +1,15 @@
 import express from "express";
-import * as accountController from "../controllers/accountController.js";
-import { checkJWT } from "../middleware/authMiddleware.js";
-
 const router = express.Router();
+import {
+  accountManagementView,
+  updateAccountView,
+  handleAccountUpdate,
+  handlePasswordUpdate,
+} from "../controllers/accountController.js";
 
-// Middleware ensures user is logged in
-router.use(checkJWT);
-
-// Account management
-router.get("/manage", accountController.manageAccount);
-
-// Update account
-router.get("/update/:id", accountController.showUpdateForm);
-router.post("/update", accountController.updateAccount);
-
-// Change password
-router.post("/password", accountController.changePassword);
-
-// Logout
-router.get("/logout", (req, res) => {
-  res.clearCookie("jwt");
-  res.redirect("/");
-});
+router.get("/management", accountManagementView);
+router.get("/update/:id", updateAccountView);
+router.post("/update", handleAccountUpdate);
+router.post("/password", handlePasswordUpdate);
 
 export default router;
