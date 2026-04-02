@@ -1,14 +1,17 @@
-// models/inventory-model.js
-import pool from "./db.js";
+// models/inventoryModel.js
+import pool from "../database/connection.js";
 
-export async function addInventory(data) {
-  const { inv_make, inv_model, inv_year, classification_id } = data;
-  const sql = `INSERT INTO inventory (inv_make, inv_model, inv_year, classification_id)
-               VALUES ($1, $2, $3, $4) RETURNING *`;
-  const values = [inv_make, inv_model, inv_year, classification_id];
-
-  const result = await pool.query(sql, values);
-  return result;
+export async function getInventoryItems() {
+  const sql = "SELECT * FROM inventory";
+  const result = await pool.query(sql);
+  return result.rows;
 }
 
-export default { addInventory };
+export async function addInventoryItem(item) {
+  const sql = `
+    INSERT INTO inventory (inv_make, inv_model, inv_year, inv_price)
+    VALUES ($1,$2,$3,$4) RETURNING inv_id
+  `;
+  const result = await pool.query(sql, [item.make, item.model, item.year, item.price]);
+  return result.rows[0];
+}

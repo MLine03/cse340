@@ -1,15 +1,34 @@
-const pool = require('../db');
+// models/classificationModel.js
 
-async function addClassification(classification_name) {
-  const sql = 'INSERT INTO car_classification (classification_name) VALUES ($1) RETURNING classification_id';
-  const result = await pool.query(sql, [classification_name]);
-  return result.rows[0];
-}
+import pool from "./db.js";
 
-async function getAllClassifications() {
-  const sql = 'SELECT * FROM car_classification ORDER BY classification_name';
-  const result = await pool.query(sql);
-  return result.rows;
-}
+const classificationModel = {};
 
-module.exports = { addClassification, getAllClassifications };
+// Get all classifications
+classificationModel.getClassifications = async () => {
+  try {
+    const sql = "SELECT * FROM classification ORDER BY classification_name";
+    const result = await pool.query(sql);
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Add new classification
+classificationModel.addClassification = async (classification_name) => {
+  try {
+    const sql = `
+      INSERT INTO classification (classification_name)
+      VALUES ($1)
+      RETURNING classification_id
+    `;
+    const result = await pool.query(sql, [classification_name]);
+    return result.rowCount;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export default classificationModel; // ✅ THIS FIXES YOUR ERROR
