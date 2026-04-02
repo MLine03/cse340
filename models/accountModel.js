@@ -1,14 +1,25 @@
-import pool from "../database/connection.js";
+import pool from "../database/pool.js"; // MySQL connection pool
 
-export async function checkExistingEmail(email) {
-  const sql = "SELECT account_id FROM accounts WHERE account_email = $1";
-  const result = await pool.query(sql, [email]);
-  return result.rowCount > 0;
-}
+export const getAccountById = async (id) => {
+  const [rows] = await pool.query(
+    "SELECT account_id, firstname, lastname, email, account_type FROM accounts WHERE account_id = ?",
+    [id]
+  );
+  return rows[0];
+};
 
-export async function registerAccount({ account_firstname, account_lastname, account_email, account_password }) {
-  const sql =
-    "INSERT INTO accounts (account_firstname, account_lastname, account_email, account_password) VALUES ($1,$2,$3,$4) RETURNING account_id";
-  const result = await pool.query(sql, [account_firstname, account_lastname, account_email, account_password]);
-  return result.rows[0];
-}
+export const updateAccount = async ({ account_id, firstname, lastname, email }) => {
+  const [result] = await pool.query(
+    "UPDATE accounts SET firstname = ?, lastname = ?, email = ? WHERE account_id = ?",
+    [firstname, lastname, email, account_id]
+  );
+  return result.affectedRows > 0;
+};
+
+export const updatePassword = async (account_id, hashedPassword) => {
+  const [result] = await pool.query(
+    "UPDATE accounts SET password = ? WHERE account_id = ?",
+    [hashedPassword, account_id]
+  );
+  return result.affectedRows > 0;
+};

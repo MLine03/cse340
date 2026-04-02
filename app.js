@@ -1,32 +1,31 @@
-// app.js
 import express from "express";
-import session from "express-session";
-import flash from "connect-flash";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import accountRoutes from "./routes/accountRoutes.js";
-import inventoryRoutes from "./routes/inventoryRoutes.js";
+
+import accountsRouter from "./routes/accounts.js";
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+// Middleware
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static("public"));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "secret",
-  resave: false,
-  saveUninitialized: true
-}));
-app.use(flash());
+// View engine
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
 // Routes
-app.use("/account", accountRoutes);
-app.use("/inventory", inventoryRoutes);
+app.use("/accounts", accountsRouter);
 
-// 404 handler
-app.use((req, res) => res.status(404).send("Page Not Found"));
+app.get("/", (req, res) => {
+  res.render("home", { title: "Home" });
+});
 
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);

@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="CSE340 Vehicle Inventory Management System">
-  <title><%= title %></title>
-  <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-<header>
-  <nav>
-    <a href="/inventory/classification/1">Cars</a>
-    <a href="/inventory/classification/2">Trucks</a>
-  </nav>
-</header>
-<main>
+<nav>
+    <ul>
+        <% if (locals.user) { %>
+            <li>Welcome <%= locals.user.firstname %></li>
+            <li><a href="/account/update/<%= locals.user.account_id %>">My Account</a></li>
+            <li><a href="/logout">Logout</a></li>
+        <% } else { %>
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+        <% } %>
+    </ul>
+</nav>

@@ -1,16 +1,9 @@
-// /utilities/index.js
 import { handleErrors } from "./errorHandler.js";
-import { getInventory, addInventory, updateInventory, deleteInventory } from "../models/inventoryModel.js";
-import { checkExistingEmail, registerAccount } from "../models/accountModel.js";
-import { getClassifications } from "../models/classificationModel.js";
+import * as accountModel from "../models/accountModel.js";
+import * as inventoryModel from "../models/inventoryModel.js";
+import * as classificationModel from "../models/classificationModel.js";
 
-export {
-  handleErrors,
-  getInventory,
-  addInventory,
-  updateInventory,
-  deleteInventory,
-  checkExistingEmail,
-  registerAccount,
-  getClassifications
-};
+export { handleErrors };
+export const { checkExistingEmail, registerAccount } = accountModel;
+export const { getInventory, addInventory, updateInventory, deleteInventory } = inventoryModel;
+export const { getClassifications } = classificationModel;

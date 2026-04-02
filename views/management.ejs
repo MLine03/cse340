@@ -1,8 +1,16 @@
-<h2>Account Management</h2>
-<form method="POST" action="/account/update">
-  <input type="text" name="name" value="<%= user.name %>" required>
-  <input type="email" name="email" value="<%= user.email %>" required>
-  <input type="password" name="password" placeholder="New Password">
-  <button type="submit">Update</button>
-</form>
-<a href="/account/logout">Logout</a>
+<h2>Welcome <%= account.firstname %></h2>
+
+<% if (account.account_type === 'Employee' || account.account_type === 'Admin') { %>
+  <h3>Inventory Management</h3>
+  <p><a href="/inventory/manage">Manage Inventory</a></p>
+<% } %>
+
+<p><a href="/accounts/update/<%= account.account_id %>">Update Account Info</a></p>
+
+<% if (errors && errors.length) { %>
+  <ul>
+    <% errors.forEach(err => { %>
+      <li><%= err %></li>
+    <% }) %>
+  </ul>
+<% } %>
