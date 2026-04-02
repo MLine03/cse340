@@ -1,10 +1,12 @@
 // routes/inventoryRoutes.js
 import express from "express";
-import inventoryController from "../controllers/inventoryController.js";
+import { handleErrors, getInventory } from "../utilities/index.js";
 
 const router = express.Router();
 
-router.get("/add-inventory", inventoryController.addInventoryPage);
-router.post("/add-inventory", inventoryController.addInventory);
+router.get("/", handleErrors(async (req, res) => {
+  const inventory = await getInventory();
+  res.json(inventory);
+}));
 
 export default router;

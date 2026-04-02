@@ -1,31 +1,32 @@
+// app.js
 import express from "express";
 import session from "express-session";
 import flash from "connect-flash";
+import dotenv from "dotenv";
 import accountRoutes from "./routes/accountRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
-import classificationRoutes from "./routes/classificationRoutes.js";
-import errorRoutes from "./routes/error.js";
+
+dotenv.config();
 
 const app = express();
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// session middleware
 app.use(session({
-  secret: "yourSecretKey",
+  secret: process.env.SESSION_SECRET || "secret",
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 }));
-
-// flash messages
 app.use(flash());
 
 // Routes
 app.use("/account", accountRoutes);
-app.use("/inv", inventoryRoutes);
-app.use("/classification", classificationRoutes);
+app.use("/inventory", inventoryRoutes);
 
-// Error handling
-app.use(errorRoutes);
+// 404 handler
+app.use((req, res) => res.status(404).send("Page Not Found"));
 
-export default app;
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

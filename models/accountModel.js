@@ -1,4 +1,3 @@
-// models/accountModel.js
 import pool from "../database/connection.js";
 
 export async function checkExistingEmail(email) {

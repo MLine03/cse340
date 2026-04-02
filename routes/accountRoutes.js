@@ -1,42 +1,21 @@
-// controllers/inventoryController.js
-import invModel from "../models/inventoryModel.js";
-import { validationResult } from "express-validator";
+// routes/accountRoutes.js
 import express from "express";
-import utilities from "../utilities/index.js";
+import { body } from "express-validator";
+import { handleErrors, checkExistingEmail, registerAccount } from "../utilities/index.js";
 
-const inventoryController = {};
+const router = express.Router();
 
-// Add inventory page
-inventoryController.addInventoryPage = async (req, res) => {
-  let classificationList = await utilities.buildClassificationList();
-  res.render("inventory/add-inventory", {
-    classificationList,
-    title: "Add Inventory",
-  });
-};
+router.post(
+  "/register",
+  body("account_email").isEmail(),
+  body("account_password").isLength({ min: 6 }),
+  handleErrors(async (req, res) => {
+    const exists = await checkExistingEmail(req.body.account_email);
+    if (exists) return res.status(400).send("Email already exists");
 
-// Add inventory handler
-inventoryController.addInventory = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    let classificationList = await utilities.buildClassificationList(req.body.classification_id);
-    return res.render("inventory/add-inventory", {
-      classificationList,
-      errors: errors.array(),
-      data: req.body,
-    });
-  }
+    const newAccount = await registerAccount(req.body);
+    res.status(201).json({ accountId: newAccount.account_id });
+  })
+);
 
-  try {
-    const result = await invModel.addInventory(req.body);
-    if (result.rowCount === 1) {
-      req.flash("success", "Inventory item added successfully");
-      return res.redirect("/inv/");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { message: "Server error" });
-  }
-};
-
-export default inventoryController;
+export default router;

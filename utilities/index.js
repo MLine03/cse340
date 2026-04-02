@@ -1,13 +1,16 @@
-// utilities/index.js
-import { getClassifications } from "../models/inventory-model.js";
+// /utilities/index.js
+import { handleErrors } from "./errorHandler.js";
+import { getInventory, addInventory, updateInventory, deleteInventory } from "../models/inventoryModel.js";
+import { checkExistingEmail, registerAccount } from "../models/accountModel.js";
+import { getClassifications } from "../models/classificationModel.js";
 
-export async function buildClassificationList(selectedId = null) {
-  const data = await getClassifications();
-  let list = '<select name="classification_id" id="classificationList" required>';
-  list += "<option value=''>Choose a Classification</option>";
-  data.rows.forEach(row => {
-    list += `<option value="${row.classification_id}" ${row.classification_id == selectedId ? "selected" : ""}>${row.classification_name}</option>`;
-  });
-  list += "</select>";
-  return list;
-}
+export {
+  handleErrors,
+  getInventory,
+  addInventory,
+  updateInventory,
+  deleteInventory,
+  checkExistingEmail,
+  registerAccount,
+  getClassifications
+};

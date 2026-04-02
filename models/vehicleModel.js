@@ -1,4 +1,3 @@
-// models/vehicleModel.js
 import pool from "../database/connection.js";
 
 export async function getVehicles() {

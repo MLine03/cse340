@@ -1,42 +1,24 @@
-// controllers/inventoryController.js
-import invModel from "../models/inventoryModel.js";
-import { validationResult } from "express-validator";
+// routes/inventoryRoutes.js
+
 import express from "express";
-import utilities from "../utilities/index.js";
+const router = express.Router();
 
-const inventoryController = {};
+import inventoryController from "../controllers/inventoryController.js";
+import * as utilities from "../utilities/index.js";
 
-// Add inventory page
-inventoryController.addInventoryPage = async (req, res) => {
-  let classificationList = await utilities.buildClassificationList();
-  res.render("inventory/add-inventory", {
-    classificationList,
-    title: "Add Inventory",
-  });
-};
+// Management view
+router.get("/", utilities.handleErrors(inventoryController.managementView));
 
-// Add inventory handler
-inventoryController.addInventory = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    let classificationList = await utilities.buildClassificationList(req.body.classification_id);
-    return res.render("inventory/add-inventory", {
-      classificationList,
-      errors: errors.array(),
-      data: req.body,
-    });
-  }
+// Add inventory view
+router.get(
+  "/add-inventory",
+  utilities.handleErrors(inventoryController.addInventoryView)
+);
 
-  try {
-    const result = await invModel.addInventory(req.body);
-    if (result.rowCount === 1) {
-      req.flash("success", "Inventory item added successfully");
-      return res.redirect("/inv/");
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { message: "Server error" });
-  }
-};
+// Process add inventory
+router.post(
+  "/add-inventory",
+  utilities.handleErrors(inventoryController.addInventory)
+);
 
-export default inventoryController;
+export default router;
