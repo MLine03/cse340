@@ -1,31 +1,26 @@
 import express from "express";
-import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-
-import accountsRouter from "./routes/accounts.js";
+import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
+import accountRouter from "./routes/accounts.js";
 
 dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use(express.static("public"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// View engine
 app.set("view engine", "ejs");
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 
-// Routes
-app.use("/accounts", accountsRouter);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use("/accounts", accountRouter);
 
 app.get("/", (req, res) => {
-  res.render("home", { title: "Home" });
+  res.send("CSE340 Home Page");
 });
 
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+app.listen(3000, () => console.log("Server running on port 3000"));
