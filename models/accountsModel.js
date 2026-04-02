@@ -1,9 +1,12 @@
 // models/accountsModel.js
 import pool from "../database/pool.js";
 
-// Get account info by account_id
+// Get account by ID
 export const getAccountById = async (account_id) => {
-  const [rows] = await pool.query("SELECT * FROM accounts WHERE account_id = ?", [account_id]);
+  const [rows] = await pool.query(
+    "SELECT * FROM accounts WHERE account_id = ?",
+    [account_id]
+  );
   return rows[0];
 };
 
@@ -25,8 +28,11 @@ export const updatePassword = async (account_id, hashedPassword) => {
   return result.affectedRows > 0;
 };
 
-// Get account by email (for login validation)
+// Get account by email (for login)
 export const getAccountByEmail = async (email) => {
-  const [rows] = await pool.query("SELECT * FROM accounts WHERE email = ?", [email]);
+  const [rows] = await pool.query(
+    "SELECT * FROM accounts WHERE email = ?",
+    [email]
+  );
   return rows[0];
 };

@@ -2,25 +2,34 @@
 import bcrypt from "bcryptjs";
 import { getAccountById, updateAccount, updatePassword } from "../models/accountsModel.js";
 
-// Account management view
+// Account management page
 export const accountManagementView = async (req, res) => {
   try {
-    const account = await getAccountById(req.account.account_id);
-    res.render("account/account-management", { title: "Account Management", account });
+    const account = await getAccountById(req.account?.account_id || 1); // placeholder if not logged in
+    res.render("account/account-management", {
+      title: "Account Management",
+      account,
+      message: null,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).render("error", { title: "Server Error", message: "Cannot load account." });
   }
 };
 
-// Update account form view
+// Update account form page
 export const updateAccountView = async (req, res) => {
   try {
     const account = await getAccountById(req.params.id);
-    res.render("account/update-account", { title: "Update Account", account });
+    res.render("account/update-account", {
+      title: "Update Account",
+      account,
+      message: null,
+      errors: null,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).render("error", { title: "Server Error", message: "Cannot load account." });
   }
 };
 
@@ -37,7 +46,7 @@ export const handleAccountUpdate = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).render("error", { title: "Server Error", message: "Update failed." });
   }
 };
 
@@ -55,6 +64,12 @@ export const handlePasswordUpdate = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server Error");
+    res.status(500).render("error", { title: "Server Error", message: "Password update failed." });
   }
+};
+
+// Logout
+export const logout = (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/");
 };
