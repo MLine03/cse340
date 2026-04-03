@@ -1,7 +1,7 @@
 {
   "name": "cse340",
   "version": "1.0.0",
-  "description": "CSE340 Render Deploy",
+  "description": "CSE340 Vehicle App",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
