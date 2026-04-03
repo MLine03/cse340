@@ -55,3 +55,9 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+app.set// View engine (FIX FOR RENDER)
+app.set("views", path.join(__dirname, "views"))
+app.set("view engine", "ejs")
+
+app.use(expressLayouts)
+app.set("layout", "layouts/layout")
