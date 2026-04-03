@@ -1,39 +1,59 @@
 const express = require("express")
 const path = require("path")
 const expressLayouts = require("express-ejs-layouts")
-require("dotenv").config()
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
-// Body parser
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-
-// Static files
+/* ******************************
+ * Static Files
+ ******************************/
 app.use(express.static(path.join(__dirname, "public")))
 
-// ----- VIEW ENGINE FIX FOR RENDER -----
-app.set("views", path.join(__dirname, "views"))
+/* ******************************
+ * View Engine
+ ******************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "layouts/layout")
+app.set("layout", "./layouts/layout")
 
-// Routes
+/* ******************************
+ * Routes
+ ******************************/
 app.use("/", require("./routes/home"))
 app.use("/inv", require("./routes/inventoryRoutes"))
 app.use("/account", require("./routes/accountRoutes"))
 app.use("/classification", require("./routes/classificationRoutes"))
 
-// 404 handler
-app.use((req,res)=>{
-  res.status(404).render("errors/404", { title: "404 Not Found" })
+/* ******************************
+ * 404 Error Handler
+ ******************************/
+app.use((req, res, next) => {
+  const err = new Error("Sorry, page not found.")
+  err.status = 404
+  next(err)
 })
 
-// 500 handler
-app.use((err, req, res, next)=>{
+/* ******************************
+ * Global Error Handler (REQUIRED)
+ ******************************/
+app.use((err, req, res, next) => {
   console.error(err.stack)
-  res.status(500).render("errors/500", { title: "Server Error" })
+
+  const status = err.status || 500
+  const message = status === 404
+    ? "Page Not Found"
+    : "Internal Server Error"
+
+  res.status(status).render("errors/error", {
+    title: status,
+    message: message
+  })
 })
 
-app.listen(PORT, ()=> console.log(`Server running on port ${PORT}`))
+/* ******************************
+ * Start Server
+ ******************************/
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
