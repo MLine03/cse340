@@ -2,18 +2,24 @@ const { Pool } = require("pg")
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // required for Render Postgres
-  },
+  ssl: { rejectUnauthorized: false },
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 20000,
 })
 
-// optional: helpful logging
-pool.on("connect", () => {
-  console.log("Connected to PostgreSQL")
-})
+// Test DB connection when app starts
+async function testConnection() {
+  try {
+    const client = await pool.connect()
+    console.log("✅ PostgreSQL connected")
+    client.release()
+  } catch (err) {
+    console.error("❌ PostgreSQL connection FAILED")
+    console.error(err.message)
+  }
+}
 
-pool.on("error", (err) => {
-  console.error("Unexpected DB error", err)
-})
+testConnection()
 
 module.exports = pool
