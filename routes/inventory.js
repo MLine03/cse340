@@ -1,8 +1,8 @@
-import express from 'express';
-import { getInventoryDetail } from '../controllers/inventoryController.js';
+import express from "express";
+import { vehicleDetailView } from "../controllers/inventoryController.js";
 const router = express.Router();
 
-// Detail view
-router.get('/detail/:inv_id', getInventoryDetail);
+// Route for vehicle detail page
+router.get("/detail/:inv_id", vehicleDetailView);
 
 export default router;

@@ -1,24 +1,23 @@
-// routes/inventoryRoutes.js
+import { getVehicleById } from "../models/inventoryModel.js";
+import { buildVehicleDetailHTML } from "../utilities/index.js";
 
-import express from "express";
-const router = express.Router();
+// Controller function for vehicle detail view
+export const vehicleDetailView = async (req, res, next) => {
+  try {
+    const inv_id = req.params.inv_id;
+    const vehicle = await getVehicleById(inv_id);
 
-import inventoryController from "../controllers/inventoryController.js";
-import * as utilities from "../utilities/index.js";
+    if (!vehicle) {
+      return res.status(404).render("errors/error", { title: "Vehicle Not Found", message: "Vehicle not found." });
+    }
 
-// Management view
-router.get("/", utilities.handleErrors(inventoryController.managementView));
+    const vehicleHTML = buildVehicleDetailHTML(vehicle);
 
-// Add inventory view
-router.get(
-  "/add-inventory",
-  utilities.handleErrors(inventoryController.addInventoryView)
-);
-
-// Process add inventory
-router.post(
-  "/add-inventory",
-  utilities.handleErrors(inventoryController.addInventory)
-);
-
-export default router;
+    res.render("inventory/vehicle-detail", {
+      title: `${vehicle.make} ${vehicle.model}`,
+      vehicleHTML,
+    });
+  } catch (error) {
+    next(error); // Pass to error-handling middleware
+  }
+};
