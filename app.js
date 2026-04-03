@@ -1,44 +1,79 @@
-import express from "express";
-import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
-import homeRouter from "./routes/home.js";
-import accountsRouter from "./routes/accounts.js";
-import inventoryRouter from "./routes/inventory.js";
-import { accountSession } from "./middleware/accountSession.js";
+// ==============================
+// REQUIRE PACKAGES
+// ==============================
+const express = require("express")
+const path = require("path")
+const expressLayouts = require("express-ejs-layouts")
 
-dotenv.config();
-const app = express();
+const app = express()
 
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use(accountSession);
+// ==============================
+// ROUTES
+// ==============================
+const inventoryRoute = require("./routes/inventoryRoute")
 
-// Static files
-app.use(express.static("public"));
+// ==============================
+// VIEW ENGINE SETUP
+// ==============================
+app.set("view engine", "ejs")
+app.use(expressLayouts)
+app.set("layout", "./layouts/layout")
 
-// Routes
-app.use("/", homeRouter);
-app.use("/accounts", accountsRouter);
-app.use("/inventory", inventoryRouter);
+// ==============================
+// MIDDLEWARE
+// ==============================
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 
-// Logout
-app.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.redirect("/");
-});
+// Static files (CSS, images, JS)
+app.use(express.static(path.join(__dirname, "public")))
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).render("errors/error", { title: "Server Error", message: "Internal Server Error" });
-});
+// ==============================
+// NAVIGATION (if your project uses it)
+// ==============================
+const utilities = require("./utilities")
 
-// 404 fallback
+app.use(async (req, res, next) => {
+  res.locals.nav = await utilities.getNav()
+  next()
+})
+
+// ==============================
+// HOME ROUTE
+// ==============================
+app.get("/", async (req, res) => {
+  res.render("index", { title: "Home" })
+})
+
+// ==============================
+// INVENTORY ROUTES
+// ==============================
+app.use("/inv", inventoryRoute)
+
+// ==============================
+// 404 ERROR HANDLER
+// ==============================
 app.use((req, res) => {
-  res.status(404).render("errors/error", { title: "Page Not Found", message: "404 - Page Not Found" });
-});
+  res.status(404).render("errors/error", {
+    title: "404 - Page Not Found"
+  })
+})
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ==============================
+// 500 ERROR HANDLER
+// ==============================
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err.message)
+
+  res.status(500).render("errors/error", {
+    title: "500 - Server Error"
+  })
+})
+
+// ==============================
+// SERVER LISTENER
+// ==============================
+const port = process.env.PORT || 5500
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`)
+})

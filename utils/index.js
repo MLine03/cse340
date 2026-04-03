@@ -1,21 +1,46 @@
-// utils/index.js
+// GLOBAL ERROR HANDLER WRAPPER
+function handleErrors(fn) {
+  return function (req, res, next) {
+    Promise.resolve(fn(req, res, next)).catch(next)
+  }
+}
 
-/**
- * Build HTML for a single vehicle detail
- * @param {object} vehicle - The vehicle object from the database
- * @returns {string} - HTML string to render in the view
- */
-export function buildVehicleDetailHTML(vehicle) {
+// BUILD VEHICLE DETAIL HTML
+function buildVehicleDetailHTML(vehicle) {
+
+  const price = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD"
+  }).format(vehicle.inv_price)
+
+  const miles = new Intl.NumberFormat("en-US")
+    .format(vehicle.inv_miles)
+
   return `
-    <div class="vehicle-detail">
-      <img src="/images/${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}" class="vehicle-image"/>
-      <div class="vehicle-info">
-        <h1>${vehicle.inv_make} ${vehicle.inv_model}</h1>
-        <p><strong>Year:</strong> ${vehicle.inv_year}</p>
-        <p><strong>Price:</strong> $${vehicle.inv_price.toLocaleString()}</p>
-        <p><strong>Mileage:</strong> ${vehicle.inv_miles.toLocaleString()} miles</p>
-        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+    <section class="vehicle-detail">
+
+      <div class="vehicle-image">
+        <img src="${vehicle.inv_image}" 
+             alt="${vehicle.inv_make} ${vehicle.inv_model}">
       </div>
-    </div>
-  `;
+
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+
+        <p><strong>Price:</strong> ${price}</p>
+        <p><strong>Mileage:</strong> ${miles} miles</p>
+        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+
+        <p class="description">
+          ${vehicle.inv_description}
+        </p>
+      </div>
+
+    </section>
+  `
+}
+
+module.exports = {
+  handleErrors,
+  buildVehicleDetailHTML
 }

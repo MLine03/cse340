@@ -1,11 +1,18 @@
-import express from "express";
-import { handleErrors, getInventory } from "../utilities/index.js";
+const express = require("express")
+const router = new express.Router()
+const invController = require("../controllers/invController")
+const utilities = require("../utilities")
 
-const router = express.Router();
+// Vehicle detail route
+router.get(
+  "/detail/:inv_id",
+  utilities.handleErrors(invController.buildVehicleDetail)
+)
 
-router.get("/", handleErrors(async (req, res) => {
-  const inventory = await getInventory();
-  res.render("inventory", { inventory });
-}));
+// Intentional error route
+router.get(
+  "/trigger-error",
+  utilities.handleErrors(invController.triggerError)
+)
 
-export default router;
+module.exports = router
