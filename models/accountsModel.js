@@ -1,7 +1,10 @@
 import pool from "../database/pool.js";
 
 export const getAccountById = async (account_id) => {
-  const [rows] = await pool.query("SELECT * FROM accounts WHERE account_id = ?", [account_id]);
+  const [rows] = await pool.query(
+    "SELECT * FROM accounts WHERE account_id = ?",
+    [account_id]
+  );
   return rows[0];
 };
 

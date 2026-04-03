@@ -1,27 +1,31 @@
 import bcrypt from "bcryptjs";
 import { getAccountById, updateAccount, updatePassword } from "../models/accountsModel.js";
 
-// Account management page
+// Account Management View
 export const accountManagementView = async (req, res) => {
+  if (!req.account) return res.redirect("/accounts/login");
+
   try {
     const account = await getAccountById(req.account.account_id);
     res.render("account/account-management", { title: "Account Management", account });
   } catch (error) {
+    console.error(error);
     res.status(500).send("Server Error");
   }
 };
 
-// Update account form page
+// Update Account View
 export const updateAccountView = async (req, res) => {
   try {
     const account = await getAccountById(req.params.id);
     res.render("account/update-account", { title: "Update Account", account });
   } catch (error) {
+    console.error(error);
     res.status(500).send("Server Error");
   }
 };
 
-// Handle account info update
+// Handle Account Update
 export const handleAccountUpdate = async (req, res) => {
   try {
     const { account_id, firstname, lastname, email } = req.body;
@@ -33,11 +37,12 @@ export const handleAccountUpdate = async (req, res) => {
       message: success ? "Account updated successfully!" : "Update failed.",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).send("Server Error");
   }
 };
 
-// Handle password change
+// Handle Password Change
 export const handlePasswordUpdate = async (req, res) => {
   try {
     const { account_id, password } = req.body;
@@ -50,6 +55,7 @@ export const handlePasswordUpdate = async (req, res) => {
       message: success ? "Password updated successfully!" : "Password update failed.",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).send("Server Error");
   }
 };

@@ -1,9 +1,9 @@
 import express from "express";
-import {
-  accountManagementView,
-  updateAccountView,
-  handleAccountUpdate,
-  handlePasswordUpdate,
+import { 
+  accountManagementView, 
+  updateAccountView, 
+  handleAccountUpdate, 
+  handlePasswordUpdate 
 } from "../controllers/accountController.js";
 
 const router = express.Router();
