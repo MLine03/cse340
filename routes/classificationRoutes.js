@@ -1,17 +1,8 @@
-// routes/classificationRoutes.js
-import express from 'express';
-import { getClassifications } from '../models/vehicleModel.js';
+const express = require("express")
+const router = new express.Router()
 
-const router = express.Router();
+router.get("/", (req,res)=>{
+  res.send("Classification route working")
+})
 
-router.get('/', async (req, res) => {
-  try {
-    const classifications = await getClassifications();
-    res.render('classification/index', { classifications });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
-export default router;
+module.exports = router

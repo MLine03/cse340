@@ -1,10 +1,8 @@
-import express from "express";
-import { handleErrors, checkExistingEmail, registerAccount } from "../utilities/index.js";
+const express = require("express")
+const router = new express.Router()
 
-const router = express.Router();
+router.get("/", (req,res)=>{
+  res.send("Account route working")
+})
 
-router.get("/", (req, res) => {
-  res.render("account");
-});
-
-export default router;
+module.exports = router

@@ -1,8 +1,7 @@
-import express from "express";
-const router = express.Router();
+const express = require("express")
+const router = new express.Router()
+const baseController = require("../controllers/baseController")
 
-router.get("/", (req, res) => {
-  res.render("home", { title: "Vehicle Inventory" });
-});
+router.get("/", baseController.buildHome)
 
-export default router;
+module.exports = router
