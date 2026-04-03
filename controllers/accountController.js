@@ -1,39 +1,27 @@
-// controllers/accountController.js
 import bcrypt from "bcryptjs";
 import { getAccountById, updateAccount, updatePassword } from "../models/accountsModel.js";
 
-// Account management page
+// Account management view
 export const accountManagementView = async (req, res) => {
   try {
-    const account = await getAccountById(req.account?.account_id || 1); // placeholder if not logged in
-    res.render("account/account-management", {
-      title: "Account Management",
-      account,
-      message: null,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { title: "Server Error", message: "Cannot load account." });
+    const account = await getAccountById(res.locals.account.account_id);
+    res.render("account/account-management", { title: "Account Management", account });
+  } catch (err) {
+    res.status(500).send("Server Error");
   }
 };
 
-// Update account form page
+// Update account form view
 export const updateAccountView = async (req, res) => {
   try {
     const account = await getAccountById(req.params.id);
-    res.render("account/update-account", {
-      title: "Update Account",
-      account,
-      message: null,
-      errors: null,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { title: "Server Error", message: "Cannot load account." });
+    res.render("account/update-account", { title: "Update Account", account });
+  } catch (err) {
+    res.status(500).send("Server Error");
   }
 };
 
-// Handle account info update
+// Handle account update
 export const handleAccountUpdate = async (req, res) => {
   try {
     const { account_id, firstname, lastname, email } = req.body;
@@ -44,13 +32,12 @@ export const handleAccountUpdate = async (req, res) => {
       account,
       message: success ? "Account updated successfully!" : "Update failed.",
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { title: "Server Error", message: "Update failed." });
+  } catch (err) {
+    res.status(500).send("Server Error");
   }
 };
 
-// Handle password change
+// Handle password update
 export const handlePasswordUpdate = async (req, res) => {
   try {
     const { account_id, password } = req.body;
@@ -62,14 +49,7 @@ export const handlePasswordUpdate = async (req, res) => {
       account,
       message: success ? "Password updated successfully!" : "Password update failed.",
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).render("error", { title: "Server Error", message: "Password update failed." });
+  } catch (err) {
+    res.status(500).send("Server Error");
   }
-};
-
-// Logout
-export const logout = (req, res) => {
-  res.clearCookie("token");
-  res.redirect("/");
 };
