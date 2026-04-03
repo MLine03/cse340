@@ -1,13 +1,19 @@
-// database/connection.js
-import pg from "pg";
-const { Pool } = pg;
+const { Pool } = require("pg")
 
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // required for Render Postgres
+  },
+})
 
-export default pool;
+// optional: helpful logging
+pool.on("connect", () => {
+  console.log("Connected to PostgreSQL")
+})
+
+pool.on("error", (err) => {
+  console.error("Unexpected DB error", err)
+})
+
+module.exports = pool
