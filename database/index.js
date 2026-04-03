@@ -1,17 +1,14 @@
-// utilities/index.js
+const { Pool } = require("pg")
+require("dotenv").config()
 
-export const handleErrors = (fn) => {
-  return async (req, res, next) => {
-    try {
-      await fn(req, res, next);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send("Server Error");
-    }
-  };
-};
+const connectionString =
+  process.env.DATABASE_URL || process.env.DEV_DATABASE_URL
 
-export const buildClassificationList = async () => {
-  // Replace with real DB call if needed
-  return "<option value='1'>SUV</option><option value='2'>Sedan</option>";
-};
+const pool = new Pool({
+  connectionString,
+  ssl: process.env.NODE_ENV === "production"
+    ? { rejectUnauthorized: false }
+    : false
+})
+
+module.exports = pool
