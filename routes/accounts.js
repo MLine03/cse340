@@ -1,14 +1,17 @@
 import express from "express";
-import { loginView, handleLogin } from "../controllers/authController.js";
-import { accountManagementView } from "../controllers/accountController.js";
+import {
+  accountManagementView,
+  updateAccountView,
+  handleAccountUpdate,
+  handlePasswordUpdate
+} from "../controllers/accountController.js";
 
 const router = express.Router();
 
-// Login routes
-router.get("/login", loginView);
-router.post("/login", handleLogin);
-
-// Account management (example)
-router.get("/manage", accountManagementView);
+// Account management routes
+router.get("/", accountManagementView);
+router.get("/update/:id", updateAccountView);
+router.post("/update", handleAccountUpdate);
+router.post("/update/password", handlePasswordUpdate);
 
 export default router;

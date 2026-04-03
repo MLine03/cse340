@@ -9,48 +9,36 @@ import { accountSession } from "./middleware/accountSession.js";
 dotenv.config();
 const app = express();
 
-// Set EJS as the view engine
 app.set("view engine", "ejs");
-
-// Middleware for parsing form data and JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-
-// Middleware for session/account handling
 app.use(accountSession);
 
-// Serve static files from public folder
+// Static files
 app.use(express.static("public"));
 
 // Routes
-app.use("/", homeRouter);              // Home page route
-app.use("/accounts", accountsRouter);  // Account management routes
-app.use("/inventory", inventoryRouter); // Inventory routes
+app.use("/", homeRouter);
+app.use("/accounts", accountsRouter);
+app.use("/inventory", inventoryRouter);
 
-// Logout route
+// Logout
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/");
 });
 
-// Error handling middleware for 500 Internal Server Error
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("errors/error", {
-    title: "Server Error",
-    message: "Internal Server Error",
-  });
+  res.status(500).render("errors/error", { title: "Server Error", message: "Internal Server Error" });
 });
 
-// 404 fallback for unmatched routes
+// 404 fallback
 app.use((req, res) => {
-  res.status(404).render("errors/error", {
-    title: "Page Not Found",
-    message: "404 - Page Not Found",
-  });
+  res.status(404).render("errors/error", { title: "Page Not Found", message: "404 - Page Not Found" });
 });
 
-// Start server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
