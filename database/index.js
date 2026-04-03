@@ -1,16 +1,24 @@
 const { Pool } = require("pg")
 require("dotenv").config()
 
+/* ******************************************
+ *  Render + Local PostgreSQL Connection
+ * ******************************************/
+
 const pool = new Pool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT) || 5432,
+  port: process.env.DB_PORT,
   ssl: {
-    require: true,
-    rejectUnauthorized: false
-  }
+    rejectUnauthorized: false,
+  },
 })
 
-module.exports = pool
+/* ******************************************
+ *  Query helper function
+ * ******************************************/
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+}
