@@ -1,5 +1,5 @@
-// models/inventoryModel.js
-import pool from "../database/pool.js";
+// models/inventory-model.js
+import pool from "../database/pool.js";  // Correct path, not ./database/pool.js
 
 /**
  * Get a single vehicle by its inventory ID
