@@ -1,7 +1,14 @@
 const express = require("express")
-const router = new express.Router()
-const baseController = require("../controllers/baseController")
+const router = express.Router()
+const utilities = require("../utilities")
 
-router.get("/", baseController.buildHome)
+router.get("/", async (req, res) => {
+  const nav = await utilities.getNav()
+
+  res.render("index", {
+    title: "Home",
+    nav
+  })
+})
 
 module.exports = router
