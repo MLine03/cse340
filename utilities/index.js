@@ -1,24 +1,32 @@
-const invModel = require("../models/inventory-model")
+const { Pool } = require("pg")
+require("dotenv").config()
 
-/* ***************************
- * Build navigation dynamically
- * ************************** */
-async function getNav() {
-  const data = await invModel.getClassifications()
+console.log("ENV CHECK → DATABASE_URL exists:", !!process.env.DATABASE_URL)
 
-  let nav = "<ul>"
-  nav += '<li><a href="/">Home</a></li>'
+let pool
 
-  data.rows.forEach(row => {
-    nav += `<li>
-      <a href="/inv/type/${row.classification_id}">
-        ${row.classification_name}
-      </a>
-    </li>`
+// If DATABASE_URL exists → we are on Render
+if (process.env.DATABASE_URL) {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
   })
-
-  nav += "</ul>"
-  return nav
+} else {
+  // Local development connection
+  pool = new Pool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+  })
 }
 
-module.exports = { getNav }
+pool.connect()
+  .then(() => console.log("✅ PostgreSQL connected"))
+  .catch(err => {
+    console.error("❌ PostgreSQL connection FAILED")
+    console.error(err)
+  })
+
+module.exports = pool
