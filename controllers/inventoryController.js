@@ -1,5 +1,5 @@
 import { getVehicleById } from "../models/inventoryModel.js";
-import { buildVehicleDetailHTML } from "../utils/index.js";
+import { buildVehicleDetailHTML } from "../utilities/index.js";
 
 export const vehicleDetailView = async (req, res, next) => {
   try {

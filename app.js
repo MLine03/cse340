@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(accountSession);
 
-// Static files
 app.use(express.static("public"));
 
 // Routes
