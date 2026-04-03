@@ -6,8 +6,9 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT) || 5432, // ⭐ FIXED HERE
+  port: Number(process.env.DB_PORT) || 5432,
   ssl: {
+    require: true,
     rejectUnauthorized: false
   }
 })
