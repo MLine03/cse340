@@ -6,3 +6,9 @@ router.get("/", (req,res)=>{
 })
 
 module.exports = router
+
+router.get("/trigger-error", (req, res, next) => {
+  const err = new Error("Intentional 500 error")
+  err.status = 500
+  next(err)
+})
