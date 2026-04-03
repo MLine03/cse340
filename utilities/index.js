@@ -1,19 +1,15 @@
-import pool from "../database/pool.js";
+import pkg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
-export const getInventory = async () => {
-  const result = await pool.query("SELECT * FROM inventory ORDER BY id DESC");
-  return result.rows.map(v => `<li>${v.make} ${v.model} - $${v.price.toLocaleString()}</li>`).join("");
-};
+const { Pool } = pkg;
 
-export const getInventoryDetail = async (id) => {
-  const result = await pool.query("SELECT * FROM inventory WHERE id = $1", [id]);
-  if (!result.rows[0]) throw new Error("Vehicle not found");
-  const v = result.rows[0];
-  return `
-    <h2>${v.make} ${v.model} (${v.year})</h2>
-    <img src="${v.image}" alt="${v.make} ${v.model}" style="max-width:400px;">
-    <p>Price: $${v.price.toLocaleString()}</p>
-    <p>Mileage: ${v.miles.toLocaleString()} miles</p>
-    <p>${v.description}</p>
-  `;
-};
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 5432,
+});
+
+export default pool;
