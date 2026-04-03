@@ -5,55 +5,42 @@ const expressLayouts = require("express-ejs-layouts")
 const app = express()
 const PORT = process.env.PORT || 3000
 
-/* ******************************
- * Static Files
- ******************************/
+// Static files
 app.use(express.static(path.join(__dirname, "public")))
 
-/* ******************************
- * View Engine
- ******************************/
+// Body parser
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+
+// View engine
 app.set("view engine", "ejs")
 app.use(expressLayouts)
 app.set("layout", "./layouts/layout")
 
-/* ******************************
- * Routes
- ******************************/
-app.use("/", require("./routes/home"))
-app.use("/inv", require("./routes/inventoryRoutes"))
-app.use("/account", require("./routes/accountRoutes"))
-app.use("/classification", require("./routes/classificationRoutes"))
+// Routes
+const homeRoute = require("./routes/home")
+const inventoryRoutes = require("./routes/inventoryRoutes")
+const accountRoutes = require("./routes/accountRoutes")
+const classificationRoutes = require("./routes/classificationRoutes")
 
-/* ******************************
- * 404 Error Handler
- ******************************/
-app.use((req, res, next) => {
-  const err = new Error("Sorry, page not found.")
-  err.status = 404
-  next(err)
+app.use("/", homeRoute)
+app.use("/inv", inventoryRoutes)
+app.use("/account", accountRoutes)
+app.use("/classification", classificationRoutes)
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).send("Page not found")
 })
 
-/* ******************************
- * Global Error Handler (REQUIRED)
- ******************************/
+
+// 🔥 GLOBAL ERROR HANDLER (VERY IMPORTANT)
 app.use((err, req, res, next) => {
+  console.error("🔥 SERVER ERROR:", err.message)
   console.error(err.stack)
-
-  const status = err.status || 500
-  const message = status === 404
-    ? "Page Not Found"
-    : "Internal Server Error"
-
-  res.status(status).render("errors/error", {
-    title: status,
-    message: message
-  })
+  res.status(500).send("Server error occurred")
 })
 
-/* ******************************
- * Start Server
- ******************************/
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

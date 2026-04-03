@@ -1,28 +1,19 @@
 const express = require("express")
-const router = express.Router()
+const router = new express.Router()
 
-// Controllers
 const invController = require("../controllers/invController")
-
-// Utilities (FIXED PATH)
 const utilities = require("../utilities")
 
-/* ****************************************
-* Inventory home (classification view)
-* /inv/type/:classificationId
-**************************************** */
+// Inventory by classification
 router.get(
   "/type/:classificationId",
   utilities.handleErrors(invController.buildByClassificationId)
 )
 
-/* ****************************************
-* Vehicle detail view
-* /inv/detail/:invId
-**************************************** */
+// Inventory detail view
 router.get(
   "/detail/:invId",
-  utilities.handleErrors(invController.buildByInvId)
+  utilities.handleErrors(invController.buildByInventoryId)
 )
 
 module.exports = router
