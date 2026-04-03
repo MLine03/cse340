@@ -2,7 +2,9 @@
 * Utilities Index
 *******************************************/
 
-// Wrap async route controllers to catch errors
+/* ******************************************
+* Wrap async route controllers to catch errors
+*******************************************/
 const handleErrors = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch(next)
 
@@ -18,6 +20,27 @@ const getNav = async () => {
       <li><a href="/inv/type/3">SUV</a></li>
     </ul>
   `
+}
+
+/* ******************************************
+* Build Classification Grid (vehicle list)
+*******************************************/
+const buildClassificationGrid = (data) => {
+  let grid = '<ul class="vehicle-grid">'
+
+  data.forEach(vehicle => {
+    grid += `
+      <li>
+        <a href="/inv/detail/${vehicle.inv_id}">
+          <img src="${vehicle.inv_thumbnail}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
+          <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        </a>
+      </li>
+    `
+  })
+
+  grid += "</ul>"
+  return grid
 }
 
 /* ******************************************
@@ -49,5 +72,6 @@ const buildVehicleDetail = (vehicle) => {
 module.exports = {
   handleErrors,
   getNav,
+  buildClassificationGrid,
   buildVehicleDetail,
 }
