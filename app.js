@@ -1,3 +1,5 @@
+require("dotenv").config()   // ⭐ MUST BE FIRST LINE
+
 const express = require("express")
 const path = require("path")
 const expressLayouts = require("express-ejs-layouts")
@@ -33,8 +35,7 @@ app.use((req, res) => {
   res.status(404).send("Page not found")
 })
 
-
-// 🔥 GLOBAL ERROR HANDLER (VERY IMPORTANT)
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("🔥 SERVER ERROR:", err.message)
   console.error(err.stack)
