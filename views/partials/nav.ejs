@@ -1,10 +1,9 @@
 <nav>
-  <% if (account) { %>
-    <a href="/accounts/manage">My Account</a>
-    <a href="/logout">Logout</a>
-  <% } else { %>
-    <a href="/login">Login</a>
-  <% } %>
-  <a href="/">Home</a>
-  <a href="/inventory">Inventory</a>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts">Account Management</a></li>
+    <li><a href="/inventory">Inventory</a></li>
+    <li><a href="/logout">Logout</a></li>
+    <li><a href="/trigger-error">Test 500 Error</a></li>
+  </ul>
 </nav>

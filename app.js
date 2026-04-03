@@ -1,43 +1,56 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import homeRouter from "./routes/home.js";
 import accountsRouter from "./routes/accounts.js";
+import inventoryRouter from "./routes/inventory.js";
 import { accountSession } from "./middleware/accountSession.js";
 
 dotenv.config();
 const app = express();
 
+// Set EJS as the view engine
 app.set("view engine", "ejs");
+
+// Middleware for parsing form data and JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+// Middleware for session/account handling
 app.use(accountSession);
 
-// Global nav for all views
-app.use((req, res, next) => {
-  res.locals.nav = req.account
-    ? `<nav><a href="/accounts/manage">My Account</a> | <a href="/logout">Logout</a></nav>`
-    : `<nav><a href="/accounts/login">Login</a></nav>`;
-  next();
-});
+// Serve static files from public folder
+app.use(express.static("public"));
 
-// Routers
-app.use("/accounts", accountsRouter);
+// Routes
+app.use("/", homeRouter);              // Home page route
+app.use("/accounts", accountsRouter);  // Account management routes
+app.use("/inventory", inventoryRouter); // Inventory routes
 
-app.get("/", (req, res) => {
-  res.render("home", { title: "Vehicle Inventory" });
-});
-
-// Logout
+// Logout route
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/");
 });
 
-// 404
-app.use((req, res) => {
-  res.status(404).send("Page Not Found");
+// Error handling middleware for 500 Internal Server Error
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render("errors/error", {
+    title: "Server Error",
+    message: "Internal Server Error",
+  });
 });
 
-const PORT = process.env.PORT || 3000;
+// 404 fallback for unmatched routes
+app.use((req, res) => {
+  res.status(404).render("errors/error", {
+    title: "Page Not Found",
+    message: "404 - Page Not Found",
+  });
+});
+
+// Start server
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
