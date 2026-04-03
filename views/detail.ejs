@@ -1,7 +1,5 @@
-<%- include('../partials/header.ejs', { title: vehicle.make + ' ' + vehicle.model }) %>
-
-<div class="vehicle-detail-container">
+<%- include("../partials/header") %>
+<div class="vehicle-container">
   <%- vehicleHTML %>
 </div>
-
-<%- include('../partials/footer.ejs') %>
+<%- include("../partials/footer") %>
