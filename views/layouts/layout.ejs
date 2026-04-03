@@ -1,17 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title><%= title %></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO FIX -->
+  <meta name="description" content="CSE Motors inventory of cars, trucks, SUVs, motorcycles and classic vehicles. Browse our vehicle classifications and inventory.">
+
+  <title><%= title %> | CSE Motors</title>
+
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body>
-  <header>
-    <h1>CSE Motors</h1>
-    <nav><%- nav %></nav>
-  </header>
 
-  <main>
-    <%- body %>
-  </main>
+<body>
+
+<header>
+  <h1>CSE Motors</h1>
+
+  <nav>
+    <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="/inv">Cars</a></li>
+      <li><a href="/inv/type/1">Classics</a></li>
+      <li><a href="/inv/type/2">Motorcycles</a></li>
+      <li><a href="/inv/type/3">SUV</a></li>
+      <li><a href="/inv/type/4">Trucks</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <%- body %>
+</main>
+
+<footer>
+  <p>&copy; <%= new Date().getFullYear() %> CSE Motors</p>
+</footer>
+
 </body>
 </html>

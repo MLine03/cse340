@@ -1,23 +1,28 @@
 const invModel = require("../models/inventory-model")
 const utilities = require("../utilities/")
 
-/* **************************************
- * Build inventory by classification view
- * ************************************ */
+// ⭐ Controller object MUST exist before using it
+const invCont = {}
+
+/* ***************************
+ *  Build inventory by classification view
+ * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
-  const classification_id = req.params.classificationId
+  try {
+    const classification_id = parseInt(req.params.classificationId)
 
-  const data = await invModel.getInventoryByClassificationId(classification_id)
+    const data = await invModel.getInventoryByClassificationId(classification_id)
+    const grid = await utilities.buildClassificationGrid(data)
+    const nav = await utilities.getNav()
 
-  const grid = await utilities.buildClassificationGrid(data.rows)
-
-  let nav = await utilities.getNav()
-
-  const className = data.rows[0].classification_name
-
-  res.render("./inventory/classification", {
-    title: className + " vehicles",
-    nav,
-    grid,
-  })
+    res.render("./inventory/classification", {
+      title: data[0].classification_name + " vehicles",
+      nav,
+      grid,
+    })
+  } catch (error) {
+    next(error)
+  }
 }
+
+module.exports = invCont
