@@ -1,16 +1,24 @@
-import { getVehicleById } from "../models/inventoryModel.js";
-import { buildVehicleDetailHTML } from "../utilities/index.js";
+import { fetchVehicleById } from "../models/inventoryModel.js";
+import { buildVehicleHTML } from "../utilities/index.js";
 
-export const vehicleDetailView = async (req, res, next) => {
+export async function getInventoryDetail(req, res, next) {
   try {
-    const vehicleId = req.params.id;
-    const vehicle = await getVehicleById(vehicleId);
+    const inv_id = req.params.inv_id;
+    const vehicle = await fetchVehicleById(inv_id);
+
     if (!vehicle) {
-      return res.status(404).render("errors/error", { title: "Not Found", message: "Vehicle not found." });
+      return res.status(404).render("errors/error", {
+        title: "Vehicle Not Found",
+        message: "Vehicle not found",
+      });
     }
-    const vehicleHTML = buildVehicleDetailHTML(vehicle);
-    res.render("inventory/detail", { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
+
+    const vehicleHTML = buildVehicleHTML(vehicle);
+    res.render("inventory/detail", {
+      title: `${vehicle.make} ${vehicle.model}`,
+      vehicleHTML,
+    });
   } catch (err) {
     next(err);
   }
-};
+}
