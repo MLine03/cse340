@@ -4,46 +4,47 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 /* ***************************
- * Build inventory by classification view
+ *  Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
-  const classification_id = parseInt(req.params.classificationId)
-
+  const classification_id = req.params.classificationId
   const data = await invModel.getInventoryByClassificationId(classification_id)
-
-  // build vehicle grid
-  const grid = await utilities.buildClassificationGrid(data.rows)
-
-  // FIX: classification name comes from FIRST ROW
-  const className = data.rows[0].classification_name
-
-  const nav = await utilities.getNav()
-
-  res.render("inventory/classification", {
+  const grid = await utilities.buildClassificationGrid(data)
+  let nav = await utilities.getNav()
+  const className = data[0].classification_name
+  res.render("./inventory/classification", {
     title: className + " vehicles",
     nav,
     grid,
   })
 }
 
-
 /* ***************************
- * Build vehicle detail view
+ *  Build vehicle detail view
+ *  Assignment 3, Task 1
  * ************************** */
-invCont.buildByInventoryId = async function (req, res, next) {
-  const inv_id = parseInt(req.params.invId)
-
-  const data = await invModel.getInventoryByInventoryId(inv_id)
-  const vehicle = data.rows[0]
-
-  const detail = await utilities.buildVehicleDetail(vehicle)
-  const nav = await utilities.getNav()
-
-  res.render("inventory/detail", {
-    title: vehicle.inv_make + " " + vehicle.inv_model,
+invCont.buildDetail = async function (req, res, next) {
+  const invId = req.params.id
+  let vehicle = await invModel.getInventoryById(invId)
+  const htmlData = await utilities.buildSingleVehicleDisplay(vehicle)
+  let nav = await utilities.getNav()
+  const vehicleTitle =
+    vehicle.inv_year + " " + vehicle.inv_make + " " + vehicle.inv_model
+  res.render("./inventory/detail", {
+    title: vehicleTitle,
     nav,
-    detail,
+    message: null,
+    htmlData,
   })
 }
+
+/* ****************************************
+ *  Process intentional error
+ *  Assignment 3, Task 3
+ * ************************************ */
+invCont.throwError = async function (req, res) {
+  throw new Error("I am an intentional error")
+}
+
 
 module.exports = invCont
