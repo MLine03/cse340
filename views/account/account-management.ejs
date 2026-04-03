@@ -1,16 +1,17 @@
-<%- include('../partials/nav') %>
-
-<h1>Account Management</h1>
-
-<% if (message) { %>
-  <p style="color: green;"><%= message %></p>
-<% } %>
-
-<h2>Welcome <%= account.firstname %></h2>
-
-<% if (account.account_type === "Employee" || account.account_type === "Admin") { %>
-  <h3>Inventory Management</h3>
-  <p><a href="/inventory/manage">Manage Inventory</a></p>
-<% } %>
-
-<p><a href="/accounts/update/<%= account.account_id %>">Update Account Information</a></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+</head>
+<body>
+  <%- nav %>
+  <h1>Account Management</h1>
+  <% if (message) { %>
+    <p><%= message %></p>
+  <% } %>
+  <p>Name: <%= account.firstname %> <%= account.lastname %></p>
+  <p>Email: <%= account.email %></p>
+  <a href="/accounts/update/<%= account.account_id %>">Update Account Info</a>
+</body>
+</html>

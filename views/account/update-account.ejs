@@ -1,30 +1,25 @@
-<%- include('../partials/nav') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+</head>
+<body>
+  <%- nav %>
+  <h1>Update Account</h1>
+  <form action="/accounts/update-account" method="POST">
+    <input type="hidden" name="account_id" value="<%= account.account_id %>">
+    <label>First Name: <input type="text" name="firstname" value="<%= account.firstname %>" required></label><br>
+    <label>Last Name: <input type="text" name="lastname" value="<%= account.lastname %>" required></label><br>
+    <label>Email: <input type="email" name="email" value="<%= account.email %>" required></label><br>
+    <input type="submit" value="Update Account">
+  </form>
 
-<h1>Update Account</h1>
-
-<% if (message) { %>
-  <p style="color: green;"><%= message %></p>
-<% } %>
-
-<form action="/accounts/update" method="POST">
-  <input type="hidden" name="account_id" value="<%= account.account_id %>">
-  <label for="firstname">First Name:</label>
-  <input type="text" name="firstname" id="firstname" value="<%= account.firstname %>" required>
-  <br>
-  <label for="lastname">Last Name:</label>
-  <input type="text" name="lastname" id="lastname" value="<%= account.lastname %>" required>
-  <br>
-  <label for="email">Email:</label>
-  <input type="email" name="email" id="email" value="<%= account.email %>" required>
-  <br>
-  <button type="submit">Update Account</button>
-</form>
-
-<h2>Change Password</h2>
-<form action="/accounts/update-password" method="POST">
-  <input type="hidden" name="account_id" value="<%= account.account_id %>">
-  <label for="password">New Password:</label>
-  <input type="password" name="password" id="password" required minlength="8">
-  <p>Password must be at least 8 characters.</p>
-  <button type="submit">Update Password</button>
-</form>
+  <h2>Change Password</h2>
+  <form action="/accounts/update-password" method="POST">
+    <input type="hidden" name="account_id" value="<%= account.account_id %>">
+    <label>New Password: <input type="password" name="password" required></label><br>
+    <input type="submit" value="Change Password">
+  </form>
+</body>
+</html>

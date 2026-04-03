@@ -8,16 +8,9 @@ import {
 
 const router = express.Router();
 
-// Account management page
 router.get("/manage", accountManagementView);
-
-// Update account form page
 router.get("/update/:id", updateAccountView);
-
-// Handle account info update
-router.post("/update", handleAccountUpdate);
-
-// Handle password update
+router.post("/update-account", handleAccountUpdate);
 router.post("/update-password", handlePasswordUpdate);
 
 export default router;
