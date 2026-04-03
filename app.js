@@ -14,32 +14,30 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(accountSession);
+
+// Static files
 app.use(express.static("public"));
 
+// Routes
 app.use("/", homeRouter);
 app.use("/accounts", accountsRouter);
 app.use("/inventory", inventoryRouter);
 
+// Logout
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.redirect("/");
 });
 
-// 500 Error
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("errors/error", {
-    title: "Server Error",
-    message: "Internal Server Error",
-  });
+  res.status(500).render("errors/error", { title: "Server Error", message: "Internal Server Error" });
 });
 
-// 404
+// 404 fallback
 app.use((req, res) => {
-  res.status(404).render("errors/error", {
-    title: "Page Not Found",
-    message: "404 - Page Not Found",
-  });
+  res.status(404).render("errors/error", { title: "Page Not Found", message: "404 - Page Not Found" });
 });
 
 const PORT = process.env.PORT || 3001;
