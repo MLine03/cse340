@@ -29,15 +29,21 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
-// Error handling middleware
+// 500 Error Handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render("errors/error", { title: "Server Error", message: "Internal Server Error" });
+  res.status(500).render("errors/error", {
+    title: "Server Error",
+    message: "Internal Server Error",
+  });
 });
 
-// 404 fallback
+// 404 Fallback
 app.use((req, res) => {
-  res.status(404).render("errors/error", { title: "Page Not Found", message: "404 - Page Not Found" });
+  res.status(404).render("errors/error", {
+    title: "Page Not Found",
+    message: "404 - Page Not Found",
+  });
 });
 
 const PORT = process.env.PORT || 3001;

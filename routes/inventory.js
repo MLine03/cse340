@@ -1,27 +1,20 @@
 import express from "express";
-import { fetchAllVehicles, fetchVehicleById } from "../models/inventoryModel.js";
-import { buildVehicleHTML } from "../utilities/index.js";
-
+import { getInventory, getInventoryDetail } from "../utils/index.js";
 const router = express.Router();
 
-// Inventory list
 router.get("/", async (req, res, next) => {
   try {
-    const vehicles = await fetchAllVehicles();
-    res.render("inventory/list", { title: "Inventory", vehicles });
+    const inventoryHTML = await getInventory();
+    res.render("inventory/inventory", { title: "Inventory", inventoryHTML });
   } catch (err) {
     next(err);
   }
 });
 
-// Vehicle detail
-router.get("/:inv_id", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const vehicle = await fetchVehicleById(req.params.inv_id);
-    if (!vehicle) return res.status(404).render("errors/error", { title: "Vehicle Not Found", message: "Vehicle not found" });
-
-    const vehicleHTML = buildVehicleHTML(vehicle);
-    res.render("inventory/detail", { title: `${vehicle.make} ${vehicle.model}`, vehicleHTML });
+    const vehicleDetailHTML = await getInventoryDetail(req.params.id);
+    res.render("inventory/detail", { title: "Vehicle Detail", vehicleDetailHTML });
   } catch (err) {
     next(err);
   }
