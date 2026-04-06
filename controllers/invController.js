@@ -7,38 +7,32 @@ const invCont = {}
  * Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
-  try {
-    const classification_id = req.params.classificationId
-    const data = await invModel.getInventoryByClassificationId(classification_id)
-    let nav = await utilities.getNav()
+  const classification_id = req.params.classificationId
+  const data = await invModel.getInventoryByClassificationId(classification_id)
+  let nav = await utilities.getNav()
 
-    /* ⭐ REQUIRED RUBRIC FIX
-       Page must load EVEN IF classification has no vehicles
-    */
-    if (!data || data.length === 0) {
-      return res.render("./inventory/classification", {
-        title: "No vehicles found",
-        nav,
-        grid: '<p class="notice">Sorry, no vehicles could be found for this classification.</p>'
-      })
-    }
-
-    const grid = await utilities.buildClassificationGrid(data)
-    const className = data[0].classification_name
-
-    res.render("./inventory/classification", {
-      title: className + " vehicles",
-      nav,
-      grid,
+  // ⭐ REQUIRED FIX — prevent crash when no vehicles exist
+  if (!data || data.length === 0) {
+    return res.status(404).render("errors/error", {
+      title: "No Vehicles Found",
+      message: "Sorry, no vehicles exist in this classification yet.",
+      nav
     })
-
-  } catch (error) {
-    next(error)
   }
+
+  const grid = await utilities.buildClassificationGrid(data)
+  const className = data[0].classification_name
+
+  res.render("./inventory/classification", {
+    title: className + " vehicles",
+    nav,
+    grid,
+  })
+
 }
 
 /* ***************************
- * Build vehicle detail view
+ *Build vehicle detail view
  * ************************** */
 invCont.buildDetail = async function (req, res, next) {
   try {
