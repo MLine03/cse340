@@ -1,14 +1,13 @@
 const express = require("express")
 const router = new express.Router()
+const invController = require("../controllers/invController")
 
-router.get("/", (req,res)=>{
-  res.send("Inventory route working")
-})
+// Classification view
+// URL example: /inv/type/1
+router.get("/type/:classificationId", invController.buildByClassificationId)
+
+// Vehicle detail view
+// URL example: /inv/detail/3
+router.get("/detail/:id", invController.buildDetail)
 
 module.exports = router
-
-router.get("/trigger-error", (req, res, next) => {
-  const err = new Error("Intentional 500 error")
-  err.status = 500
-  next(err)
-})
