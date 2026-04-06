@@ -1,72 +1,78 @@
-const pool = require("../database/")
+const invModel = require("../models/inventory-model")
 
 const Util = {}
 
-/* ******************************
- * Build Navigation Dynamically
- * ***************************** */
+/* ***************************
+ * Build navigation dynamically
+ * ************************** */
 Util.getNav = async function () {
-  const data = await pool.query("SELECT * FROM classification ORDER BY classification_name")
-  let nav = "<ul>"
-  nav += '<li><a href="/" title="Home page">Home</a></li>'
+  const data = await invModel.getClassifications()
 
-  data.rows.forEach(row => {
-    nav += '<li>'
-    nav += '<a href="/inv/type/' + row.classification_id + '"'
-    nav += ' title="See our inventory of ' + row.classification_name + ' vehicles">'
-    nav += row.classification_name
-    nav += '</a></li>'
+  let list = "<ul>"
+  list += '<li><a href="/" title="Home page">Home</a></li>'
+
+  data.rows.forEach((row) => {
+    list += `<li>
+      <a href="/inv/type/${row.classification_id}" 
+         title="See our inventory of ${row.classification_name} vehicles">
+         ${row.classification_name}
+      </a>
+    </li>`
   })
 
-  nav += "</ul>"
-  return nav
+  list += "</ul>"
+  return list
 }
 
-/* **************************************
- * Build Classification Grid
- * ************************************* */
+/* ***************************
+ * Build classification grid
+ * ************************** */
 Util.buildClassificationGrid = async function (data) {
-  if (!data || data.length === 0) {
-    return '<p class="notice">Sorry, no matching vehicles found.</p>'
+  let grid = ""
+
+  if (data.length > 0) {
+    grid += '<ul id="inv-display">'
+
+    data.forEach((vehicle) => {
+      grid += `
+      <li>
+        <a href="/inv/detail/${vehicle.inv_id}">
+          <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+        </a>
+        <div class="namePrice">
+          <hr>
+          <h2>
+            <a href="/inv/detail/${vehicle.inv_id}">
+              ${vehicle.inv_make} ${vehicle.inv_model}
+            </a>
+          </h2>
+          <span>$${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</span>
+        </div>
+      </li>`
+    })
+
+    grid += "</ul>"
+  } else {
+    grid = "<p class='notice'>Sorry, no matching vehicles could be found.</p>"
   }
 
-  let grid = '<ul id="inv-display">'
-
-  data.forEach(vehicle => {
-    grid += '<li>'
-    grid += '<a href="/inv/detail/' + vehicle.inv_id + '">'
-    grid += '<img src="' + vehicle.inv_image + '" alt="Image of ' + vehicle.inv_make + ' ' + vehicle.inv_model + '">'
-    grid += '</a>'
-    grid += '<div class="namePrice">'
-    grid += '<hr />'
-    grid += '<h2>'
-    grid += '<a href="/inv/detail/' + vehicle.inv_id + '">'
-    grid += vehicle.inv_make + ' ' + vehicle.inv_model
-    grid += '</a>'
-    grid += '</h2>'
-    grid += '<span>$' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</span>'
-    grid += '</div>'
-    grid += '</li>'
-  })
-
-  grid += '</ul>'
   return grid
 }
 
-/* **************************************
- * Build Single Vehicle Display
- * ************************************* */
+/* ***************************
+ * Build single vehicle display
+ * ************************** */
 Util.buildSingleVehicleDisplay = async function (vehicle) {
-  if (!vehicle) return "<p>Vehicle not found</p>"
-
   return `
     <div class="vehicle-detail">
       <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
-      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-      <p><strong>Price:</strong> $${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</p>
-      <p><strong>Mileage:</strong> ${new Intl.NumberFormat("en-US").format(vehicle.inv_miles)} miles</p>
-      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-      <p>${vehicle.inv_description}</p>
+      <div class="vehicle-info">
+        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+        <p><strong>Price:</strong> $${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</p>
+        <p><strong>Miles:</strong> ${new Intl.NumberFormat("en-US").format(vehicle.inv_miles)}</p>
+        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
+        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
+      </div>
     </div>
   `
 }
