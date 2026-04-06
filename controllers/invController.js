@@ -11,7 +11,7 @@ invCont.buildByClassificationId = async function (req, res, next) {
     const nav = await utilities.getNav()
 
     if (!data || data.length === 0) {
-      return res.status(404).render("errors/error", {
+      return res.status(404).render("errors/404", {
         title: "No Vehicles Found",
         message: "No vehicles found for this classification.",
         nav,
@@ -19,10 +19,12 @@ invCont.buildByClassificationId = async function (req, res, next) {
     }
 
     const grid = await utilities.buildClassificationGrid(data)
+
     res.render("inventory/classification", {
       title: data[0].classification_name + " vehicles",
       nav,
       grid,
+      message: null,
     })
   } catch (error) {
     next(error)
@@ -37,7 +39,7 @@ invCont.buildDetail = async function (req, res, next) {
     const nav = await utilities.getNav()
 
     if (!vehicle) {
-      return res.status(404).render("errors/error", {
+      return res.status(404).render("errors/404", {
         title: "Vehicle Not Found",
         message: "Sorry, this vehicle does not exist.",
         nav,
@@ -50,6 +52,7 @@ invCont.buildDetail = async function (req, res, next) {
       title: `${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}`,
       nav,
       htmlData,
+      message: null,
     })
   } catch (error) {
     next(error)
