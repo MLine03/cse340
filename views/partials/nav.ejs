@@ -1,9 +1,37 @@
-<nav>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/accounts">Account Management</a></li>
-    <li><a href="/inventory">Inventory</a></li>
-    <li><a href="/logout">Logout</a></li>
-    <li><a href="/trigger-error">Test 500 Error</a></li>
+<nav aria-label="Account Navigation">
+  <ul class="account-nav">
+    <% if (locals.user) { %>
+      <li class="welcome">
+        Welcome, <span class="user-name"><%= locals.user.firstname %></span>
+      </li>
+
+      <li>
+        <a href="/account/update/<%= locals.user.account_id %>" 
+           aria-label="Go to your account dashboard">
+           My Account
+        </a>
+      </li>
+
+      <li>
+        <a href="/logout" aria-label="Log out of your account">
+          Logout
+        </a>
+      </li>
+
+    <% } else { %>
+
+      <li>
+        <a href="/login" aria-label="Log in to your account">
+          Login
+        </a>
+      </li>
+
+      <li>
+        <a href="/register" aria-label="Create a new account">
+          Register
+        </a>
+      </li>
+
+    <% } %>
   </ul>
 </nav>

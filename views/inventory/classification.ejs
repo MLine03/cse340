@@ -1,9 +1,15 @@
 <%- include("../partials/header") %>
 
-<h1><%= title %></h1>
+<main>
+  <h1><%= title %></h1>
 
-<div class="inventory-display">
-  <%- grid %>
-</div>
+  <% if (grid) { %>
+      <div class="vehicle-grid">
+          <%- grid %>
+      </div>
+  <% } else { %>
+      <p class="notice">Sorry, no vehicles could be found for this classification.</p>
+  <% } %>
+</main>
 
 <%- include("../partials/footer") %>

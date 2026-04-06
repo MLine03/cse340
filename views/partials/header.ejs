@@ -1,12 +1,41 @@
-<nav>
-    <ul>
-        <% if (locals.user) { %>
-            <li>Welcome <%= locals.user.firstname %></li>
-            <li><a href="/account/update/<%= locals.user.account_id %>">My Account</a></li>
-            <li><a href="/logout">Logout</a></li>
-        <% } else { %>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/register">Register</a></li>
-        <% } %>
-    </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Mobile responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SEO FIX (Lighthouse warning) -->
+  <meta name="description" content="CSE Motors dealership website. Browse cars, trucks, SUVs, motorcycles and classic vehicles.">
+
+  <!-- Prevent clickjacking -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+
+  <!-- Page Title -->
+  <title><%= title %> | CSE Motors</title>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Google font (optional but nice polish) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<header>
+  <div class="site-header">
+
+    <div class="logo">
+      <a href="/" aria-label="CSE Motors Home">
+        <h1>CSE Motors</h1>
+      </a>
+    </div>
+
+    <!-- Account Navigation -->
+    <%- include("./account-nav") %>
+
+  </div>
+</header>
