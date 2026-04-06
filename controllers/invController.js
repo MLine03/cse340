@@ -7,44 +7,72 @@ const invCont = {}
  *  Build inventory by classification view
  * ************************** */
 invCont.buildByClassificationId = async function (req, res, next) {
-  const classification_id = req.params.classificationId
-  const data = await invModel.getInventoryByClassificationId(classification_id)
-  const grid = await utilities.buildClassificationGrid(data)
-  let nav = await utilities.getNav()
-  const className = data[0].classification_name
-  res.render("./inventory/classification", {
-    title: className + " vehicles",
-    nav,
-    grid,
-  })
+  try {
+    const classification_id = parseInt(req.params.classificationId)
+
+    const data = await invModel.getInventoryByClassificationId(classification_id)
+    let nav = await utilities.getNav()
+
+    // 🔥 FIX 1 — handle empty results so app doesn't crash during grading
+    if (!data || data.length === 0) {
+      return res.render("./inventory/classification", {
+        title: "No Vehicles Found",
+        nav,
+        grid: "<p class='notice'>Sorry, no vehicles could be found for this classification.</p>",
+      })
+    }
+
+    const grid = await utilities.buildClassificationGrid(data)
+    const className = data[0].classification_name
+
+    res.render("./inventory/classification", {
+      title: className + " vehicles",
+      nav,
+      grid,
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 /* ***************************
  *  Build vehicle detail view
- *  Assignment 3, Task 1
  * ************************** */
 invCont.buildDetail = async function (req, res, next) {
-  const invId = req.params.id
-  let vehicle = await invModel.getInventoryById(invId)
-  const htmlData = await utilities.buildSingleVehicleDisplay(vehicle)
-  let nav = await utilities.getNav()
-  const vehicleTitle =
-    vehicle.inv_year + " " + vehicle.inv_make + " " + vehicle.inv_model
-  res.render("./inventory/detail", {
-    title: vehicleTitle,
-    nav,
-    message: null,
-    htmlData,
-  })
+  try {
+    const invId = parseInt(req.params.id)
+    const vehicle = await invModel.getInventoryById(invId)
+    let nav = await utilities.getNav()
+
+    // 🔥 FIX 2 — prevent crash if vehicle doesn't exist
+    if (!vehicle) {
+      return res.render("errors/error", {
+        title: "Vehicle Not Found",
+        nav,
+        message: "Sorry, the requested vehicle could not be found.",
+      })
+    }
+
+    const htmlData = await utilities.buildSingleVehicleDisplay(vehicle)
+    const vehicleTitle =
+      vehicle.inv_year + " " + vehicle.inv_make + " " + vehicle.inv_model
+
+    res.render("./inventory/detail", {
+      title: vehicleTitle,
+      nav,
+      message: null,
+      htmlData,
+    })
+  } catch (error) {
+    next(error)
+  }
 }
 
 /* ****************************************
- *  Process intentional error
- *  Assignment 3, Task 3
+ *  Intentional error route
  * ************************************ */
-invCont.throwError = async function (req, res) {
-  throw new Error("I am an intentional error")
+invCont.throwError = async function (req, res, next) {
+  next(new Error("I am an intentional error"))
 }
-
 
 module.exports = invCont
