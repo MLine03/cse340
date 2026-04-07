@@ -2,77 +2,59 @@ const invModel = require("../models/inventory-model")
 
 const Util = {}
 
-/* ***************************
- * Build navigation dynamically
- * ************************** */
+/* ===============================
+   BUILD NAVIGATION
+=============================== */
 Util.getNav = async function () {
   const data = await invModel.getClassifications()
 
   let list = "<ul>"
-  list += '<li><a href="/" title="Home page">Home</a></li>'
+  list += '<li><a href="/">Home</a></li>'
 
-  data.rows.forEach((row) => {
-    list += `<li>
-      <a href="/inv/type/${row.classification_id}" 
-         title="See our inventory of ${row.classification_name} vehicles">
-         ${row.classification_name}
-      </a>
-    </li>`
+  data.rows.forEach(row => {
+    list += `<li><a href="/inv/type/${row.classification_id}">
+              ${row.classification_name}
+            </a></li>`
   })
 
   list += "</ul>"
   return list
 }
 
-/* ***************************
- * Build classification grid
- * ************************** */
+/* ===============================
+   BUILD CLASSIFICATION GRID
+=============================== */
 Util.buildClassificationGrid = async function (data) {
-  let grid = ""
+  let grid = '<ul id="inv-display">'
 
-  if (data.length > 0) {
-    grid += '<ul id="inv-display">'
-
-    data.forEach((vehicle) => {
-      grid += `
+  data.forEach(vehicle => {
+    grid += `
       <li>
         <a href="/inv/detail/${vehicle.inv_id}">
-          <img src="${vehicle.inv_thumbnail}" alt="Image of ${vehicle.inv_make} ${vehicle.inv_model}">
+          <img src="${vehicle.inv_thumbnail}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
+          <h2>${vehicle.inv_make} ${vehicle.inv_model}</h2>
+          <span>$${vehicle.inv_price}</span>
         </a>
-        <div class="namePrice">
-          <hr>
-          <h2>
-            <a href="/inv/detail/${vehicle.inv_id}">
-              ${vehicle.inv_make} ${vehicle.inv_model}
-            </a>
-          </h2>
-          <span>$${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</span>
-        </div>
-      </li>`
-    })
+      </li>
+    `
+  })
 
-    grid += "</ul>"
-  } else {
-    grid = "<p class='notice'>Sorry, no matching vehicles could be found.</p>"
-  }
-
+  grid += "</ul>"
   return grid
 }
 
-/* ***************************
- * Build single vehicle display
- * ************************** */
+/* ===============================
+   BUILD SINGLE VEHICLE PAGE
+=============================== */
 Util.buildSingleVehicleDisplay = async function (vehicle) {
   return `
     <div class="vehicle-detail">
       <img src="${vehicle.inv_image}" alt="${vehicle.inv_make} ${vehicle.inv_model}">
-      <div class="vehicle-info">
-        <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
-        <p><strong>Price:</strong> $${new Intl.NumberFormat("en-US").format(vehicle.inv_price)}</p>
-        <p><strong>Miles:</strong> ${new Intl.NumberFormat("en-US").format(vehicle.inv_miles)}</p>
-        <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-        <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-      </div>
+      <h2>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h2>
+      <p>${vehicle.inv_description}</p>
+      <p><strong>Price:</strong> $${vehicle.inv_price}</p>
+      <p><strong>Miles:</strong> ${vehicle.inv_miles}</p>
+      <p><strong>Color:</strong> ${vehicle.inv_color}</p>
     </div>
   `
 }
