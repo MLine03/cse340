@@ -1,12 +1,26 @@
+// Needed Resources 
 const express = require("express")
-const router = express.Router()
+const router = new express.Router() 
 const invController = require("../controllers/invController")
-const utilities = require("../utilities/index")
+const utilities = require("../utilities")
 
-router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId))
-router.get("/detail/:id", utilities.handleErrors(invController.buildDetail))
+router.get("/type/:classificationId", invController.buildByClassificationId);
 
-// Route to intentionally test error
-router.get("/broken", invController.throwError)
 
-module.exports = router
+/* ****************************************
+ * Route to build vehicle detail view
+ **************************************** */
+router.get("/detail/:id", 
+utilities.handleErrors(invController.buildDetail))
+
+/* ****************************************
+ * Error Route
+ * Assignment 3, Task 3
+ **************************************** */
+router.get(
+  "/broken",
+  utilities.handleErrors(invController.throwError)
+)
+
+
+module.exports = router;
