@@ -86,7 +86,7 @@ input[type='Submit'] {
   font-size: 3.5vw;
   font-variant: small-caps;
   display: flex;
-  width: 20%;
+  width: 60%;
   justify-content: space-evenly;
 }
 
