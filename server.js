@@ -13,6 +13,7 @@ const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
 const accountRoute = require("./routes/accountRoute")
+const favoriteRoute = require("./routes/favoriteRoute") // ✅ ADDED
 const utilities = require("./utilities/")
 const session = require("express-session")
 const pool = require('./database/')
@@ -21,9 +22,7 @@ const cookieParser = require("cookie-parser")
 
 /* ***********************
  * Middleware
- * Between the request and response
- * ************************/
-// Unit 4, Sessions & Messages Activity
+ *************************/
 app.use(
   session({
     store: new (require("connect-pg-simple")(session))({
@@ -36,68 +35,47 @@ app.use(
     name: "sessionId",
   })
 )
-// Unit 4, Sessions & Messages Activity
-// Express Messages Middleware
+
 app.use(require("connect-flash")())
 app.use(function (req, res, next) {
   res.locals.messages = require("express-messages")(req, res)
   next()
 })
-// Unit 4, Process Registration Activity
+
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
-// Express Messages Middleware
-app.use(require('connect-flash')())
-app.use(function(req, res, next){
-  res.locals.messages = require('express-messages')(req, res)
-  next()
-})
-
-// Unit 4, Process Registration Activity
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
-// Unit 5, Login activity
 app.use(cookieParser())
-// Unit 5, Login Process activity
 app.use(utilities.checkJWTToken)
 
-
 /* ***********************
- * View Engine And Templates
+ * View Engine
  *************************/
 app.set("view engine", "ejs")
 app.use(expressLayouts)
-app.set("layout", "./layouts/layout") // not at views root
-
-
-
-
+app.set("layout", "./layouts/layout")
 
 /* ***********************
  * Routes
  *************************/
 app.use(static)
-// Index route - Unit 3, Robust Error Handling activity
+
 app.get("/", utilities.handleErrors(baseController.buildHome))
-// Inventory routes - Unit 3, Build Inventory route activity
+
 app.use("/inv", inventoryRoute)
-// Account routes - Unit 4, Deliver Login activity
 app.use("/account", accountRoute)
+app.use("/favorites", favoriteRoute) // ✅ ADDED HERE
 
-
-
-// File Not Found Route - must be last route in list
+/* ***********************
+ * 404 Handler
+ *************************/
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
 
-
 /* ***********************
-* Express Error Handler
-* Place after all other middleware
+* Error Handler
 *************************/
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
@@ -114,19 +92,12 @@ app.use(async (err, req, res, next) => {
   })
 })
 
-
-
-
 /* ***********************
- * Local Server Information
- * Values from .env (environment) file
+ * Server Info
  *************************/
 const port = process.env.PORT
 const host = process.env.HOST
 
-/* ***********************
- * Log statement to confirm server operation
- *************************/
 app.listen(port, () => {
   console.log(`app listening on ${host}:${port}`)
 })

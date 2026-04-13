@@ -1,16 +1,18 @@
-<%# Unit 3, Assignment 3, Task 1 %>
-<% if (title) { %>
+<%# Vehicle Detail View %>
+
 <h1><%= title %></h1>
-<% } else {
-  res.redirect('/')
-} %>
 
+<% if (htmlData && Object.entries(htmlData).length > 0) { %>
 
+  <%- htmlData %>
 
-<% if(Object.entries(htmlData).length > 0){ %>
+  <form method="POST" action="/favorites/add">
+    <input type="hidden" name="inv_id" value="<%= inv_id %>">
+    <button type="submit">⭐ Add to Favorites</button>
+  </form>
 
-<%- htmlData %>
 <% } else { %>
-<p class="notice">Sorry, no matching vehicle could be found.</p>
-<% } %>
 
+  <p class="notice">Sorry, no matching vehicle could be found.</p>
+
+<% } %>
